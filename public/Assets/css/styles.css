@@ -1,0 +1,53 @@
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(-350px * 3));
+    }
+}
+
+.animate-scroll {
+    animation: scroll 30s linear infinite;
+}
+
+.testimonials-container {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.testimonials-container::before,
+.testimonials-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    z-index: 2;
+}
+
+.testimonials-container::before {
+    left: 0;
+    background: linear-gradient(to right, rgb(249 250 251), transparent);
+}
+
+.testimonials-container::after {
+    right: 0;
+    background: linear-gradient(to left, rgb(249 250 251), transparent);
+}
+
+.testimonials-track {
+    display: flex;
+    width: fit-content;
+}
+
+.testimonial-card {
+    width: 350px;
+    flex-shrink: 0;
+}
+
+/* Pause animation on hover */
+.testimonials-track:hover {
+    animation-play-state: paused;
+}
