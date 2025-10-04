@@ -44,7 +44,7 @@
                                         data-modal-toggle="messageModal{{ $contact->id }}">
                                     View
                                 </button>
-                                <form action="{{ route('contact.destroy', $contact->id) }}" method="POST" class="inline">
+                                <form action="" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-600 hover:text-red-900"

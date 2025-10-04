@@ -13,7 +13,19 @@
 
             <div class="p-4">
                 <h3 class="text-xl font-semibold mb-2">{{ $ebook->title }}</h3>
-                <p class="text-gray-600 mb-4">{!! Str::limit($ebook->description, 100) !!}</p>
+
+                <!-- Description with Read More functionality -->
+                <div class="mb-4">
+                    <div class="description-container collapsed" id="desc-{{ $ebook->id }}">
+                        <p class="text-gray-600">{!! $ebook->description !!}</p>
+                    </div>
+                    <div class="flex justify-end mt-2 read-more-btn-container">
+                        <button class="read-more-btn text-[#93C754] font-medium flex items-center text-sm"
+                                onclick="toggleDescription('desc-{{ $ebook->id }}', this)">
+                            Read More <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                    </div>
+                </div>
 
                 <!-- Preview Button -->
                 <button onclick="showPdfPreview('{{ asset('storage/' . $ebook->file_path) }}', {{ $ebook->page_count }})"
@@ -34,18 +46,20 @@
         @endforeach
     </div>
 </div>
- <div class="mt-16 bg-[#0A4040] rounded-lg p-8 text-center">
-            <h3 class="text-2xl font-bold text-white mb-4">Looking for something specific?</h3>
-            <p class="text-gray-200 mb-6">We can create custom products tailored to your unique health needs</p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="{{ route('custompackages.create') }}" class="bg-[#93C754] hover:bg-[#7eae47] text-[#0A4040] font-bold px-6 py-3 rounded-lg transition-colors">
-                    Request Custom Product
-                </a>
-                <a href="" class="bg-white hover:bg-gray-100 text-[#0A4040] font-bold px-6 py-3 rounded-lg transition-colors">
-                    Contact Us
-                </a>
-            </div>
-        </div>
+
+<div class="mt-16 bg-[#0A4040] rounded-lg p-8 text-center">
+    <h3 class="text-2xl font-bold text-white mb-4">Looking for something specific?</h3>
+    <p class="text-gray-200 mb-6">We can create custom products tailored to your unique health needs</p>
+    <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="{{ route('custompackages.create') }}" class="bg-[#93C754] hover:bg-[#7eae47] text-[#0A4040] font-bold px-6 py-3 rounded-lg transition-colors">
+            Request Custom Product
+        </a>
+        <a href="" class="bg-white hover:bg-gray-100 text-[#0A4040] font-bold px-6 py-3 rounded-lg transition-colors">
+            Contact Us
+        </a>
+    </div>
+</div>
+
 <!-- PDF Preview Modal -->
 <div id="pdf-preview-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 p-4 overflow-auto">
     <div class="bg-white max-w-4xl mx-auto rounded-lg p-6 relative min-h-[80vh]">
@@ -131,6 +145,27 @@
 
 <!-- Add PDF.js library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+.description-container {
+    position: relative;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+.description-container.collapsed {
+    max-height: 4.5em; /* Show approximately 3 lines of text */
+}
+.read-more-btn {
+    background: linear-gradient(to right, transparent, white 30%);
+    padding-left: 2rem;
+}
+.read-more-btn:hover {
+    background: linear-gradient(to right, transparent, #f9fafb 30%);
+}
+</style>
+
 <script>
 // Set PDF.js worker path
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
@@ -138,6 +173,38 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 let currentPdf = null;
 let currentPageNum = 1;
 const PREVIEW_LIMIT = 5; // Restrict to first 5 pages
+
+// Read More functionality
+function toggleDescription(descId, button) {
+    const descContainer = document.getElementById(descId);
+
+    if (descContainer.classList.contains('collapsed')) {
+        // Expand the description
+        descContainer.classList.remove('collapsed');
+        button.innerHTML = 'Read Less <i class="fas fa-chevron-up ml-1 text-xs"></i>';
+    } else {
+        // Collapse the description
+        descContainer.classList.add('collapsed');
+        button.innerHTML = 'Read More <i class="fas fa-chevron-down ml-1 text-xs"></i>';
+    }
+}
+
+// Initialize Read More buttons
+function initializeReadMore() {
+    const descriptions = document.querySelectorAll('.description-container');
+
+    descriptions.forEach(desc => {
+        const buttonContainer = desc.nextElementSibling;
+
+        // If content is not long enough to require truncation, hide the button
+        if (desc.scrollHeight <= 72) { // 4.5em ≈ 72px
+            buttonContainer.style.display = 'none';
+        } else {
+            // Ensure it starts collapsed
+            desc.classList.add('collapsed');
+        }
+    });
+}
 
 // PDF Preview Functions
 function showPdfPreview(pdfUrl, totalPages) {
@@ -207,55 +274,61 @@ function hidePurchaseModal() {
     document.body.classList.remove('overflow-hidden');
 }
 
-// Event Listeners
-document.getElementById('prev-page').addEventListener('click', function() {
-    if (currentPageNum > 1) {
-        renderPage(currentPageNum - 1);
-    }
-});
+// Event Listeners when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Read More functionality
+    initializeReadMore();
 
-document.getElementById('next-page').addEventListener('click', function() {
-    if (currentPageNum < PREVIEW_LIMIT) {
-        renderPage(currentPageNum + 1);
-    }
-});
-
-// Form submission handler
-document.getElementById('purchase-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    // Validate required fields
-    const requiredFields = this.querySelectorAll('[required]');
-    let isValid = true;
-
-    requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-            field.classList.add('border-red-500');
-            isValid = false;
-        } else {
-            field.classList.remove('border-red-500');
+    // PDF navigation
+    document.getElementById('prev-page').addEventListener('click', function() {
+        if (currentPageNum > 1) {
+            renderPage(currentPageNum - 1);
         }
     });
 
-    if (!isValid) {
-        alert('Please fill in all required fields');
-        return;
-    }
+    document.getElementById('next-page').addEventListener('click', function() {
+        if (currentPageNum < PREVIEW_LIMIT) {
+            renderPage(currentPageNum + 1);
+        }
+    });
 
-    // Generate security token
-    const email = this.querySelector('input[name="Ecom_BillTo_Online_Email"]').value;
-    const amount = this.querySelector('input[name="Lite_Order_Amount"]').value;
+    // Form submission handler
+    document.getElementById('purchase-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-    try {
-        const token = await generateTransactionToken('YOUR_SHARED_SECRET', amount, email);
-        document.getElementById('transaction-token').value = token;
+        // Validate required fields
+        const requiredFields = this.querySelectorAll('[required]');
+        let isValid = true;
 
-        // Submit the form if token generation was successful
-        this.submit();
-    } catch (error) {
-        console.error('Error generating token:', error);
-        alert('Failed to generate security token. Please try again.');
-    }
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('border-red-500');
+                isValid = false;
+            } else {
+                field.classList.remove('border-red-500');
+            }
+        });
+
+        if (!isValid) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        // Generate security token
+        const email = this.querySelector('input[name="Ecom_BillTo_Online_Email"]').value;
+        const amount = this.querySelector('input[name="Lite_Order_Amount"]').value;
+
+        try {
+            const token = await generateTransactionToken('YOUR_SHARED_SECRET', amount, email);
+            document.getElementById('transaction-token').value = token;
+
+            // Submit the form if token generation was successful
+            this.submit();
+        } catch (error) {
+            console.error('Error generating token:', error);
+            alert('Failed to generate security token. Please try again.');
+        }
+    });
 });
 
 // Token generation function from your cart blade
