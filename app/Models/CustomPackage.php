@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class CustomPackage extends Model
 {
-    //
+    protected $table = 'custompackages'; // 👈 Add this line
+
     protected $fillable = [
         'name',
         'email',
@@ -16,5 +17,4 @@ class CustomPackage extends Model
         'package_details',
         'status',
     ];
-
 }

@@ -30,8 +30,27 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->decimal('fee', 10, 2);
             $table->decimal('usd_equivalent', 10, 2)->nullable();
-            $table->enum('status', ['pending', 'confirmed', 'completed', 'cancelled'])->default('pending');
-            $table->enum('payment_status', ['unpaid', 'paid', 'refunded'])->default('unpaid');
+            
+            // Status fields
+            $table->enum('status', [
+                'pending', 
+                'confirmed', 
+                'completed', 
+                'cancelled',
+                'failed',
+                'approved'
+            ])->default('pending');
+            
+           $table->string('payment_status', 20)->default('unpaid');
+            
+            // Payment fields - REMOVED after() clause
+            $table->enum('payment_method', [
+                'iveri', 
+                'kcb', 
+                'cash', 
+                'bank_transfer'
+            ])->nullable(); // ✅ REMOVED: ->after('payment_reference')
+            
             $table->string('payment_reference')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
@@ -40,6 +59,7 @@ return new class extends Migration
             $table->index('email');
             $table->index('status');
             $table->index('payment_status');
+            $table->index('payment_method');
         });
     }
 

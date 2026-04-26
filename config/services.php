@@ -34,14 +34,22 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-  'iveri' => [
-    'application_id' => env('IVERI_APPLICATION_ID'),
-    'shared_secret' => env('IVERI_SHARED_SECRET'),
-    'gateway_url' => env('IVERI_GATEWAY_URL'),
-],
-    'mail' => [
-    'support_email' => env('MAIL_SUPPORT_EMAIL', ''),
-],
 
+    'iveri' => [
+        'application_id' => env('IVERI_APPLICATION_ID'),
+        'shared_secret' => env('IVERI_SHARED_SECRET'),
+        'gateway_url' => env('IVERI_GATEWAY_URL'),
+    ],
+
+    'mail' => [
+        'support_email' => env('MAIL_SUPPORT_EMAIL', ''),
+    ],
+
+    'kcb_buni' => [
+        'base_url' => env('KCB_BUNI_BASE_URL', 'https://api.buni.kcbgroup.com'),
+        'consumer_key' => env('KCB_BUNI_CONSUMER_KEY'),
+        'consumer_secret' => env('KCB_BUNI_CONSUMER_SECRET'),
+        'environment' => env('KCB_BUNI_ENVIRONMENT', 'live'),
+    ],
 
 ];

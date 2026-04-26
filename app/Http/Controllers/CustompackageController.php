@@ -27,7 +27,13 @@ class CustompackageController extends Controller
         return view('frontendviews.custompackage.index');
 
     }
-
+public function updateStatus(Request $request, $id)
+{
+    $package = CustomPackage::findOrFail($id);
+    $package->update(['status' => $request->status]);
+    
+    return back()->with('success', 'Quote status updated successfully');
+}
     /**
      * Store a newly created resource in storage.
      */

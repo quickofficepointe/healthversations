@@ -6,7 +6,7 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-semibold text-gray-800">Manage Banners</h1>
         <!-- Add Banner Button -->
-        <button class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition duration-200" data-modal-toggle="addBannerModal">
+        <button onclick="openModal('addBannerModal')" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition duration-200">
             Add New Banner
         </button>
     </div>
@@ -14,38 +14,38 @@
     <!-- Banners Table -->
     <div class="bg-white rounded-lg shadow-md mb-8 overflow-hidden">
         <div class="overflow-x-auto">
-            <table id="bannersTable" class="table table-striped table-bordered" style="width:100%">
+            <table id="bannersTable" class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">Order</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">Image</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">Title</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">Subtitle</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">Status</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">Actions</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtitle</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200" id="sortable-banners">
+                <tbody class="bg-white divide-y divide-gray-200" id="sortable-banners">
                     @foreach($banners as $banner)
                     <tr class="hover:bg-gray-50 transition duration-200" data-id="{{ $banner->id }}">
-                        <td class="px-6 py-4 text-sm text-gray-700">
-                            <span class="drag-handle cursor-move">↕️</span>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            <span class="drag-handle cursor-move inline-block mr-2">↕️</span>
                             {{ $banner->order }}
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-700">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                             <img src="{{ asset('storage/' . $banner->image) }}" alt="Banner Image" class="w-24 h-16 object-cover rounded-lg">
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-700">{{ $banner->title }}</td>
                         <td class="px-6 py-4 text-sm text-gray-700">{{ $banner->subtitle }}</td>
-                        <td class="px-6 py-4 text-sm">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
                             <span class="px-2 py-1 rounded-full text-xs font-medium {{ $banner->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                 {{ $banner->is_active ? 'Active' : 'Inactive' }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 text-sm">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
                             <div class="flex space-x-2">
-                                <button class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded-lg transition duration-200"
-                                        data-modal-toggle="editBannerModal{{ $banner->id }}">
+                                <button onclick="openModal('editBannerModal{{ $banner->id }}')" 
+                                        class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded-lg transition duration-200">
                                     Edit
                                 </button>
                                 <form action="{{ route('admin.banners.destroy', $banner->id) }}" method="POST"
@@ -66,9 +66,14 @@
     </div>
 
     <!-- Add Banner Modal -->
-    <div id="addBannerModal" class="modal hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <div class="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 p-6">
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">Add New Banner</h3>
+    <div id="addBannerModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">Add New Banner</h3>
+                <button onclick="closeModal('addBannerModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
             <form action="{{ route('admin.banners.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -107,7 +112,7 @@
                     <textarea name="description" id="description" class="summernote mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"></textarea>
                 </div>
                 <div class="flex justify-end space-x-2">
-                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-md transition duration-200" data-modal-toggle="addBannerModal">
+                    <button type="button" onclick="closeModal('addBannerModal')" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-md transition duration-200">
                         Close
                     </button>
                     <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-md transition duration-200">
@@ -120,9 +125,14 @@
 
     <!-- Edit Banner Modals -->
     @foreach($banners as $banner)
-    <div id="editBannerModal{{ $banner->id }}" class="modal hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <div class="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 p-6">
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">Edit Banner</h3>
+    <div id="editBannerModal{{ $banner->id }}" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">Edit Banner</h3>
+                <button onclick="closeModal('editBannerModal{{ $banner->id }}')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
             <form action="{{ route('admin.banners.update', $banner->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
@@ -163,7 +173,7 @@
                     <textarea name="description" id="description{{ $banner->id }}" class="summernote mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500">{{ $banner->description }}</textarea>
                 </div>
                 <div class="flex justify-end space-x-2">
-                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-md transition duration-200" data-modal-toggle="editBannerModal{{ $banner->id }}">
+                    <button type="button" onclick="closeModal('editBannerModal{{ $banner->id }}')" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-md transition duration-200">
                         Close
                     </button>
                     <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-md transition duration-200">
@@ -175,29 +185,47 @@
     </div>
     @endforeach
 </div>
+@endsection
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 <script>
-    $(document).ready(function() {
-        // Initialize DataTable
-        $('#bannersTable').DataTable({
-            responsive: true,
-            dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                 "<'row'<'col-sm-12'tr>>" +
-                 "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-            language: {
-                search: "_INPUT_",
-                searchPlaceholder: "Search banners...",
-            },
-            columnDefs: [
-                { orderable: true, targets: [0, 1, 2, 3, 4] },
-                { orderable: false, targets: [5] } // Actions column
-            ],
-            order: [[0, 'asc']] // Order by the first column (Order) by default
-        });
+    // Modal functions
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+        // Reinitialize Summernote when modal opens
+        setTimeout(() => {
+            $(`#${modalId} .summernote`).summernote('destroy');
+            $(`#${modalId} .summernote`).summernote({
+                height: 200,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            });
+        }, 100);
+    }
 
-        // Initialize Summernote
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+
+    // Close modal when clicking outside
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('fixed')) {
+            e.target.classList.add('hidden');
+        }
+    });
+
+    $(document).ready(function() {
+        // Initialize Summernote for existing textareas
         $('.summernote').summernote({
             height: 200,
             toolbar: [
@@ -210,48 +238,7 @@
                 ['table', ['table']],
                 ['insert', ['link', 'picture', 'video']],
                 ['view', ['fullscreen', 'codeview', 'help']]
-            ],
-            callbacks: {
-                onInit: function() {
-                    // Fix z-index issues
-                    $('.note-modal').each(function() {
-                        $(this).css('z-index', '1055');
-                    });
-
-                    // Fix button styles to match Bootstrap
-                    $('.note-btn').removeClass('btn-light').addClass('btn-outline-secondary');
-                }
-            }
-        });
-
-        // Toggle Modals
-        document.querySelectorAll('[data-modal-toggle]').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const modalId = e.target.getAttribute('data-modal-toggle');
-                const modal = document.getElementById(modalId);
-                modal.classList.toggle('hidden');
-
-                // Reinitialize Summernote when modal is opened
-                if (!modal.classList.contains('hidden')) {
-                    setTimeout(() => {
-                        $(`#${modalId} .summernote`).summernote('destroy');
-                        $(`#${modalId} .summernote`).summernote({
-                            height: 200,
-                            toolbar: [
-                                ['style', ['style']],
-                                ['font', ['bold', 'italic', 'underline', 'clear']],
-                                ['fontname', ['fontname']],
-                                ['color', ['color']],
-                                ['para', ['ul', 'ol', 'paragraph']],
-                                ['height', ['height']],
-                                ['table', ['table']],
-                                ['insert', ['link', 'picture', 'video']],
-                                ['view', ['fullscreen', 'codeview', 'help']]
-                            ]
-                        });
-                    }, 300);
-                }
-            });
+            ]
         });
 
         // Initialize Sortable for banner ordering
@@ -273,47 +260,29 @@
                     body: JSON.stringify({ order })
                 }).then(response => {
                     if (response.ok) {
-                        // Reload the DataTable to reflect the new order
-                        $('#bannersTable').DataTable().ajax.reload();
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Order Updated',
+                            text: 'Banner order has been updated successfully',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
                     }
                 });
             }
         });
 
-        // Toggle banner status
-        document.querySelectorAll('[data-toggle-status]').forEach(button => {
-            button.addEventListener('click', async function() {
-                const bannerId = this.getAttribute('data-banner-id');
-                const response = await fetch(`/admin/banners/${bannerId}/toggle-status`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
-                    }
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.fixed').forEach(modal => {
+                    modal.classList.add('hidden');
                 });
-
-                const data = await response.json();
-                if (data.success) {
-                    const statusElement = document.querySelector(`#status-${bannerId}`);
-                    statusElement.textContent = data.is_active ? 'Active' : 'Inactive';
-                    statusElement.className = `px-2 py-1 rounded-full text-xs font-medium ${data.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
-
-                    // Show success notification
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Status Updated',
-                        text: 'Banner status has been updated successfully',
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        background: '#f0fdf4',
-                        iconColor: '#16a34a'
-                    });
-                }
-            });
+            }
         });
     });
 </script>
-@endsection
 @endsection

@@ -96,7 +96,18 @@ $total = 0;
         'message' => 'Product added to cart'
     ]);
     }
-
+public function showDetails($id)
+{
+    $order = CartOrder::findOrFail($id);
+    $items = is_array($order->items) ? $order->items : (json_decode($order->items, true) ?? []);
+    
+    $html = view('healthversations.admin.partials.order-details', [
+        'order' => $order,
+        'items' => $items
+    ])->render();
+    
+    return response()->json(['html' => $html]);
+}
     public function update(Request $request, $cartKey)
     {
         $request->validate([

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\UserMealPlanController;
+use App\Http\Controllers\KCBPaymentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
@@ -14,6 +16,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CoachingEnrollmentController;
 use App\Http\Controllers\CoachingpackagesController;
 use App\Http\Controllers\ConsultationController;
+use App\Http\Controllers\ConsultTestimonialController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CustompackageController;
 use App\Http\Controllers\EbookController;
@@ -40,10 +43,11 @@ use App\Models\Banner;
 use App\Models\blog;
 use App\Models\blogcategory;
 use App\Models\CoachingPackages;
+use App\Models\ConsultTestimonial;
 use App\Models\package;
 use App\Models\testmony;
 use App\Models\versationcard;
-
+// ==================== DEFAULT ROUTE ====================
 // ==================== DEFAULT ROUTE ====================
 Route::get('/', function () {
     $currency = request()->query('currency', 'usd');
@@ -58,14 +62,27 @@ Route::get('/', function () {
         ->orderBy('created_at', 'desc')
         ->get();
 
-    // Take the latest one
-    $latest = $testimonials->shift();
+    // Handle testimonials - check if collection is not empty
+    if ($testimonials->isNotEmpty()) {
+        // Take the latest one
+        $latest = $testimonials->shift();
 
-    // Shuffle the rest
-    $shuffled = $testimonials->shuffle();
+        // Shuffle the rest
+        $shuffled = $testimonials->shuffle();
 
-    // Merge back with latest at the top
-    $testimonials = collect([$latest])->merge($shuffled);
+        // Merge back with latest at the top
+        $testimonials = collect([$latest])->merge($shuffled);
+    } else {
+        // If no testimonials, use empty collection
+        $testimonials = collect();
+    }
+
+    // Get consultation testimonials for before/after
+       $consultTestimonials = ConsultTestimonial::with('measurements')
+        ->public()
+        ->orderBy('created_at', 'desc')
+        ->take(6)
+        ->get();
 
     $blogs = blog::with('category')
         ->latest()
@@ -80,11 +97,10 @@ Route::get('/', function () {
         'testimonials',
         'coachingpackages',
         'currency',
-        'blogs'
+        'blogs',
+        'consultTestimonials'
     ));
 });
-
-
 // ==================== AUTHENTICATION ROUTES ====================
 Auth::routes(['verify' => true]);
 
@@ -116,16 +132,60 @@ Route::middleware('superuser')->group(function () {
     Route::get('/superadmin/dashboard', [SuperadminController::class, 'dashboard'])->name('superadmin.dashboard');
 });
 
-Route::middleware('user')->group(function () {
-    Route::get('/user/dashboard', [AdminController::class, 'index'])->name('user.dashboard');
-});
+// Add these routes to your web.php file (after the existing routes)
 
+// User Dashboard Routes (role = 2)
+Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(function () {
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
+    Route::get('/orders', [UserController::class, 'myOrders'])->name('orders');
+    Route::get('/orders/{id}', [UserController::class, 'orderDetails'])->name('orders.show');
+    Route::get('/consultations', [UserController::class, 'myConsultations'])->name('consultations');
+    Route::get('/ebooks', [UserController::class, 'myEbooks'])->name('ebooks');
+    Route::get('/ebooks/download/{id}', [UserController::class, 'downloadEbook'])->name('ebooks.download');
+    Route::get('/coaching', [UserController::class, 'myCoaching'])->name('coaching');
+    Route::get('/reviews', [UserController::class, 'myReviews'])->name('reviews');
+    Route::get('/profile', [UserController::class, 'profileSettings'])->name('profile');
+    Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/change-password', [UserController::class, 'changePasswordForm'])->name('change-password');
+    Route::post('/change-password', [UserController::class, 'changePassword'])->name('change-password.update');
+ Route::prefix('meal-plan')->name('meal-plan.')->group(function () {
+        Route::get('/dashboard', [UserController::class, 'mealPlanDashboard'])->name('dashboard');
+        Route::get('/current-week', [UserController::class, 'mealPlanCurrentWeek'])->name('current-week');
+        Route::get('/weekly-summary', [UserController::class, 'mealPlanWeeklySummary'])->name('weekly-summary');
+        Route::post('/save-tracking', [UserController::class, 'saveDailyTracking'])->name('save-tracking');
+        Route::post('/save-meal-log', [UserController::class, 'saveMealLog'])->name('save-meal-log');
+        Route::post('/submit-assessment', [UserController::class, 'submitWeeklyAssessment'])->name('submit-assessment');
+    });
+    });
+
+Route::put('/custom-packages/{id}/update-status', [CustomPackageController::class, 'updateStatus'])->name('custompackages.updateStatus');
 // ==================== ADMIN ROUTES ====================
 Route::middleware('admin')->group(function () {
     // Dashboard
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
  Route::get('users', [UserController::class, 'index'])->name('users.index');
+Route::get('consult/testimonials', [ConsultTestimonialController::class, 'index'])
+    ->name('consult.admin.testimonials.index');
 
+// Store new testimonial
+Route::post('consult/testimonials', [ConsultTestimonialController::class, 'store'])
+    ->name('consult.testimonials.store');
+
+// Update testimonial
+Route::put('consult/testimonials/{id}', [ConsultTestimonialController::class, 'update'])
+    ->name('consult.testimonials.update');
+
+// Delete testimonial
+Route::delete('consult/testimonials/{id}', [ConsultTestimonialController::class, 'destroy'])
+    ->name('consult.testimonials.destroy');
+
+// Toggle featured status
+Route::post('consult/testimonials/{consultTestimonial}/toggle-featured', [ConsultTestimonialController::class, 'toggleFeatured'])
+    ->name('consult.testimonials.toggle-featured');
+
+// Bulk actions
+Route::post('consult/testimonials/bulk-action', [ConsultTestimonialController::class, 'bulkAction'])
+    ->name('consult.testimonials.bulk-action');
     // Update a user
     Route::put('users/{id}', [UserController::class, 'update'])->name('users.update');
 
@@ -137,7 +197,8 @@ Route::middleware('admin')->group(function () {
    Route::get('/admin/productcategories/{productCategory}/edit', [ProductCategoryController::class, 'edit'])->name('productcategories.edit');
     Route::put('/productcategories/{productCategory}', [ProductCategoryController::class, 'update'])->name('productcategories.update');
     Route::delete('/productcategories/{productCategory}', [ProductCategoryController::class, 'destroy'])->name('productcategories.destroy');
-
+// Add discount update route
+Route::put('/admin/products/{id}/discount', [ProductController::class, 'updateDiscount'])->name('products.update.discount');
     // Products
     Route::get('/allproducts', [ProductController::class, 'index'])->name('products.index');
     Route::post('/allproducts', [ProductController::class, 'store'])->name('products.store');
@@ -170,7 +231,7 @@ Route::put('/allproducts/{product}', [ProductController::class, 'update'])->name
     Route::delete('destroy/packages/{id?}', [PackageController::class, 'destroy'])->name('packages.destroy');
 
     // Orders Management
-    Route::get('ebooksorders/', [EbookOrderController::class, 'index'])->name('admin.ebook-orders.index');
+     Route::get('consultationorders/', [ConsultationController::class, 'show'])->name('admin.const-orders.index');
     Route::put('ebooksorder/{id}', [EbookOrderController::class, 'update'])->name('admin.ebook-orders.update');
     Route::get('cart/order', [CartOrderController::class, 'index'])->name('admin.cart-orders.index');
     Route::put('cartorder/{id}', [CartOrderController::class, 'update'])->name('admin.cart-orders.update');
@@ -241,7 +302,23 @@ Route::put('/allproducts/{product}', [ProductController::class, 'update'])->name
     // Messages & Quotes
     Route::get('/allmessages', [ContactController::class, 'show'])->name('all.messages');
     Route::get('/customqoutes', [CustompackageController::class, 'index'])->name('custom.qoutes');
+Route::prefix('meal-plans')->name('admin.meal-plans.')->group(function () {
+    Route::get('/', [UserMealPlanController::class, 'index'])->name('index');
+    Route::get('/create', [UserMealPlanController::class, 'create'])->name('create');
+    Route::post('/', [UserMealPlanController::class, 'store'])->name('store');
+    Route::get('/{userMealPlan}', [UserMealPlanController::class, 'show'])->name('show');
+    Route::get('/{userMealPlan}/edit', [UserMealPlanController::class, 'edit'])->name('edit');
+    Route::put('/{userMealPlan}', [UserMealPlanController::class, 'update'])->name('update');
+    Route::delete('/{userMealPlan}', [UserMealPlanController::class, 'destroy'])->name('destroy');
+    Route::post('/{userMealPlan}/week/{weekNumber}/content', [UserMealPlanController::class, 'uploadWeeklyContent'])->name('upload-week');
+    Route::post('/{userMealPlan}/week/{weekNumber}/complete', [UserMealPlanController::class, 'completeWeek'])->name('complete-week');
+    Route::get('/{userMealPlan}/tracking', [UserMealPlanController::class, 'viewTracking'])->name('tracking');
+    Route::get('/{userMealPlan}/assessments', [UserMealPlanController::class, 'viewAssessments'])->name('assessments');
+    Route::post('/{userMealPlan}/week/{weekNumber}/feedback', [UserMealPlanController::class, 'addAssessmentFeedback'])->name('add-feedback');
+    Route::patch('/{userMealPlan}/status', [UserMealPlanController::class, 'updateStatus'])->name('update-status');
 });
+
+    });
 
 // ==================== PUBLIC ROUTES ====================
 // Form Submissions
@@ -249,7 +326,7 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 Route::post('/product/{productId}/review', [ReviewController::class, 'store'])->name('reviews.store');
 Route::post('/subscribe', [SubscribeController::class, 'store'])->name('subscribe.store');
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
-Route::post('/testimonials', [TestmonyController::class, 'store'])->name('testimonials.store');
+Route::post('store/testimonial', [TestmonyController::class, 'store'])->name('testimonials.store');
 
 // Product & Package Views
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
@@ -320,6 +397,7 @@ Route::get('/consultations/create', [ConsultationController::class, 'create'])->
 Route::post('/consultations', [ConsultationController::class, 'store'])->name('consultations.store');
 
 // Ebooks
+  Route::get('ebookorders/', [EbookOrderController::class, 'index'])->name('admin.ebook-orders.index');
 Route::get('/ebooks', [EbookController::class, 'show'])->name('ebooks.show');
 Route::post('/ebooks/purchase', [EbookController::class, 'purchase'])->name('ebooks.purchase');
 Route::get('/ebook/download/{order}/{token}', [EbookOrderController::class, 'download'])->name('ebook.download');
@@ -341,5 +419,36 @@ Route::post('/cart/process-order', [CartOrderController::class, 'process'])->nam
 Route::post('/coaching/enroll', [CoachingEnrollmentController::class, 'process'])->name('coaching.process');
 Route::post('/consultation/payment/process', [ConsultationController::class, 'processPayment'])->name('consultation.payment.process');
 
+// Public routes (for website visitors)
+Route::get('/testimonials/coaching', [ConsultTestimonialController::class, 'publicIndex'])
+    ->name('testimonials.index');
+
+
+
 // Order Processing
 Route::post('/cart/add-delivery', [CartController::class, 'addDelivery'])->name('cart.add-delivery');
+
+// KCB Payment Routes - NEW UNIFIED APPROACH
+Route::prefix('kcb-payment')->group(function () {
+    // Single endpoint for ALL payment types
+    Route::post('/initiate', [KCBPaymentController::class, 'initiateKcbPayment'])->name('kcb.payment.initiate');
+
+    // Single callback for ALL payment types
+    Route::post('/callback', [KCBPaymentController::class, 'handleKcbCallback'])->name('kcb.payment.callback');
+
+    // Status check - KEEP (same route)
+    Route::post('/status', [KCBPaymentController::class, 'checkPaymentStatus'])->name('kcb.payment.status');
+
+    // Test endpoint - KEEP (same route)
+    Route::get('/test-auth', [KCBPaymentController::class, 'testKcbAuth'])->name('kcb.test.auth');
+});
+Route::get('/admin/cart-orders/{id}/details', [CartOrderController::class, 'showDetails'])->name('admin.cart-orders.details');
+Route::get('/consultations/{consultation}/process-payment', [ConsultationController::class, 'processPayment'])->name('consultations.process-payment');
+Route::delete('/contact/{id}', [ContactController::class, 'destroy'])->name('contact.destroy');
+// In routes/web.php - Add the full namespace
+Route::get('/testimonials/{slug}', [App\Http\Controllers\ConsultTestimonialController::class, 'show'])
+    ->name('testimonials.show');
+
+    // KCB Payment Routes
+Route::get('/payment/kcb/success', [KCBPaymentController::class, 'showSuccess'])->name('kcb.payment.success');
+Route::get('/payment/kcb/failure', [KCBPaymentController::class, 'showFailure'])->name('kcb.payment.failure');

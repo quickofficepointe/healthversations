@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Blog extends Model
+class blog extends Model
 {
     //
     // Fillable attributes for mass assignment

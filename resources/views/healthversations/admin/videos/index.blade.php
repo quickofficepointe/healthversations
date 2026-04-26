@@ -6,7 +6,7 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-semibold text-gray-800">Manage Video Links</h1>
         <!-- Add Video Button -->
-        <button class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition duration-200" data-modal-toggle="addVideoModal">
+        <button onclick="openModal('addVideoModal')" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition duration-200">
             Add New Video
         </button>
     </div>
@@ -20,27 +20,25 @@
     <!-- Videos Table -->
     <div class="bg-white rounded-lg shadow-md mb-8 overflow-hidden">
         <div class="overflow-x-auto">
-            <table id="videosTable" class="min-w-full">
+            <table id="videosTable" class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">Title</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">Video Link</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">Actions</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Video Link</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200">
+                <tbody class="bg-white divide-y divide-gray-200">
                     @foreach($videos as $video)
-                    <tr>
-                        <td class="px-6 py-4 text-sm text-gray-700">{{ $video->title }}</td>
+                    <tr class="hover:bg-gray-50 transition duration-200">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $video->title }}</td>
                         <td class="px-6 py-4 text-sm text-gray-700">
-                            <a href="{{ $video->link }}" target="_blank" class="text-primary-600 hover:text-primary-700">{{ Str::limit($video->link, 50) }}</a>
+                            <a href="{{ $video->link }}" target="_blank" class="text-primary-600 hover:text-primary-700 break-all">{{ Str::limit($video->link, 50) }}</a>
                         </td>
-                        <td class="px-6 py-4 text-sm">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
                             <div class="flex space-x-2">
-                                <button class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded-lg transition duration-200"
-                                        data-modal-toggle="editVideoModal{{ $video->id }}"
-                                        data-title="{{ $video->title }}"
-                                        data-link="{{ $video->link }}">
+                                <button onclick="openEditModal('{{ $video->id }}', '{{ $video->title }}', '{{ $video->link }}')" 
+                                        class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded-lg transition duration-200">
                                     Edit
                                 </button>
                                 <form action="{{ route('videos.destroy', $video->id) }}" method="POST"
@@ -61,9 +59,14 @@
     </div>
 
     <!-- Add Video Modal -->
-    <div id="addVideoModal" class="modal hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div id="addVideoModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
         <div class="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 p-6 max-h-[90vh] overflow-y-auto">
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">Add New Video</h3>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">Add New Video</h3>
+                <button onclick="closeModal('addVideoModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
             <form action="{{ route('videos.store') }}" method="POST">
                 @csrf
                 <div class="mb-4">
@@ -72,11 +75,12 @@
                 </div>
                 <div class="mb-4">
                     <label for="link" class="block text-sm font-medium text-gray-700">Video URL*</label>
-                    <input type="url" name="link" id="link" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500">
+                    <input type="url" name="link" id="link" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500" placeholder="https://youtube.com/... or https://vimeo.com/...">
+                    <p class="mt-1 text-sm text-gray-500">Supports YouTube, Vimeo, and other video platforms</p>
                 </div>
 
                 <div class="flex justify-end space-x-2">
-                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-md transition duration-200" data-modal-toggle="addVideoModal">
+                    <button type="button" onclick="closeModal('addVideoModal')" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-md transition duration-200">
                         Close
                     </button>
                     <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-md transition duration-200">
@@ -87,25 +91,29 @@
         </div>
     </div>
 
-    <!-- Edit Video Modals -->
-    @foreach($videos as $video)
-    <div id="editVideoModal{{ $video->id }}" class="modal hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <!-- Edit Video Modal -->
+    <div id="editVideoModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
         <div class="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 p-6 max-h-[90vh] overflow-y-auto">
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">Edit Video</h3>
-            <form action="{{ route('videos.update', $video->id) }}" method="POST">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">Edit Video</h3>
+                <button onclick="closeModal('editVideoModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editVideoForm" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="mb-4">
-                    <label for="title{{ $video->id }}" class="block text-sm font-medium text-gray-700">Video Title*</label>
-                    <input type="text" name="title" id="title{{ $video->id }}" value="{{ $video->title }}" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500">
+                    <label for="edit_title" class="block text-sm font-medium text-gray-700">Video Title*</label>
+                    <input type="text" name="title" id="edit_title" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500">
                 </div>
                 <div class="mb-4">
-                    <label for="link{{ $video->id }}" class="block text-sm font-medium text-gray-700">Video URL*</label>
-                    <input type="url" name="link" id="link{{ $video->id }}" value="{{ $video->link }}" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500">
+                    <label for="edit_link" class="block text-sm font-medium text-gray-700">Video URL*</label>
+                    <input type="url" name="link" id="edit_link" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500">
                 </div>
 
                 <div class="flex justify-end space-x-2">
-                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-md transition duration-200" data-modal-toggle="editVideoModal{{ $video->id }}">
+                    <button type="button" onclick="closeModal('editVideoModal')" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-md transition duration-200">
                         Close
                     </button>
                     <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-md transition duration-200">
@@ -115,11 +123,33 @@
             </form>
         </div>
     </div>
-    @endforeach
 </div>
+@endsection
 
 @section('scripts')
 <script>
+    // Modal functions
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+
+    // Function to open edit modal with data
+    function openEditModal(videoId, title, link) {
+        // Set form action
+        document.getElementById('editVideoForm').action = "{{ route('videos.update', '') }}/" + videoId;
+        
+        // Populate form fields
+        document.getElementById('edit_title').value = title;
+        document.getElementById('edit_link').value = link;
+        
+        // Open modal
+        openModal('editVideoModal');
+    }
+
     $(document).ready(function() {
         // Initialize DataTables
         $('#videosTable').DataTable({
@@ -136,34 +166,29 @@
             ]
         });
 
-        // Edit button click handler to populate modal with data
-        document.querySelectorAll('[data-modal-toggle^="editVideoModal"]').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const title = e.target.getAttribute('data-title');
-                const link = e.target.getAttribute('data-link');
-                const modalId = e.target.getAttribute('data-modal-toggle');
-
-                // Find the modal and populate the form
-                const modal = document.getElementById(modalId);
-                if (modal) {
-                    const titleInput = modal.querySelector('input[name="title"]');
-                    const linkInput = modal.querySelector('input[name="link"]');
-
-                    if (titleInput) titleInput.value = title;
-                    if (linkInput) linkInput.value = link;
-                }
-            });
+        // Close modal when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('fixed')) {
+                e.target.classList.add('hidden');
+            }
         });
 
-        // Toggle Modals
-        document.querySelectorAll('[data-modal-toggle]').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const modalId = e.target.getAttribute('data-modal-toggle');
-                const modal = document.getElementById(modalId);
-                modal.classList.toggle('hidden');
-            });
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.fixed').forEach(modal => {
+                    modal.classList.add('hidden');
+                });
+            }
+        });
+
+        // Clear add modal when closed
+        document.getElementById('addVideoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                document.getElementById('title').value = '';
+                document.getElementById('link').value = '';
+            }
         });
     });
 </script>
-@endsection
 @endsection

@@ -242,20 +242,23 @@ public function getVariantDetails($variantId)
         $validated['cover_image'] = Storage::url($imagePath);
 
         // Create the product
-        $product = Product::create([
-            'product_name' => $validated['product_name'],
-            'slug' => Str::slug($validated['product_name']),
-            'description' => $validated['description'],
-            'category_id' => $validated['category_id'],
-            'cover_image' => $validated['cover_image'],
-            'tags' => $validated['tags'],
-            'meta_keywords' => $validated['meta_keywords'],
-            'has_variations' => $validated['has_variations'],
-            'measurement_unit' => $validated['measurement_unit'] ?? null,
-            'price_kes' => $validated['has_variations'] ? null : $validated['price_kes'],
-            'price_usd' => $validated['has_variations'] ? null : $validated['price_usd'],
-            'stock' => $validated['has_variations'] ? 0 : $validated['stock'],
-        ]);
+      // In store method, add discount fields to the create array:
+$product = Product::create([
+    'product_name' => $validated['product_name'],
+    'slug' => Str::slug($validated['product_name']),
+    'description' => $validated['description'],
+    'category_id' => $validated['category_id'],
+    'cover_image' => $validated['cover_image'],
+    'tags' => $validated['tags'],
+    'meta_keywords' => $validated['meta_keywords'],
+    'has_variations' => $validated['has_variations'],
+    'measurement_unit' => $validated['measurement_unit'] ?? null,
+    'price_kes' => $validated['has_variations'] ? null : $validated['price_kes'],
+    'price_usd' => $validated['has_variations'] ? null : $validated['price_usd'],
+    'stock' => $validated['has_variations'] ? 0 : $validated['stock'],
+    'discount_percent' => $validated['discount_percent'] ?? 0,  // Add this
+    'has_discount' => $validated['has_discount'] ?? false,      // Add this
+]);
 
         // Handle variants if product has variations
         if ($validated['has_variations'] && !empty($validated['variants'])) {
@@ -283,7 +286,15 @@ public function getVariantDetails($variantId)
 
         return redirect()->route('products.index')->with('success', 'Product created successfully!');
     }
+public function updateDiscount(Request $request, $id)
+{
+    $product = Product::findOrFail($id);
+    $product->has_discount = $request->has_discount;
+    $product->discount_percent = $request->discount_percent ?? 0;
+    $product->save();
 
+    return response()->json(['success' => true]);
+}
     public function update(Request $request, Product $product)
     {
         Log::info('Update request received', [
@@ -436,32 +447,35 @@ public function getVariantDetails($variantId)
         return response()->json(['success' => 'Product deleted successfully']);
     }
 
-     private function validateProductRequest(Request $request, $productId = null)
-    {
-        $rules = [
-            'product_name' => 'required|string|max:255|unique:products,product_name' . ($productId ? ",$productId" : ''),
-            'description' => 'required|string',
-            'category_id' => 'required|exists:productcategories,id',
-            'cover_image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'tags' => 'nullable|string',
-            'meta_keywords' => 'nullable|string',
-            'has_variations' => 'required|boolean', // Changed from 'sometimes' to 'required'
-        ];
+    // In the validateProductRequest method, add discount validation:
+private function validateProductRequest(Request $request, $productId = null)
+{
+    $rules = [
+        'product_name' => 'required|string|max:255|unique:products,product_name' . ($productId ? ",$productId" : ''),
+        'description' => 'required|string',
+        'category_id' => 'required|exists:productcategories,id',
+        'cover_image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'tags' => 'nullable|string',
+        'meta_keywords' => 'nullable|string',
+        'has_variations' => 'required|boolean',
+        'discount_percent' => 'nullable|numeric|min:0|max:100',  // Add this
+        'has_discount' => 'sometimes|boolean',  // Add this
+    ];
 
-        // Only require these fields for simple products
-        if (!$request->has_variations || $request->has_variations == '0') {
-            $rules['price_kes'] = 'required|numeric|min:0';
-            $rules['price_usd'] = 'required|numeric|min:0';
-            $rules['stock'] = 'required|integer|min:0';
-        } else {
-            $rules['measurement_unit'] = 'required|in:kg,g,L,ml,pcs';
-            $rules['variants'] = 'required|array|min:1';
-            $rules['variants.*.quantity'] = 'required|numeric|min:0';
-            $rules['variants.*.price_kes'] = 'required|numeric|min:0';
-            $rules['variants.*.price_usd'] = 'required|numeric|min:0';
-            $rules['variants.*.stock'] = 'required|integer|min:0';
-        }
-
-        return $request->validate($rules);
+    // Only require these fields for simple products
+    if (!$request->has_variations || $request->has_variations == '0') {
+        $rules['price_kes'] = 'required|numeric|min:0';
+        $rules['price_usd'] = 'required|numeric|min:0';
+        $rules['stock'] = 'required|integer|min:0';
+    } else {
+        $rules['measurement_unit'] = 'required|in:kg,g,L,ml,pcs';
+        $rules['variants'] = 'required|array|min:1';
+        $rules['variants.*.quantity'] = 'required|numeric|min:0';
+        $rules['variants.*.price_kes'] = 'required|numeric|min:0';
+        $rules['variants.*.price_usd'] = 'required|numeric|min:0';
+        $rules['variants.*.stock'] = 'required|integer|min:0';
     }
+
+    return $request->validate($rules);
+}
 }

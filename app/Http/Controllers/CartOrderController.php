@@ -9,11 +9,19 @@ use Illuminate\Support\Str;
 
 class CartOrderController extends Controller
 {
-    public function index()
-    {
-        $cartOrders = CartOrder::orderBy('created_at', 'desc')->paginate(10);
-        return view('healthversations.admin.products.index', compact('cartOrders'));
+   public function index(Request $request)
+{
+    $query = CartOrder::orderBy('created_at', 'desc');
+    
+    // Filter by status if provided
+    if ($request->has('status') && $request->status !== '') {
+        $query->where('status', $request->status);
     }
+    
+    $cartOrders = $query->paginate(10);
+    
+    return view('healthversations.admin.products.index', compact('cartOrders'));
+}
 
     public function update(Request $request, $id)
     {
@@ -28,20 +36,52 @@ class CartOrderController extends Controller
         return redirect()->route('admin.cart-orders.index')
             ->with('success', 'Order status updated successfully');
     }
-
+/**
+ * Show order details via AJAX
+ */
+public function showDetails($id)
+{
+    try {
+        $order = CartOrder::findOrFail($id);
+        
+        // Safely decode items if needed
+        $items = is_array($order->items) ? $order->items : json_decode($order->items, true);
+        
+        // Return HTML for modal
+        $html = view('healthversations.admin.partials.order-details', [
+            'order' => $order,
+            'items' => $items ?? []
+        ])->render();
+        
+        return response()->json([
+            'success' => true,
+            'html' => $html
+        ]);
+        
+    } catch (\Exception $e) {
+        \Log::error('Error fetching order details: ' . $e->getMessage());
+        
+        return response()->json([
+            'success' => false,
+            'error' => 'Order not found',
+            'html' => '<div class="text-red-500 text-center py-4">Error loading order details.</div>'
+        ], 404);
+    }
+}
     public function process(Request $request)
     {
+        // Custom validation rules
         $validated = $request->validate([
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
             'email' => 'required|email|max:100',
             'phone' => 'required|string|max:20',
-            'county' => 'required|string|max:100',
-            'subcounty' => 'required|string|max:100',
-            'location' => 'required|string|max:100',
-            'address' => 'required|string|max:500',
             'delivery_method' => 'required|in:pickup,delivery',
             'delivery_zone' => 'required_if:delivery_method,delivery|string|max:1',
+            'county' => 'required_if:delivery_method,delivery|nullable|string|max:100',
+            'subcounty' => 'required_if:delivery_method,delivery|nullable|string|max:100',
+            'location' => 'required_if:delivery_method,delivery|nullable|string|max:100',
+            'address' => 'required_if:delivery_method,delivery|nullable|string|max:500',
         ]);
 
         // Get cart items from session
@@ -84,6 +124,11 @@ class CartOrderController extends Controller
             $deliveryCost = $zoneRates[$deliveryZone] ?? 0;
         } else {
             $deliveryZone = 'B'; // Pickup zone
+            // For pickup, set shipping fields to null
+            $validated['county'] = null;
+            $validated['subcounty'] = null;
+            $validated['location'] = null;
+            $validated['address'] = null;
         }
 
         $totalAmount = $subtotal + $deliveryCost;
@@ -100,10 +145,10 @@ class CartOrderController extends Controller
             'customer_name' => $request->first_name . ' ' . $request->last_name,
             'customer_email' => $request->email,
             'customer_phone' => $request->phone,
-            'county' => $request->county,
-            'subcounty' => $request->subcounty,
-            'location' => $request->location,
-            'address' => $request->address,
+            'county' => $validated['county'],
+            'subcounty' => $validated['subcounty'],
+            'location' => $validated['location'],
+            'address' => $validated['address'],
             'status' => 'pending'
         ]);
 
@@ -127,7 +172,8 @@ class CartOrderController extends Controller
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'delivery_cost' => $deliveryCost,
-            'delivery_zone' => $deliveryZone
+            'delivery_zone' => $deliveryZone,
+            'delivery_method' => $request->delivery_method
         ]);
     }
 
@@ -160,9 +206,11 @@ class CartOrderController extends Controller
                    "Phone: {$order->customer_phone}\n" .
                    "Amount: KES {$order->amount}\n" .
                    "Delivery: " . ($order->delivery_method === 'pickup' ? 'Pickup' : 'Delivery to ' . $order->delivery_zone) . "\n\n" .
+                   ($order->delivery_method === 'delivery' ? 
                    "Shipping Address:\n" .
                    "{$order->address}, {$order->location}\n" .
-                   "{$order->subcounty}, {$order->county}\n\n" .
+                   "{$order->subcounty}, {$order->county}\n\n" : 
+                   "Pickup Location: OM MBOYA STREET, STAR MALL, 1st Floor, Shop A17\n\n") .
                    "Items:\n" .
                    collect($order->items)->map(function($item) {
                        return "- {$item['product']}" .

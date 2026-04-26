@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     // Register middleware aliases
     $middleware->alias([
         'admin' => \App\Http\Middleware\admin::class,
-        'user' => \App\Http\Middleware\User::class,
+        'user' => \App\Http\Middleware\user::class,
         'superuser' => \App\Http\Middleware\Super::class,
         'check.profile.updated' => \App\Http\Middleware\CheckProfileUpdate::class,
     ]);
@@ -28,6 +28,13 @@ return Application::configure(basePath: dirname(__DIR__))
         'payment/fail',
         'payment/error',
         'payment/try-later',
+        'kcb-payment/callback',
+        // Add KCB callback routes
+        'kcb-payment/callback/product',
+        'kcb-payment/callback/consultation',
+        'kcb-payment/callback/ebook',
+        'kcb-payment/callback/custom-package',
+        'kcb-payment/callback/*', // Wildcard for all KCB callbacks
     ]);
 })
 

@@ -11,14 +11,14 @@ use Illuminate\Http\Request;
 class CoachingpackagesController extends Controller
 {
 
-    public function index()
-    {
-        $packages = CoachingPackages::with('features')
-            ->orderBy('sort_order')
-            ->get();
+public function index()
+{
+    $packages = CoachingPackages::with('features')
+        ->orderBy('sort_order')
+        ->paginate(10);
 
-        return view('healthversations.admin.coaching.index', compact('packages'));
-    }
+    return view('healthversations.admin.coaching.index', compact('packages'));
+}
 
     public function store(Request $request)
     {

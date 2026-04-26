@@ -22,16 +22,15 @@ class Consultation extends Model
         'usd_equivalent',
         'status',
         'payment_status',
-        'payment_reference'
+        'payment_reference',
+        'payment_method'
     ];
 
-    // Consultation Types - must match database enum
+    // Consultation Types
     const TYPE_INITIAL = 'initial';
     const TYPE_FOLLOWUP = 'followup';
     const TYPE_NUTRITION_REVIEW = 'nutrition_review';
     const TYPE_SPECIALIZED = 'specialized';
-
-
 
     // Status Constants
     const STATUS_PENDING = 'pending';
@@ -39,18 +38,40 @@ class Consultation extends Model
     const STATUS_COMPLETED = 'completed';
     const STATUS_CANCELLED = 'cancelled';
 
-    // Payment Status
+    // Payment Status Constants
+    const PAYMENT_PENDING = 'pending';
     const PAYMENT_UNPAID = 'unpaid';
     const PAYMENT_PAID = 'paid';
+    const PAYMENT_FAILED = 'failed';
     const PAYMENT_REFUNDED = 'refunded';
+    const PAYMENT_PROCESSING = 'processing';
+
+    // All valid payment statuses
+    const PAYMENT_STATUSES = [
+        self::PAYMENT_PENDING,
+        self::PAYMENT_UNPAID, 
+        self::PAYMENT_PAID,
+        self::PAYMENT_FAILED,
+        self::PAYMENT_REFUNDED,
+        self::PAYMENT_PROCESSING
+    ];
 
     // Location Constants
     const LOCATION_KENYA = 'kenya';
     const LOCATION_INTERNATIONAL = 'international';
 
-    // Fee Structure (KSH)
-    const FEE_KENYA = 2500;
-    const FEE_INTERNATIONAL = 24; // USD
+    // Fee Structure - Flat rates for all types2500
+    const FEE_KENYA = 3000; // KSH
+    const FEE_INTERNATIONAL = 31; // USD
+
+    // Add validation mutator
+    public function setPaymentStatusAttribute($value)
+    {
+        if (!in_array($value, self::PAYMENT_STATUSES)) {
+            throw new \InvalidArgumentException("Invalid payment status: {$value}");
+        }
+        $this->attributes['payment_status'] = $value;
+    }
 
     public static function getTypes()
     {
@@ -69,13 +90,29 @@ class Consultation extends Model
 
     public function calculateFee()
     {
-        $this->fee = $this->location === self::LOCATION_KENYA
-            ? self::FEE_KENYA
-            : self::FEE_INTERNATIONAL;
+        if ($this->location === self::LOCATION_KENYA) {
+            $this->fee = self::FEE_KENYA;
+            $this->usd_equivalent = null;
+        } else {
+            $this->fee = self::FEE_INTERNATIONAL * 150; // Convert to KSH for storage
+            $this->usd_equivalent = self::FEE_INTERNATIONAL;
+        }
+    }
 
-        if ($this->location === self::LOCATION_INTERNATIONAL) {
-            $this->usd_equivalent = $this->fee;
-            $this->fee = $this->fee * 150; // Convert to KSH
+    public function getDisplayAmountAttribute()
+    {
+        if ($this->location === self::LOCATION_KENYA) {
+            return [
+                'amount' => self::FEE_KENYA,
+                'currency' => 'KES',
+                'formatted' => 'Ksh ' . number_format(self::FEE_KENYA)
+            ];
+        } else {
+            return [
+                'amount' => self::FEE_INTERNATIONAL,
+                'currency' => 'USD',
+                'formatted' => '$' . number_format(self::FEE_INTERNATIONAL, 2)
+            ];
         }
     }
 

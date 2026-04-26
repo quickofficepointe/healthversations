@@ -12,10 +12,10 @@
 
   <!-- Primary Meta Tags -->
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Health Versation | Premium Wellness Products & Personalized Health Coaching</title>
-  <meta name="description" content="Health Versation offers premium wellness products, personalized health coaching, and expert advice to help you achieve holistic well-being. Start your health journey with us.">
-  <meta name="keywords" content="Health Versation, wellness products, health coaching, holistic health, nutrition, natural supplements, fitness plans, personalized wellness">
+  <meta name="description" content="Health Versation offers premium wellness products, personalized health coaching, and expert advice to help you achieve holistic well-being. Start your health journey with us. Get 20% OFF on all products!">
+  <meta name="keywords" content="Health Versation, wellness products, health coaching, holistic health, nutrition, natural supplements, fitness plans, personalized wellness, 20% off, discount">
   <meta name="author" content="Health Versation">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="revisit-after" content="7 days">
@@ -23,12 +23,13 @@
 
   <!-- Canonical URL -->
   <link rel="canonical" href="https://www.healthversation.com">
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="https://www.healthversation.com/sitemap.xml">
 
   <!-- Open Graph / Facebook Meta Tags -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.healthversation.com">
   <meta property="og:title" content="Health Versation | Premium Wellness Products & Personalized Health Coaching">
-  <meta property="og:description" content="Health Versation offers premium wellness products, personalized health coaching, and expert advice to help you achieve holistic well-being.">
+  <meta property="og:description" content="Health Versation offers premium wellness products, personalized health coaching, and expert advice to help you achieve holistic well-being. 20% OFF sitewide!">
   <meta property="og:image" content="https://www.healthversation.com/Assets/images/health-versation-social.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -38,7 +39,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://www.healthversation.com">
   <meta name="twitter:title" content="Health Versation | Premium Wellness Products & Personalized Health Coaching">
-  <meta name="twitter:description" content="Health Versation offers premium wellness products, personalized health coaching, and expert advice to help you achieve holistic well-being.">
+  <meta name="twitter:description" content="Health Versation offers premium wellness products, personalized health coaching, and expert advice. 20% OFF sitewide!">
   <meta name="twitter:image" content="https://www.healthversation.com/Assets/images/health-versation-social.jpg">
   <meta name="twitter:site" content="@HealthVersation">
   <meta name="twitter:creator" content="@HealthVersation">
@@ -55,17 +56,6 @@
   <meta name="msapplication-TileColor" content="#93c754">
   <meta name="theme-color" content="#ffffff">
 
-  <!-- Preload Critical Resources -->
-  <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
-  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" as="style">
-  <link rel="preload" href="{{ asset('Assets/css/styles.css') }}" as="style">
-  <link rel="preload" href="/Assets/images/logo.png" as="image">
-
-  <!-- DNS Prefetch -->
-  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-
   <!-- Stylesheets -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -81,634 +71,700 @@
   <!-- SweetAlert2 CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
-  <!-- JSON-LD Structured Data -->
+  <!-- JSON-LD Schema for SEO -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": "MedicalOrganization",
     "name": "Health Versation",
+    "alternateName": "Health Versations",
     "url": "https://www.healthversation.com",
     "logo": "https://www.healthversation.com/Assets/images/logo.png",
+    "image": "https://www.healthversation.com/Assets/images/health-versation-social.jpg",
+    "description": "Premium wellness products and personalized health coaching for holistic well-being. Get 20% OFF on all products!",
+    "email": "info@healthversation.com",
+    "telephone": "+254717813291",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Nairobi",
+      "addressCountry": "KE"
+    },
     "sameAs": [
-      "https://www.instagram.com/healthversation",
-      "https://www.facebook.com/healthversation",
-      "https://twitter.com/HealthVersation"
+      "https://www.facebook.com/healthversations",
+      "https://www.instagram.com/health_versations",
+      "https://twitter.com/healthversations"
     ],
-    "description": "Health Versation offers premium wellness products, personalized health coaching, and expert guidance for holistic well-being.",
-    "founder": {
-      "@type": "Person",
-      "name": "Isaac Muteru"
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://www.healthversation.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
     }
   }
   </script>
+
   <style>
-    /* Ensure consistent testimonial card heights */
-.swiper-slide {
-    height: auto;
-}
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
 
-.testimonial-content {
-    min-height: 120px; /* Adjust as needed based on your design */
-    display: flex;
-    flex-direction: column;
-}
+    .line-clamp-4 {
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
 
-.testimonial-text, .testimonial-full {
-    flex-grow: 1;
-}
-/* Blog Section Styles */
-.line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
+    .testimonial-content, .blog-content {
+      min-height: 120px;
+    }
 
-/* Ensure consistent card heights in swiper */
-.enhanced-blog-swiper .swiper-slide {
-    height: auto;
-}
+    .swiper-slide {
+      height: auto;
+    }
 
-/* Blog content area */
-.blog-content {
-    min-height: 120px;
-}
+    .animate-bounce {
+      animation: bounce 0.5s;
+    }
 
-/* Smooth transitions for read more */
-.blog-text, .blog-full {
-    transition: all 0.3s ease;
-}
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
 
-/* Swiper button styles */
-.swiper-button-prev, .swiper-button-next {
-    width: 48px !important;
-    height: 48px !important;
-}
+    /* Discount Styles */
+    .original-price {
+      text-decoration: line-through;
+      color: #9ca3af;
+      font-size: 0.875rem;
+    }
 
-.swiper-button-prev:after, .swiper-button-next:after {
-    font-size: 20px !important;
-}
+    .discount-badge {
+      background: linear-gradient(135deg, #FF6B6B, #EE5A24);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    /* Skip to content link */
+    .skip-to-content {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      z-index: 9999;
+    }
+    .skip-to-content:focus {
+      left: 50%;
+      transform: translateX(-50%);
+      width: auto;
+      height: auto;
+      padding: 12px 24px;
+      background: #93C754;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    /* Product card hover */
+    .product-card {
+      transition: all 0.3s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
   </style>
 </head>
 
+<body class="bg-gray-100 text-gray-800 font-poppins" data-cart-url="{{ route('cart.add') }}">
 
-<body class="bg-gray-100 text-gray-800 font-poppins">
-    <body data-cart-url="{{ route('cart.add') }}">
+  <!-- Skip to Content Link -->
+  <a href="#main-content" class="skip-to-content">Skip to main content</a>
 
-    <!-- Schema.org Breadcrumb Markup -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://www.healthversation.com"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Products",
-          "item": "https://www.healthversation.com/healthversations/products"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Coaching Packages",
-          "item": "https://www.healthversation.com/ebooks"
-        }
-      ]
-    }
-    </script>
+  @if(session('success'))
+    <div id="successMessage" data-message="{{ session('success') }}"></div>
+  @endif
 
-    @if(session('success'))
-        <div id="successMessage" data-message="{{ session('success') }}"></div>
-    @endif
+  @if(session('error'))
+    <div id="errorMessage" data-message="{{ session('error') }}"></div>
+  @endif
 
-    @if(session('error'))
-        <div id="errorMessage" data-message="{{ session('error') }}"></div>
-    @endif
+  <!-- Header -->
+  <header class="bg-white shadow-md sticky top-0 z-40">
+    <nav class="container mx-auto flex items-center justify-between py-4 px-6 md:px-12">
+      <!-- Logo -->
+      <div>
+        <a href="/">
+          <img src="{{asset ('Assets/images/logo.png') }}" alt="Health Versations Logo" class="h-20 w-auto" loading="eager">
+        </a>
+      </div>
 
+      <!-- Navbar Links -->
+      <ul class="hidden md:flex space-x-6 font-medium">
+        <li><a href="/" class="hover:text-green-600 transition-colors">Home</a></li>
+        <li><a href="{{ route('all.products') }}" class="hover:text-green-600 transition-colors">Products</a></li>
+        <li><a href="{{route ('ebooks.show') }}" class="hover:text-green-600 transition-colors">Ebooks</a></li>
+        <li><a href="{{ route('contact.health') }}" class="hover:text-green-600 transition-colors">Talk to Us</a></li>
+        <li><a href="{{ route('about.health') }}" class="hover:text-green-600 transition-colors">About Us</a></li>
+        <li><a href="{{ route('frontend.blogs.index') }}" class="hover:text-green-600 transition-colors">Articles</a></li>
+        <li><a href="{{route ('orders.track') }}" class="hover:text-green-600 transition-colors">Track order</a></li>
+      </ul>
 
+      <!-- CTA Button -->
+      <div>
+        <a href="{{ route('custompackages.create') }}" class="bg-[#93C754] text-white px-6 py-2 text-sm font-semibold uppercase rounded-lg hover:bg-green-700 transition-colors">
+          Create package
+        </a>
+      </div>
 
-    <header class="bg-white shadow-md">
-        <nav class="container mx-auto flex items-center justify-between py-4 px-6 md:px-12">
-            <!-- Logo -->
-            <div>
-                <a href="/">
-                    <img src="{{asset ('Assets/images/logo.png') }}" alt="Health Versations" class="h-20">
-                </a>
-            </div>
-
-            <!-- Navbar Links -->
-            <ul class="hidden md:flex space-x-6 font-medium">
-                <li><a href="/" class="hover:text-green-600">Home</a></li>
-                <li><a href="{{ route('all.products') }}" class="hover:text-green-600">Products</a></li>
-                <li><a href="{{route ('ebooks.show') }}" class="hover:text-green-600">Ebooks</a></li>
-                <li><a href="{{ route('contact.health') }}" class="hover:text-green-600">Talk to Us</a></li>
-                <li><a href="{{ route('about.health') }}" class="hover:text-green-600">About Us</a></li>
-                <li><a href="{{ route('frontend.blogs.index') }}" class="block text-gray-800 hover:text-green-600">Articles</a></li>
-                <li><a href="{{route ('orders.track') }}" class="hover:underline">Track order</a> </li>
-            </ul>
-
-            <!-- CTA Button -->
-            <div>
-                <a href="{{ route('custompackages.create') }}" class="bg-[#93C754] text-white px-6 py-2 text-sm font-semibold uppercase hover:bg-green-700">Create package</a>
-            </div>
-
-            <!-- Mobile Menu Button -->
-            <button id="menu-btn" class="block md:hidden text-gray-800 focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
-                </svg>
-            </button>
-        </nav>
-
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
-            <ul class="space-y-4 p-6">
-                <li><a href="/" class="block text-gray-800 hover:text-green-600">Home</a></li>
-                <li><a href="{{ route('all.products') }}" class="block text-gray-800 hover:text-green-600">Products</a></li>
-                <li><a href="{{route ('ebooks.show') }}" class="block text-gray-800 hover:text-green-600">Ebooks</a></li>
-
-                <li><a href="{{ route('contact.health') }}" class="block text-gray-800 hover:text-green-600">Talk to Us</a></li>
-                <li><a href="{{ route('frontend.blogs.index') }}" class="block text-gray-800 hover:text-green-600">Articles</a></li>
-                <li><a href="{{route ('about.health') }}" class="block text-gray-800 hover:text-green-600">About Us</a></li>
-                <li><a href="{{route ('orders.track') }}" class="hover:underline">Track order</a> </li>
-            </ul>
-        </div>
-    </header>
-
-    <!-- Promotional Row Section -->
-    <div class="bg-[#93C754] text-black text-center py-2 text-sm font-medium">
-        <span class="hidden md:inline text-white">This is why you should trust our products</span>
-        <span class="hidden md:inline">&nbsp; &nbsp; Premium Quality | 100% Natural | Tried and Tested | Expertly Created | Nutritional Benefits | Rejuvenate Your Health</span>
-        <marquee class="md:hidden text-white">This is why you should trust our products &nbsp; &nbsp; <span class="text-black"> Premium Quality | 100% Natural | Tried and Tested | Expertly Created | Nutritional Benefits | Rejuvenate Your Health </span></marquee>
-    </div>
-
-     <!-- New Banner Display Section -->
-<section class="relative overflow-hidden">
-    <div class="banner-container flex transition-transform duration-1000 ease-in-out">
-        @foreach($banners as $banner)
-            <div class="w-full flex-shrink-0 relative" style="aspect-ratio: 3000 / 948;">
-                <img src="{{ asset('storage/' . $banner->image) }}"
-                     alt="{{ $banner->title }}"
-                     class="w-full h-full object-contain md:object-cover">
-
-                <!-- Removed the overlay background -->
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="text-center text-white px-4">
-                        <!--<h2 class="text-xl md:text-4xl font-bold mb-2">{{ $banner->title }}</h2>
-                        <p class="text-base md:text-xl mb-4">{{ $banner->subtitle }}</p>-->
-                        <!--<a href="{{ $banner->link }}"
-                           class="inline-block bg-[#93C754] hover:bg-[#7eae47] text-white px-6 py-2 rounded-lg font-medium">
-                            {{ $banner->button_text }}
-                        </a>-->
-                    </div>
-                </div>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Prev & Next buttons -->
-    <button class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full banner-prev">
-        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      <!-- Mobile Menu Button -->
+      <button id="menu-btn" class="block md:hidden text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#93C754] rounded-lg p-2" aria-label="Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
         </svg>
-    </button>
-    <button class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full banner-next">
-        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-    </button>
+      </button>
+    </nav>
 
-    <!-- Dots -->
-    <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 banner-dots"></div>
-</section>
-<!-- Consultation CTA Section -->
-<section class="py-12 bg-gradient-to-b from-white to-gray-50">
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
+      <ul class="space-y-4 p-6">
+        <li><a href="/" class="block text-gray-800 hover:text-green-600">Home</a></li>
+        <li><a href="{{ route('all.products') }}" class="block text-gray-800 hover:text-green-600">Products</a></li>
+        <li><a href="{{route ('ebooks.show') }}" class="block text-gray-800 hover:text-green-600">Ebooks</a></li>
+        <li><a href="{{ route('contact.health') }}" class="block text-gray-800 hover:text-green-600">Talk to Us</a></li>
+        <li><a href="{{ route('frontend.blogs.index') }}" class="block text-gray-800 hover:text-green-600">Articles</a></li>
+        <li><a href="{{route ('about.health') }}" class="block text-gray-800 hover:text-green-600">About Us</a></li>
+        <li><a href="{{route ('orders.track') }}" class="block text-gray-800 hover:text-green-600">Track order</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Promotional Banner with Discount -->
+  <div class="bg-gradient-to-r from-red-500 to-orange-500 text-white text-center py-3 text-sm font-medium">
     <div class="container mx-auto px-4">
-        <div class="max-w-3xl mx-auto text-center p-8 rounded-xl shadow-sm border border-gray-200 bg-white">
-            <h3 class="text-2xl md:text-3xl font-bold text-[#0A4040] mb-4">
-                Not sure which program is right for you?
-            </h3>
-            <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-                Schedule a consultation with our health experts to find the perfect solution for your needs.
-            </p>
-            <div class="flex justify-center">
-                <a href="{{ route('consultations.create') }}"
-                   class="inline-flex items-center justify-center bg-[#0A4040] hover:bg-[#072b2b] text-white px-8 py-4 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg">
-                    Book a Consultation
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    </svg>
-                </a>
-            </div>
-        </div>
+      <span class="hidden md:inline">🔥 LIMITED TIME OFFER: 20% OFF ALL PRODUCTS! 🔥</span>
+      <marquee class="md:hidden">🔥 LIMITED TIME OFFER: 20% OFF ALL PRODUCTS! 🔥 Premium Quality | 100% Natural | Tried and Tested</marquee>
     </div>
-</section>
-  <section class="py-16 bg-gradient-to-r from-[#F8F9FA] to-[#E8F5E9]">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Section Header -->
+  </div>
+
+  <main id="main-content">
+    <!-- Hero Banner with H1 -->
+    <section class="relative overflow-hidden">
+      <div class="banner-container flex transition-transform duration-1000 ease-in-out">
+        @foreach($banners as $banner)
+          <div class="w-full flex-shrink-0 relative" style="aspect-ratio: 3000 / 948;">
+            <img src="{{ asset('storage/' . $banner->image) }}"
+                 alt="{{ $banner->title }}"
+                 class="w-full h-full object-contain md:object-cover"
+                 loading="eager">
+          </div>
+        @endforeach
+      </div>
+
+      <!-- Hero Text Overlay -->
+      <div class="absolute inset-0 flex items-center justify-center text-center text-white z-10 bg-black/30">
+        <div class="px-4">
+          <div class="inline-block bg-[#93C754]/90 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4">
+            🎉 20% OFF SITEWIDE 🎉
+          </div>
+          <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg">Transform Your Health Naturally</h1>
+          <p class="text-lg md:text-xl mb-6 drop-shadow-lg max-w-2xl mx-auto">Personalized wellness solutions, premium natural products, and expert coaching for a healthier you</p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <a href="{{ route('all.products') }}" class="bg-[#93C754] hover:bg-[#7eae47] text-white px-6 py-3 rounded-lg font-bold transition-all transform hover:scale-105">
+              Shop Now
+            </a>
+            <a href="{{ route('consultations.create') }}" class="bg-white hover:bg-gray-100 text-[#0A4040] px-6 py-3 rounded-lg font-bold transition-all transform hover:scale-105">
+              Book Consultation
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Banner Navigation -->
+      <button class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full hover:bg-opacity-75 transition z-20">
+        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <button class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full hover:bg-opacity-75 transition z-20">
+        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      <!-- Banner Dots -->
+      <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 banner-dots z-20"></div>
+    </section>
+
+    <!-- Consultation CTA -->
+    <section class="py-12 bg-gradient-to-b from-white to-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto text-center p-8 rounded-xl shadow-sm border border-gray-200 bg-white">
+          <div class="bg-red-100 text-red-600 inline-block px-4 py-1 rounded-full text-sm font-semibold mb-4">
+            🎯 Limited Time Offer
+          </div>
+          <h2 class="text-2xl md:text-3xl font-bold text-[#0A4040] mb-4">
+            Not sure which program is right for you?
+          </h2>
+          <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+            Schedule a free consultation with our health experts to find the perfect solution for your needs. <span class="font-bold text-red-500">Plus get 20% OFF your first purchase!</span>
+          </p>
+          <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="{{ route('consultations.create') }}"
+               class="inline-flex items-center justify-center bg-[#0A4040] hover:bg-[#072b2b] text-white px-8 py-4 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg">
+              Book Your Free Consultation
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Wellness Services -->
+    <section class="py-16 bg-gradient-to-r from-[#F8F9FA] to-[#E8F5E9]">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
-            <div class="w-24 h-1 bg-[#0A4040] mx-auto mb-6"></div>
-            <h2 class="text-3xl font-bold text-[#0A4040]">Your Wellness is Our Core Concern</h2>
-            <p class="text-lg text-gray-600 mt-2 max-w-2xl mx-auto">We provide personalized solutions to help you achieve optimal health</p>
+          <div class="w-24 h-1 bg-[#0A4040] mx-auto mb-6 rounded-full"></div>
+          <h2 class="text-3xl font-bold text-[#0A4040]">Your Wellness is Our Core Concern</h2>
+          <p class="text-lg text-gray-600 mt-2 max-w-2xl mx-auto">We provide personalized solutions to help you achieve optimal health</p>
         </div>
 
-        <!-- Services Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            @php
-                $services = [
-                    ['icon' => 'fas fa-heartbeat', 'title' => 'Holistic Approach', 'text' => 'We address all aspects of your health - physical, mental, and emotional - to create comprehensive wellness solutions.'],
-                    ['icon' => 'fas fa-user-md', 'title' => 'Expert Guidance', 'text' => 'Our team of health professionals provides evidence-based recommendations tailored to your unique needs.'],
-                    ['icon' => 'fas fa-seedling', 'title' => 'Natural Solutions', 'text' => 'We prioritize natural, sustainable approaches to health that work in harmony with your body\'s systems.']
-                ];
-            @endphp
+          @php
+            $services = [
+              ['icon' => 'fas fa-heartbeat', 'title' => 'Holistic Approach', 'text' => 'We address all aspects of your health - physical, mental, and emotional - to create comprehensive wellness solutions.'],
+              ['icon' => 'fas fa-user-md', 'title' => 'Expert Guidance', 'text' => 'Our team of health professionals provides evidence-based recommendations tailored to your unique needs.'],
+              ['icon' => 'fas fa-seedling', 'title' => 'Natural Solutions', 'text' => 'We prioritize natural, sustainable approaches to health that work in harmony with your body\'s systems.']
+            ];
+          @endphp
 
-            @foreach ($services as $service)
-                <div class="bg-white p-8 rounded-2xl shadow-lg transform transition-transform duration-500 hover:scale-105">
-                    <div class="text-[#93C754] text-5xl mb-4">
-                        <i class="{{ $service['icon'] }}"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-[#0A4040] mb-3">{{ $service['title'] }}</h3>
-                    <p class="text-gray-600">{{ $service['text'] }}</p>
-                </div>
-            @endforeach
+          @foreach ($services as $service)
+            <div class="bg-white p-8 rounded-2xl shadow-lg transform transition-transform duration-500 hover:scale-105">
+              <div class="text-[#93C754] text-5xl mb-4">
+                <i class="{{ $service['icon'] }}"></i>
+              </div>
+              <h3 class="text-xl font-bold text-[#0A4040] mb-3">{{ $service['title'] }}</h3>
+              <p class="text-gray-600">{{ $service['text'] }}</p>
+            </div>
+          @endforeach
+        </div>
+      </div>
+    </section>
+
+    <!-- Real Transformations Section -->
+    <section id="real-transformations" class="bg-[#F8F9FA] py-16">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <div class="w-24 h-1 bg-[#0A4040] mx-auto mb-6 rounded-full"></div>
+          <h2 class="text-3xl font-bold text-[#0A4040]">Real Transformations</h2>
+          <p class="text-lg text-gray-600 mt-2 max-w-2xl mx-auto">See the amazing results our clients have achieved through our programs</p>
         </div>
 
-        <!-- Featured Products -->
-        <div class="mt-20">
-            <h3 class="text-2xl font-semibold text-[#0A4040] mb-8 text-center">Featured Wellness Products</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          @forelse($consultTestimonials->take(3) as $testimonial)
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+              <div class="relative h-64 bg-gray-100">
+                <div class="flex h-full">
+                  <div class="w-1/2 relative">
+                    <img src="{{ Storage::url($testimonial->before_image) }}"
+                         alt="{{ $testimonial->client_name }} before transformation"
+                         class="w-full h-full object-cover"
+                         loading="lazy">
+                    <div class="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-center py-2 text-sm font-medium">
+                      Before
+                    </div>
+                  </div>
+                  <div class="w-1/2 relative">
+                    <img src="{{ Storage::url($testimonial->after_image) }}"
+                         alt="{{ $testimonial->client_name }} after transformation"
+                         class="w-full h-full object-cover"
+                         loading="lazy">
+                    <div class="absolute bottom-0 left-0 right-0 bg-green-600/80 text-white text-center py-2 text-sm font-medium">
+                      After
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-            <div class="relative overflow-x-auto">
-                <div id="wellness-slides-container" class="flex space-x-6 w-max pb-4">
-                    @foreach ($products as $product)
-                        <div class="w-72 flex-shrink-0">
-                            <div class="bg-white rounded-2xl shadow-md overflow-hidden h-full flex flex-col">
-                                <div class="bg-white rounded-t-2xl flex items-center justify-center p-2 h-60">
-    <img src="{{ asset($product->cover_image) }}"
-         alt="{{ $product->product_name }}"
-         class="max-w-full max-h-full object-contain">
-</div>
+              <div class="p-6">
+                <div class="flex items-center mb-4">
+                  <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                    @if($testimonial->before_image)
+                      <img src="{{ Storage::url($testimonial->before_image) }}"
+                           alt="{{ $testimonial->client_name }}"
+                           class="w-full h-full object-cover"
+                           loading="lazy">
+                    @else
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
+                    @endif
+                  </div>
+                  <div class="ml-3">
+                    <h3 class="text-lg font-bold text-[#0A4040]">{{ $testimonial->client_name }}</h3>
+                    <p class="text-sm text-gray-500">{{ $testimonial->program_type ?? 'Health Program' }}</p>
+                  </div>
+                </div>
 
-                                <div class="p-6 flex-grow">
-                                    <h4 class="text-lg font-bold text-[#0A4040] mb-2">{{ $product->product_name }}</h4>
-                                    <p class="text-sm text-gray-600 mb-4">{{ Str::limit($product->description, 100) }}</p>
+                <div class="mb-4">
+                  <div class="flex flex-wrap gap-2">
+                    @if($testimonial->weight_loss_kg)
+                      <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                        -{{ $testimonial->weight_loss_kg }}kg
+                      </span>
+                    @endif
+                    @if($testimonial->inches_lost)
+                      <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                        -{{ $testimonial->inches_lost }} inches
+                      </span>
+                    @endif
+                    @if($testimonial->program_duration_weeks)
+                      <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-medium">
+                        {{ $testimonial->program_duration_weeks }} weeks
+                      </span>
+                    @endif
+                  </div>
+                </div>
 
-                                    <div class="space-y-2 mb-4 text-sm">
-                                        @if(!$product->has_variations)
-                                            <div class="flex justify-between">
-                                                <span class="text-gray-700">KES Price:</span>
-                                                <span class="font-bold text-[#93C754]">{{ number_format($product->price_kes, 2) }}</span>
-                                            </div>
-                                            <div class="flex justify-between">
-                                                <span class="text-gray-700">USD Price:</span>
-                                                <span class="font-bold text-[#93C754]">${{ number_format($product->price_usd, 2) }}</span>
-                                            </div>
-                                        @else
-                                            <div class="flex justify-between">
-                                                <span class="text-gray-700">From KES:</span>
-                                                <span class="font-bold text-[#93C754]">{{ number_format($product->variants->min('price_kes'), 2) }}</span>
-                                            </div>
-                                            <div class="flex justify-between">
-                                                <span class="text-gray-700">From USD:</span>
-                                                <span class="font-bold text-[#93C754]">${{ number_format($product->variants->min('price_usd'), 2) }}</span>
-                                            </div>
-                                        @endif
-                                    </div>
+                <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                  "{{ Str::limit(strip_tags($testimonial->testimonial_text), 120) }}"
+                </p>
 
-                                    <a href="{{ route('product.show', $product->slug) }}"
-                                       class="block w-full bg-[#93C754] hover:bg-[#7eae47] text-white px-4 py-2 rounded-md text-sm font-medium text-center">
-                                        View Details
-                                    </a>
+                <a href="{{ route('testimonials.show', $testimonial->slug) }}"
+                   class="inline-flex items-center text-[#93C754] hover:text-[#7eae47] font-medium text-sm">
+                  View Full Transformation
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          @empty
+            <div class="text-center col-span-3 py-12">
+              <p class="text-gray-500">Transformation stories coming soon!</p>
+            </div>
+          @endforelse
+        </div>
+
+        <div class="mt-16 bg-gradient-to-r from-[#0A4040] to-[#1a6b6b] rounded-2xl p-8 text-center">
+          <h3 class="text-2xl font-bold text-white mb-3">Ready for Your Transformation?</h3>
+          <p class="text-gray-300 mb-6">Join thousands of satisfied clients who have transformed their health with our programs</p>
+          <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="{{ route('consultations.create') }}"
+               class="bg-[#93C754] hover:bg-[#7eae47] text-[#0A4040] font-bold px-6 py-3 rounded-lg transition-colors">
+              Start Your Journey
+            </a>
+            <a href="{{ route('testimonials.index') }}"
+               class="bg-white hover:bg-gray-100 text-[#0A4040] font-bold px-6 py-3 rounded-lg transition-colors">
+              View All Success Stories
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products Section with 20% Discount -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <div class="inline-block bg-red-100 text-red-600 px-4 py-1 rounded-full text-sm font-semibold mb-4">
+            🔥 Limited Time Offer 🔥
+          </div>
+          <div class="w-24 h-1 bg-[#0A4040] mx-auto mb-6 rounded-full"></div>
+          <h2 class="text-3xl font-bold text-[#0A4040]">Featured Products</h2>
+          <p class="text-lg text-gray-600 mt-2">Premium wellness products for your health journey - <span class="text-red-500 font-bold">20% OFF</span></p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          @foreach($products->take(4) as $product)
+            @php
+              $defaultDiscount = 20;
+              $currentPriceKES = $product->has_variations ? $product->variants->min('price_kes') : $product->price_kes;
+              $currentPriceUSD = $product->has_variations ? $product->variants->min('price_usd') : $product->price_usd;
+              $originalPriceKES = $currentPriceKES / (1 - $defaultDiscount / 100);
+              $originalPriceUSD = $currentPriceUSD / (1 - $defaultDiscount / 100);
+              $savingsKES = $originalPriceKES - $currentPriceKES;
+            @endphp
+            <div class="product-card bg-white rounded-2xl shadow-md overflow-hidden flex flex-col transform transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+              <div class="relative bg-white rounded-t-2xl flex items-center justify-center p-4 h-60">
+                <div class="absolute top-2 right-2 discount-badge z-10">
+                  -{{ $defaultDiscount }}% OFF
+                </div>
+                <img src="{{ asset($product->cover_image) }}"
+                     alt="{{ $product->product_name }}"
+                     class="max-w-full max-h-full object-contain"
+                     loading="lazy">
+              </div>
+
+              <div class="p-5 flex-grow flex flex-col">
+                <h3 class="text-lg font-semibold text-[#0A4040] mb-3">{{ $product->product_name }}</h3>
+
+                <!-- Price with Discount -->
+                <div class="mb-4">
+                  <div class="flex items-baseline gap-2">
+                    <span class="text-gray-400 original-price">KES {{ number_format($originalPriceKES, 2) }}</span>
+                    <span class="text-2xl font-bold text-[#93C754]">KES {{ number_format($currentPriceKES, 2) }}</span>
+                  </div>
+                  <div class="flex items-baseline gap-2 mt-1">
+                    <span class="text-gray-400 original-price text-xs">${{ number_format($originalPriceUSD, 2) }}</span>
+                    <span class="font-semibold text-[#93C754]">${{ number_format($currentPriceUSD, 2) }}</span>
+                  </div>
+                  <div class="mt-2 text-xs text-green-600 font-medium">
+                    <i class="fas fa-tag mr-1"></i> You save KES {{ number_format($savingsKES, 2) }}
+                  </div>
+                </div>
+
+                <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                  {{ Str::limit($product->description, 80) }}
+                </p>
+
+                <div class="flex items-center justify-between mt-auto">
+                  <a href="{{ route('product.show', $product->slug) }}"
+                     class="bg-[#52823C] hover:bg-[#93C754] text-white font-bold py-2 px-4 rounded-md text-sm transition-colors">
+                    View Details
+                  </a>
+
+                  <div class="flex items-center space-x-2">
+                    <button class="decrease bg-gray-200 hover:bg-gray-300 text-black font-bold py-1 px-3 rounded transition-colors">-</button>
+                    <span class="quantity text-lg font-medium">1</span>
+                    <button class="increase bg-gray-200 hover:bg-gray-300 text-black font-bold py-1 px-3 rounded transition-colors">+</button>
+                  </div>
+
+                  <button class="add-to-cart transition-transform hover:scale-110" data-product-id="{{ $product->id }}">
+                    <img src="{{ asset('Assets/images/shopping-cart.svg') }}" alt="Add to Cart" class="h-6 w-6">
+                  </button>
+                </div>
+              </div>
+            </div>
+          @endforeach
+        </div>
+
+        <div class="text-center mt-12">
+          <a href="{{ route('all.products') }}"
+             class="inline-block bg-[#93C754] hover:bg-[#7eae47] text-white px-8 py-3 rounded-lg font-bold text-lg transition-colors transform hover:scale-105">
+            View All Products <span class="ml-2">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rest of the sections remain the same... -->
+    <!-- Testimonials Section -->
+<!-- Testimonials Section -->
+<section class="py-16 bg-gray-50 overflow-hidden">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <div class="w-24 h-1 bg-[#0A4040] mx-auto mb-6 rounded-full"></div>
+            <h2 class="text-3xl font-bold text-[#0A4040]">What Our Clients Say</h2>
+            <p class="text-lg text-gray-600 mt-2">Real stories from people who transformed their health with us</p>
+        </div>
+
+        <div class="swiper testimonials-swiper">
+            <div class="swiper-wrapper">
+                @foreach($testimonials as $testimonial)
+                    <div class="swiper-slide">
+                        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 h-full flex flex-col">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                                    @if($testimonial->image)
+                                        <img src="{{ asset('storage/' . $testimonial->image) }}" alt="{{ $testimonial->full_name }}" class="w-full h-full object-cover">
+                                    @else
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                    @endif
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="font-semibold text-gray-800">{{ $testimonial->full_name }}</h3>
+                                    <p class="text-xs text-gray-500">Satisfied Client</p>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
-                </div>
 
-                <!-- Optional Arrows -->
-                <button class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 p-2 rounded-full shadow-md wellness-prev z-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#0A4040]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-                <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 p-2 rounded-full shadow-md wellness-next z-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#0A4040]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-</section>
+                            <div class="testimonial-content flex-grow">
+                                @php
+                                    $content = strip_tags($testimonial->message);
+                                    $words = str_word_count($content, 1);
+                                    $limitedWords = array_slice($words, 0, 30);
+                                    $limitedText = implode(' ', $limitedWords);
+                                    $isLongText = count($words) > 30;
+                                    if ($isLongText) {
+                                        $limitedText .= '...';
+                                    }
+                                @endphp
 
-    {{--
-    <!-- Premium Packages Section - Improved -->
-    <section id="premium-packages" class="py-16 bg-white">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-12">
-                <h1 class="text-[#0A4040] text-center font-bold" style="font-family: 'Tangerine', cursive; font-size: 4rem;">Premium</h1>
-                <h2 class="text-black text-2xl">Healthy packages for you</h2>
-                <div class="w-24 h-1 bg-[#0A4040] mx-auto mt-4"></div>
-            </div>
+                                <div class="relative">
+                                    <p class="text-gray-700 italic testimonial-text">
+                                        "{{ $limitedText }}"
+                                    </p>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                @foreach ($packages as $package)
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
-                        <div class="relative h-48 overflow-hidden">
-                            <img src="{{ asset('storage/' . $package->package_image) }}"
-                                alt="{{ $package->package_name }}"
-                                class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                            <div class="absolute bottom-4 left-4">
-                                <span class="bg-[#93C754] text-white text-xs font-semibold px-3 py-1 rounded-full">
-                                    {{ $package->category ?? 'Wellness' }}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-[#0A4040] mb-2">{{ $package->package_name }}</h3>
-                            <p class="text-gray-600 mb-4">{{ Str::limit($package->package_description, 100) }}</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-lg font-bold text-[#93C754]">
-                                    KES {{ number_format($package->price, 2) }}
-                                </span>
-                                <a href="{{ route('packages.show', $package->slug) }}"
-                                   class="bg-[#0A4040] hover:bg-[#072b2b] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                                    View Package
-                                </a>
+                                    @if($isLongText)
+                                        <p class="text-gray-700 italic testimonial-full hidden mt-2">
+                                            "{{ $content }}"
+                                        </p>
+                                    @endif
+
+                                    @if($isLongText)
+                                        <button onclick="toggleReadMore(this)" class="read-more-btn text-[#93C754] font-medium hover:underline mt-2 text-sm transition-colors z-10 relative">
+                                            Read More
+                                        </button>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
                 @endforeach
             </div>
 
-            <div class="text-center mt-12">
-                <a href="{{ route('premiumpackages') }}"
-                   class="inline-block bg-[#93C754] hover:bg-[#7eae47] text-white px-8 py-3 rounded-lg font-bold text-lg transition-colors">
-                    View All Packages
-                </a>
-            </div>
-        </div>
-    </section>
-     --}}
- <section id="healthy-living" class="bg-[#F8F9FA] py-16">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Section Title -->
-        <div class="text-center mb-12">
-            <div class="w-24 h-1 bg-[#0A4040] mx-auto mb-6"></div>
-            <h2 class="text-3xl font-bold text-[#0A4040]">Healthy Living is our middle name</h2>
+            <div class="swiper-pagination mt-6 relative z-0"></div>
         </div>
 
-        <!-- Products Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            @forelse($products as $product)
-                <div class="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col p-4">
-                    <!-- Image -->
-                    <div class="bg-white rounded-t-2xl flex items-center justify-center p-2 h-60">
-    <img src="{{ asset($product->cover_image) }}"
-         alt="{{ $product->product_name }}"
-         class="max-w-full max-h-full object-contain">
-</div>
-
-
-                    <!-- Info -->
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="text-lg font-semibold text-[#0A4040]">{{ $product->product_name }}</h3>
-                    </div>
-
-                    <!-- Price -->
-                    <div class="text-sm space-y-1 mb-4">
-                        @if(!$product->has_variations)
-                            <div class="flex justify-between">
-                                <span class="text-gray-700">KES Price:</span>
-                                <span class="font-bold text-[#93C754]">{{ number_format($product->price_kes, 2) }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-700">USD Price:</span>
-                                <span class="font-bold text-[#93C754]">${{ number_format($product->price_usd, 2) }}</span>
-                            </div>
-                        @else
-                            <div class="flex justify-between">
-                                <span class="text-gray-700">From KES:</span>
-                                <span class="font-bold text-[#93C754]">{{ number_format($product->variants->min('price_kes'), 2) }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-700">From USD:</span>
-                                <span class="font-bold text-[#93C754]">${{ number_format($product->variants->min('price_usd'), 2) }}</span>
-                            </div>
-                        @endif
-                    </div>
-
-                    <!-- Tags -->
-                    <p class="text-[#93C754] text-sm mb-3">
-                        {{ $product->product_tags ?? 'Premium quality | 100% natural | Tried and tested' }}
-                    </p>
-
-                    <!-- Description (hidden on mobile) -->
-                    <p class="hidden md:block text-gray-600 text-sm mb-4">
-                        {{ Str::limit($product->product_description, 100) }}
-                    </p>
-
-                    <!-- Actions -->
-                    <div class="flex items-center justify-between mt-auto">
-                        <a href="{{ route('product.show', $product->slug) }}"
-                           class="bg-[#52823C] hover:bg-[#93C754] text-white font-bold py-2 px-4 rounded-md text-sm">
-                            View Details
-                        </a>
-
-                        <div class="flex items-center space-x-2">
-                            <button class="decrease bg-gray-200 hover:bg-gray-300 text-black font-bold py-1 px-3 rounded">
-                                <img src="{{ asset('Assets/images/minus.svg') }}" alt="Minus" class="h-4 w-4">
-                            </button>
-                            <span class="quantity text-lg font-medium">1</span>
-                            <button class="increase bg-gray-200 hover:bg-gray-300 text-black font-bold py-1 px-3 rounded">
-                                <img src="{{ asset('Assets/images/plus.svg') }}" alt="Plus" class="h-4 w-4">
-                            </button>
-                        </div>
-
-                        <button class="add-to-cart" data-product-id="{{ $product->id }}">
-                            <img src="{{ asset('Assets/images/shopping-cart.svg') }}"
-                                 alt="Shopping Cart"
-                                 class="h-6 w-6 transition-transform hover:scale-110">
-                        </button>
-                    </div>
-                </div>
-            @empty
-                <div class="col-span-3 text-center py-10">
-                    <p class="text-gray-500 text-lg">No products available at the moment.</p>
-                    <a href="{{ route('home') }}" class="text-[#52823C] hover:underline mt-2 inline-block">
-                        Return to homepage
-                    </a>
-                </div>
-            @endforelse
-        </div>
-
-        <!-- CTA Section -->
-        <div class="mt-16 bg-[#0A4040] rounded-2xl p-8 text-center">
-            <h3 class="text-2xl font-bold text-white mb-3">Looking for something specific?</h3>
-            <p class="text-gray-300 mb-6">We can create custom products tailored to your unique health needs</p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="{{ route('custompackages.create') }}"
-                   class="bg-[#93C754] hover:bg-[#7eae47] text-[#0A4040] font-bold px-6 py-3 rounded-lg transition-colors">
-                    Request Custom Product
-                </a>
-                <a href="{{ route('all.products') }}"
-                   class="bg-white hover:bg-gray-100 text-[#0A4040] font-bold px-6 py-3 rounded-lg transition-colors">
-                    Browse All Products
-                </a>
-            </div>
+        <div class="text-center mt-12">
+            <button id="rateUsButton" class="inline-block bg-[#93C754] hover:bg-[#7eae47] text-white px-8 py-3 rounded-lg font-bold text-lg transition-colors">
+                Share Your Experience
+            </button>
         </div>
     </div>
-</section>
-<section class="py-12 bg-white overflow-hidden">
-    <div class="container mx-auto px-4">
-        <!-- Currency Toggle -->
-        <div class="flex justify-center mb-6">
-            <div class="inline-flex rounded-md shadow-sm">
-                <a href="?currency=usd"
-                   class="px-4 py-2 text-sm font-medium rounded-l-lg {{ $currency === 'usd' ? 'bg-[#0A4040] text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
-                    USD ($)
-                </a>
-                <a href="?currency=kes"
-                   class="px-4 py-2 text-sm font-medium rounded-r-lg {{ $currency === 'kes' ? 'bg-[#0A4040] text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
-                    KES (KSh)
-                </a>
+</div>
+<!-- Rate Us Modal -->
+<div id="rateUsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0">
+        <!-- Modal Header -->
+        <div class="bg-[#0A4040] text-white p-6 rounded-t-2xl">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold">Share Your Experience</h3>
+                <button id="closeModal" class="text-white hover:text-gray-300 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
             </div>
+            <p class="text-green-200 mt-2">We'd love to hear about your journey with us!</p>
         </div>
 
-        <!-- Section Title -->
-        <div class="text-center mb-12">
-            <div class="w-24 h-1 bg-[#0A4040] mx-auto mb-6"></div>
-            <h2 class="text-3xl font-bold text-[#0A4040]">Our Coaching Packages</h2>
-            <p class="text-lg text-gray-600 mt-2 max-w-2xl mx-auto">
-                Transform your health with our expert-guided coaching programs
-            </p>
-        </div>
-
-        <!-- Swiper Container -->
-        <div class="relative">
-            <div class="swiper-container coaching-swiper !overflow-hidden">
-                <div class="swiper-wrapper">
-                    @foreach($coachingpackages as $package)
-                        <div class="swiper-slide px-2 md:px-4 box-border">
-                            <div class="bg-[#F8F9FA] rounded-lg overflow-hidden shadow-md border border-gray-200 h-full flex flex-col">
-                                <div class="h-48 bg-[{{ $package->bg_color }}] flex items-center justify-center">
-                                    <span class="text-white text-2xl font-bold">{{ $package->package_name }}</span>
-                                </div>
-                                <div class="p-6 flex-grow">
-                                    <h3 class="text-xl font-bold text-[#0A4040] mb-2">{{ $package->duration }}</h3>
-                                    <ul class="space-y-2 mb-4">
-                                        @foreach($package->features as $feature)
-                                            <li class="flex items-start">
-                                                <svg class="w-5 h-5 text-[#93C754] mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                                </svg>
-                                                <span>{{ $feature->feature }}</span>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                                <div class="p-6">
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-2xl font-bold text-[#0A4040]">
-                                            {{ $package->formattedPrice($currency) }}
-                                        </span>
-                                        <a href="{{ $package->button_link ?: '#' }}"
-                                           class="bg-[#93C754] hover:bg-[#7eae47] text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                                            {{ $package->button_text }}
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+        <!-- Modal Body -->
+        <div class="p-6">
+            <form id="testimonialForm" action="{{ route('testimonials.store') }}" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2">Your Name *</label>
+                    <input type="text" name="full_name" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#93C754] focus:border-transparent" required>
                 </div>
 
-                <!-- Swiper navigation -->
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-pagination"></div>
-            </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2">Your Email *</label>
+                    <input type="email" name="email" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#93C754] focus:border-transparent" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2">Your Rating *</label>
+                    <div class="flex space-x-2" id="ratingStars">
+                        @for($i = 1; $i <= 5; $i++)
+                            <button type="button" class="text-2xl text-gray-300 hover:text-yellow-400 rating-star" data-rating="{{ $i }}">
+                                ★
+                            </button>
+                        @endfor
+                    </div>
+                    <input type="hidden" name="rating" id="selectedRating" required>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-2">Your Experience *</label>
+                    <textarea name="message" rows="4" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#93C754] focus:border-transparent" placeholder="Share your health journey and results..." required></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancelModal" class="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors">Cancel</button>
+                    <button type="submit" class="bg-[#93C754] hover:bg-[#7eae47] text-white px-6 py-2 rounded-lg font-medium transition-colors">Share Experience</button>
+                </div>
+            </form>
         </div>
-</section>
-
-
+    </div>
+</div>
+<!-- Blog Section -->
+<!-- Blog Section -->
 <section class="py-16 bg-white">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Section Header -->
+    <div class="container mx-auto px-4">
         <div class="text-center mb-12">
-            <div class="w-24 h-1 bg-[#0A4040] mx-auto mb-6"></div>
-            <h2 class="text-3xl font-bold text-[#0A4040]">Latest From Our Blog</h2>
-            <p class="text-lg text-gray-600 mt-2">Insights and tips for your wellness journey</p>
+            <div class="w-24 h-1 bg-[#0A4040] mx-auto mb-6 rounded-full"></div>
+            <h2 class="text-3xl font-bold text-[#0A4040]">Latest Articles</h2>
+            <p class="text-lg text-gray-600 mt-2">Expert insights and health tips from our wellness team</p>
         </div>
 
-        <!-- Enhanced Blog Swiper -->
-        <div class="relative">
-            <div class="swiper enhanced-blog-swiper">
+        @if($blogs->count() > 0)
+            <div class="swiper blog-swiper">
                 <div class="swiper-wrapper">
                     @foreach($blogs as $blog)
                         <div class="swiper-slide">
-                            <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden flex flex-col h-full mx-2">
-                                <!-- Image -->
-                                <div class="h-48 bg-gray-100 overflow-hidden">
-                                    <img src="{{ asset($blog->cover_image) }}"
-                                         alt="{{ $blog->blog_title }}"
-                                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
+                            <div class="bg-white rounded-lg shadow-md overflow-hidden h-full flex flex-col transform transition-all duration-300 hover:shadow-xl">
+                                <!-- Blog Image -->
+                                <div class="h-48 overflow-hidden">
+                                    @if($blog->cover_image)
+                                        <img src="{{ asset($blog->cover_image) }}"
+                                             alt="{{ $blog->blog_title }}"
+                                             class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center bg-gray-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                            </svg>
+                                        </div>
+                                    @endif
                                 </div>
 
-                                <!-- Content -->
+                                <!-- Blog Content -->
                                 <div class="p-6 flex-grow flex flex-col">
-                                    <div class="flex items-center text-sm text-gray-500 mb-3">
-                                        <span>{{ $blog->created_at->format('M d, Y') }}</span>
-                                        <span class="mx-2">•</span>
-                                        @if($blog->category)
-                                            <span class="text-xs bg-gray-100 px-2 py-1 rounded">
-                                                {{ $blog->category->categoryname }}
-                                            </span>
-                                        @endif
-                                    </div>
+                                    <!-- Category -->
+                                    @if($blog->category)
+                                        <span class="inline-block bg-[#93C754] text-white text-xs font-semibold px-3 py-1 rounded-full mb-3 self-start">
+                                            {{ $blog->category->name ?? 'Uncategorized' }}
+                                        </span>
+                                    @endif
 
-                                    <h3 class="text-xl font-semibold text-[#0A4040] mb-3 line-clamp-2">
+                                    <!-- Title -->
+                                    <h3 class="text-xl font-bold text-[#0A4040] mb-3 line-clamp-2">
                                         {{ $blog->blog_title }}
                                     </h3>
 
-                                    <!-- Blog Content with Read More -->
-                                    <div class="blog-content flex-grow mb-4">
+                                    <!-- Description -->
+                                    <div class="blog-content flex-grow">
                                         @php
                                             $content = strip_tags($blog->blog_description);
                                             $words = str_word_count($content, 1);
-                                            $limitedWords = array_slice($words, 0, 25);
+                                            $limitedWords = array_slice($words, 0, 20);
                                             $limitedText = implode(' ', $limitedWords);
-
-                                            if (count($words) > 25) {
+                                            $isLongText = count($words) > 20;
+                                            if ($isLongText) {
                                                 $limitedText .= '...';
                                             }
                                         @endphp
 
-                                        <p class="text-gray-600 text-sm mb-3 blog-text">
+                                        <p class="text-gray-600 text-sm blog-text">
                                             {{ $limitedText }}
                                         </p>
 
-                                        <p class="text-gray-600 text-sm mb-3 blog-full hidden">
-                                            {{ $content }}
-                                        </p>
-
-                                        @if(count($words) > 25)
-                                            <button class="blog-read-more-btn text-[#93C754] font-medium hover:underline text-sm">
-                                                Read More
-                                            </button>
+                                        @if($isLongText)
+                                            <p class="text-gray-600 text-sm blog-full hidden mt-2">
+                                                {{ $content }}
+                                            </p>
                                         @endif
                                     </div>
 
-                                    <!-- Read More Link -->
-                                    <div class="mt-auto pt-4 border-t border-gray-100">
+                                    <!-- Read More Button -->
+                                    <div class="mt-4 pt-4 border-t border-gray-200">
                                         <a href="{{ route('frontend.blogs.show', $blog->slug) }}"
-                                           class="inline-flex items-center text-[#0A4040] font-medium hover:text-[#93C754] transition-colors text-sm">
+                                           class="inline-flex items-center text-[#0A4040] hover:text-[#93C754] font-medium text-sm transition-colors">
                                             Read Full Article
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -721,1073 +777,539 @@
                     @endforeach
                 </div>
 
+                <!-- Swiper Pagination -->
+                <div class="swiper-pagination mt-8 relative z-0"></div>
+
                 <!-- Swiper Navigation -->
-                <div class="swiper-button-prev !left-0 !text-[#0A4040] bg-white/80 rounded-full p-4 shadow-lg"></div>
-                <div class="swiper-button-next !right-0 !text-[#0A4040] bg-white/80 rounded-full p-4 shadow-lg"></div>
-            </div>
-        </div>
-
-        <!-- View All CTA -->
-        <div class="text-center mt-12">
-            <a href="{{ route('frontend.blogs.index') }}"
-               class="inline-block bg-[#0A4040] hover:bg-[#072b2b] text-white px-8 py-3 rounded-lg font-bold text-lg transition-colors">
-                View All Articles
-            </a>
-        </div>
-    </div>
-</section>
-
-   <!-- CTA Section -->
-<section id="cta" class="flex flex-col lg:flex-row items-center justify-between px-8 py-8 lg:px-12 lg:py-10 bg-[#0A4040] m-4 rounded-3xl shadow-xl">
-    <!-- Text Section -->
-    <div class="w-full lg:w-1/2 text-left mb-6 lg:mb-0 lg:mr-8 flex flex-col justify-center">
-        <h1 class="text-4xl lg:text-5xl font-bold text-[#93C754] mb-4">Healthy Living</h1>
-        <p class="text-lg lg:text-xl mb-6 text-white leading-relaxed">
-            Healthy living is not optional—it’s foundational. What you eat, how you move, and how you manage your mind affects every part of your life.<br><br>
-            Start small. Be consistent. Let your choices work for you, not against you.<br><br>
-            At <span class="font-semibold">Healthversation</span>, we’re here to help you live better—intentionally.<br><br>
-            <strong>Beatrice Kariuki</strong><br>
-            CEO, Healthversation
-        </p>
-        <a href="https://healthversation.com/consultations/create"
-           class="inline-block bg-green-500 text-[#0A4040] font-bold py-3 px-6 mb-6 rounded-lg hover:bg-green-600 text-lg transition-colors shadow-md">
-           Get me started on healthy living
-        </a>
-        <p class="text-base text-[#93C754]">
-            premium quality | 100% natural | Tried & Tested
-        </p>
-    </div>
-
-    <!-- Image Section -->
-    <div class="w-full lg:w-1/2 flex justify-center lg:justify-end">
-        <img src="{{ asset('Assets/images/image.png') }}"
-             alt="Healthy Living Image"
-             class="w-full max-w-[450px] h-auto object-contain rounded-2xl shadow-lg">
-    </div>
-</section>
-
-
-  <!-- Enhanced Testimonials Section -->
-<section class="py-16 bg-gray-50 overflow-hidden">
-    <div class="container mx-auto px-4">
-        <!-- Heading -->
-        <div class="text-center mb-12">
-            <div class="w-24 h-1 bg-[#0A4040] mx-auto mb-6"></div>
-            <h2 class="text-3xl font-bold text-[#0A4040]">What Our Clients Say</h2>
-            <p class="text-lg text-gray-600 mt-2">
-                Real stories from people who transformed their health with us
-            </p>
-        </div>
-
-        <!-- Testimonials Swiper -->
-        <div class="swiper-container testimonials-swiper relative !overflow-hidden">
-            <div class="swiper-wrapper">
-                @foreach ($testimonials as $testimonial)
-                    <div class="swiper-slide px-2 md:px-4 box-border">
-                        <div class="bg-white p-8 rounded-lg shadow-md border border-gray-200 h-full flex flex-col">
-                            <!-- Client Info -->
-                            <div class="flex items-center mb-6">
-                                <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                                    @if($testimonial->image)
-                                        <img src="{{ asset('storage/' . $testimonial->image) }}" alt="{{ $testimonial->full_name }}" class="w-full h-full object-cover">
-                                    @else
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                            <circle cx="12" cy="7" r="4"></circle>
-                                        </svg>
-                                    @endif
-                                </div>
-                                <div class="ml-4">
-                                    <h3 class="text-lg font-bold text-[#0A4040]">{{ $testimonial->full_name }}</h3>
-                                    <p class="text-sm text-gray-500">{{ $testimonial->title ?? 'Satisfied Client' }}</p>
-                                </div>
-                            </div>
-
-                            <!-- Rating -->
-                            <div class="mb-4">
-                                <div class="flex text-yellow-400">
-                                    @for ($i = 0; $i < $testimonial->rating; $i++)
-                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                        </svg>
-                                    @endfor
-                                </div>
-                            </div>
-
-                            <!-- Testimonial Text with Read More -->
-                            <div class="testimonial-content flex-grow">
-                                <p class="text-gray-700 italic testimonial-text">
-                                    @php
-                                        // Limit to approximately 30 words for consistency
-                                        $words = str_word_count($testimonial->message, 1);
-                                        $limitedWords = array_slice($words, 0, 30);
-                                        $limitedText = implode(' ', $limitedWords);
-
-                                        // Add ellipsis if text was truncated
-                                        if (count($words) > 30) {
-                                            $limitedText .= '...';
-                                        }
-                                    @endphp
-                                    "{{ $limitedText }}"
-                                </p>
-
-                                <!-- Full testimonial (hidden initially) -->
-                                <p class="text-gray-700 italic testimonial-full hidden">
-                                    "{{ $testimonial->message }}"
-                                </p>
-
-                                <!-- Read More/Less Button -->
-                                @if(count($words) > 30)
-                                    <button class="read-more-btn text-[#93C754] font-medium hover:underline mt-2 text-sm">
-                                        Read More
-                                    </button>
-                                @endif
-                            </div>
-
-                            <!-- Results -->
-                            @if($testimonial->result)
-                                <div class="mt-4 p-3 bg-green-50 rounded-lg">
-                                    <p class="text-sm text-green-700 font-medium">Achieved: {{ $testimonial->result }}</p>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                @endforeach
+                <div class="swiper-button-next text-[#0A4040]"></div>
+                <div class="swiper-button-prev text-[#0A4040]"></div>
             </div>
 
-            <!-- Swiper Pagination -->
-            <div class="swiper-pagination"></div>
-        </div>
-
-        <!-- CTA Button -->
-        <div class="text-center mt-12">
-            <button id="rateUsButton" class="inline-block bg-[#93C754] hover:bg-[#7eae47] text-white px-8 py-3 rounded-lg font-bold text-lg transition-colors">
-                Share Your Experience
-            </button>
-        </div>
-    </div>
-</section>
-
-    <!-- Enhanced Newsletter Section -->
-    <section class="py-16 bg-[#0A4040] text-white">
-        <div class="container mx-auto px-4">
-            <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
-                <div class="md:flex">
-                    <div class="md:w-1/2 bg-[#93C754] p-8 flex items-center">
-                        <div>
-                            <h2 class="text-3xl font-bold text-[#0A4040] mb-4">Join Our Wellness Community</h2>
-                            <p class="text-[#0A4040] mb-6">Subscribe to receive exclusive health tips, special offers, and updates straight to your inbox</p>
-                            <ul class="space-y-3 text-[#0A4040]">
-                                <li class="flex items-start">
-                                    <svg class="w-5 h-5 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    <span>Weekly expert health advice</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <svg class="w-5 h-5 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    <span>Exclusive subscriber discounts</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <svg class="w-5 h-5 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    <span>First access to new products</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="md:w-1/2 p-8 text-[#0A4040]">
-                        <h3 class="text-2xl font-bold mb-6">Subscribe Now</h3>
-                        <form action="{{ route('newsletter.subscribe') }}" method="POST" class="space-y-4">
-                            @csrf
-                            <div>
-                                <label for="name" class="block text-sm font-medium mb-1">Your Name</label>
-                                <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#93C754] focus:outline-none" required>
-                            </div>
-                            <div>
-                                <label for="email" class="block text-sm font-medium mb-1">Email Address</label>
-                                <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#93C754] focus:outline-none" required>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" id="consent" name="consent" class="w-4 h-4 text-[#93C754] rounded focus:ring-[#93C754]" required>
-                                <label for="consent" class="ml-2 text-sm">I agree to receive emails from Health Versations</label>
-                            </div>
-                            <button type="submit" class="w-full bg-[#0A4040] hover:bg-[#072b2b] text-white font-bold py-3 px-4 rounded-lg transition-colors">
-                                Subscribe
-                            </button>
-                        </form>
-                        <p class="text-xs text-gray-500 mt-4">We respect your privacy. Unsubscribe at any time.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="bg-gray-100 py-8">
-        <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row gap-8 items-stretch">
-            <div class="flex flex-col w-full md:w-1/2">
-                <!-- Contact Form -->
-                <div class="bg-[#D9D9D9] shadow-lg p-6 flex flex-col justify-between flex-grow">
-                    <h2 class="text-xl font-bold mb-4 text-center text-black">Contact us</h2>
-                    <form class="space-y-4" method="POST" action="{{ route('contact.store') }}">
-                        @csrf
-                        <!-- Full Name -->
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                            <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                                placeholder="Enter your full name"
-                                required
-                            />
-                        </div>
-
-                        <!-- Phone Number (Optional) -->
-                        <div>
-                            <label for="phone_number" class="block text-sm font-medium text-gray-700 mb-1">Phone Number (Optional)</label>
-                            <input
-                                type="text"
-                                id="phone_number"
-                                name="phone_number"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                                placeholder="Enter your phone number"
-                            />
-                        </div>
-
-                        <!-- Email -->
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                            <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                                placeholder="Enter your email address"
-                                required
-                            />
-                        </div>
-
-                        <!-- Message -->
-                        <div>
-                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                            <textarea
-                                id="message"
-                                name="message"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                                rows="4"
-                                placeholder="Enter your message"
-                                required
-                            ></textarea>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button
-                            type="submit"
-                            class="w-full bg-[#0A4040] text-[#93C754] font-bold py-3 px-4 hover:bg-emerald-700 transition-colors duration-300 font-medium rounded-lg"
-                        >
-                            Submit
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Wrapper to maintain equal height and width -->
-            <div class="flex flex-col w-full md:w-1/2">
-                <!-- Google Maps Area -->
-                <div class="bg-white shadow-lg flex-grow">
-                    <!-- FIXME: ADD THE ACTUAL MAP -->
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15955.30959006591!2d36.9095031!3d-1.2071505!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zLTEuMjA3MTUwNSwgMzYuOTA5NTAzMQ!5e0!3m2!1sen!2sus!4v1615227611123!5m2!1sen!2sus"
-                        width="100%"
-                        height="100%"
-                        allowfullscreen=""
-                        loading="lazy"
-                        class="h-full"
-                    ></iframe>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Floating Cart Button -->
-    <a href="{{ route('cart.index') }}" id="cart-button" class="fixed bottom-4 right-4 bg-[#93C754] text-white p-4 rounded-full shadow-lg hover:bg-opacity-80 transition flex items-center justify-center">
-        <img src="{{ asset('Assets/images/shopping-cart.svg') }}" alt="Cart Icon" class="w-6 h-6">
-        <span id="cart-counter" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">
-            {{ array_sum(array_column(session('cart', []), 'quantity')) }}
-        </span>
-    </a>
-
-    <footer class="bg-teal-800 text-white">
-        <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-start justify-between gap-8 py-8">
-
-            <!-- Logo and Call to Action -->
-            <div class="flex flex-col items-start gap-4">
-                <div class="flex items-center gap-2">
-                    <img src="{{asset ('Assets/images/white logo.png') }}" alt="Health Versations Logo" class="h-16">
-                    <span class="text-2xl font-semibold text-green-300">HEALTH VERSATIONS</span>
-                </div>
-                <a href="{{ route('custompackages.create') }}">
-                    <button class="bg-green-500 hover:bg-green-600 text-teal-800 px-6 py-2 font-medium">
-                        Create a Custom Package for me
-                    </button>
+            <!-- View All Blogs Button -->
+            <div class="text-center mt-12">
+                <a href="{{ route('frontend.blogs.index') }}"
+                   class="inline-block bg-[#93C754] hover:bg-[#7eae47] text-white px-8 py-3 rounded-lg font-bold text-lg transition-colors">
+                    View All Articles
                 </a>
             </div>
+        @else
+            <div class="text-center py-12">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-gray-400 mx-auto mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+                <h3 class="text-xl font-semibold text-gray-600 mb-2">No Articles Yet</h3>
+                <p class="text-gray-500">Check back soon for the latest health and wellness articles.</p>
+            </div>
+        @endif
+    </div>
+</section>
+<!-- Contact Section -->
+<section class="bg-gradient-to-b from-gray-50 to-white py-16">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <div class="w-24 h-1 bg-[#0A4040] mx-auto mb-6 rounded-full"></div>
+            <h2 class="text-3xl font-bold text-[#0A4040]">Get In Touch</h2>
+            <p class="text-lg text-gray-600 mt-2 max-w-2xl mx-auto">We're here to help you on your wellness journey. Reach out to us with any questions.</p>
+        </div>
 
-            <!-- Quick Links -->
-            <div class="flex flex-col gap-2">
-                <h3 class="text-lg font-semibold text-green-300">Quick Links</h3>
-                <a href="#" class="hover:underline">Home</a>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
+            <!-- Contact Form -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                <h3 class="text-2xl font-bold text-[#0A4040] mb-6 text-center">Send Us a Message</h3>
+                <form class="space-y-5" method="POST" action="{{ route('contact.store') }}">
+                    @csrf
+                    <div>
+                        <label for="name" class="block text-sm font-semibold text-[#0A4040] mb-2">Full Name *</label>
+                        <input type="text" id="name" name="name" required
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#93C754] focus:border-[#93C754] transition"
+                               placeholder="Enter your full name">
+                    </div>
 
-                <a href="{{ route('versation.healthy') }}" class="hover:underline">Healthy Living</a>
-                <a href="{{ route('videos.show') }}" class="hover:underline">Videos</a>
-                <a href="{{ route('frontend.blogs.index') }}" class="hover:underline">Blogs</a>
-                <a href="{{ route('orders.track') }}" class="hover:underline">Track Order</a>
+                    <div>
+                        <label for="phone_number" class="block text-sm font-semibold text-[#0A4040] mb-2">Phone Number</label>
+                        <input type="tel" id="phone_number" name="phone_number"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#93C754] focus:border-[#93C754] transition"
+                               placeholder="Enter your phone number">
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-[#0A4040] mb-2">Email Address *</label>
+                        <input type="email" id="email" name="email" required
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#93C754] focus:border-[#93C754] transition"
+                               placeholder="Enter your email address">
+                    </div>
+
+                    <div>
+                        <label for="message" class="block text-sm font-semibold text-[#0A4040] mb-2">Message *</label>
+                        <textarea id="message" name="message" rows="5" required
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#93C754] focus:border-[#93C754] transition"
+                                  placeholder="Tell us about your health goals or questions..."></textarea>
+                    </div>
+
+                    <button type="submit"
+                            class="w-full bg-gradient-to-r from-[#0A4040] to-[#1a6b6b] text-white font-bold py-4 rounded-xl hover:from-[#1a6b6b] hover:to-[#0A4040] transition-all duration-300 transform hover:scale-[1.02] shadow-md">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Send Message
+                    </button>
+                </form>
             </div>
 
-            <!-- Support and Information -->
-            <div class="flex flex-col gap-2">
-                <h3 class="text-lg font-semibold text-green-300">Support</h3>
-                <a href="{{ route('contact.health') }}" class="hover:underline">Talk to Us</a>
-                <a href="{{ route('about.health') }}" class="hover:underline">About Us</a>
-                <a href="{{ route('faq.versation') }}" class="hover:underline">FAQs</a>
-                <a href="#" class="hover:underline" id="rateUsButton">Rate Us</a>
-            </div>
+            <!-- Contact Information & Map -->
+            <div class="space-y-6">
+                <div class="bg-gradient-to-br from-[#0A4040] to-[#093535] rounded-2xl shadow-xl p-8 text-white">
+                    <h3 class="text-2xl font-bold mb-6 text-center text-[#93C754]">Contact Information</h3>
+                    <div class="space-y-5">
+                        <div class="flex items-start">
+                            <div class="bg-[#93C754] p-3 rounded-xl mr-4">
+                                <i class="fas fa-envelope text-[#0A4040] text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-[#93C754]">Email</p>
+                                <a href="mailto:info@healthversation.com" class="text-white hover:text-[#93C754] transition">
+                                    info@healthversation.com
+                                </a>
+                            </div>
+                        </div>
 
-            <!-- Legal -->
-            <div class="flex flex-col gap-2">
-                <h3 class="text-lg font-semibold text-green-300">Legal</h3>
-                <a href="{{ route('returns.refunds') }}" class="hover:underline">Return and Refund</a>
-                <a href="{{ route('terms.versation') }}" class="hover:underline">Terms & Conditions</a>
-                <a href="{{ route('privacypolicy.versation') }}" class="hover:underline">Privacy Policy</a>
-            </div>
+                        <div class="flex items-start">
+                            <div class="bg-[#93C754] p-3 rounded-xl mr-4">
+                                <i class="fas fa-phone text-[#0A4040] text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-[#93C754]">Phone</p>
+                                <a href="tel:+254717813291" class="text-white hover:text-[#93C754] transition">
+                                    +254 717 813 291
+                                </a>
+                            </div>
+                        </div>
 
-            <!-- Contact Information -->
-            <div class="flex flex-col gap-2">
-                <h3 class="text-lg font-semibold text-green-300">Contact Us</h3>
-                <p>P.O. BOX: <span class="text-sm font-semibold text-[#93C754]"></span></p>
-                <p>TELEPHONE: <span class="text-sm font-semibold text-[#93C754]">+254717813291</span></p>
-                <p>EMAIL: <span class="text-sm font-semibold text-[#93C754]">info@healthversation.com</span></p>
-                <div class="flex gap-4 mt-2">
-                    <a href="https://www.facebook.com/share/1D5etZeuVs/" target="_blank" class="hover:opacity-80"><img src="{{asset ('Assets/images/facebook.svg') }}" alt="Facebook" class="h-6"></a>
-                    <a href="https://wa.me/254717813291" class="hover:opacity-80">
-                        <img src="{{asset ('Assets/images/whatsapp.svg"') }} alt="WhatsApp" class="h-6">
-                      </a>
-                    <a href="https://www.instagram.com/health_versations" target="_blank" class="hover:opacity-80"><img src="{{asset ('Assets/images/instagram.svg') }}" alt="Instagram" class="h-6"></a>
-                    <a href="https://www.linkedin.com/in/beatrice-kariuki-bb03b2a1/" target="_blank"  class="hover:opacity-80"><img src="{{asset ('Assets/images/linkedIn.svg') }}" alt="LinkedIn" class="h-6"></a>
-                    <a href="https://www.tiktok.com/@healthversations" target="_blank" class="hover:opacity-80"><img src="{{asset ('Assets/images/tiktok.svg') }}" alt="TikTok" class="h-6"></a>
+                        <div class="flex items-start">
+                            <div class="bg-[#93C754] p-3 rounded-xl mr-4">
+                                <i class="fas fa-map-marker-alt text-[#0A4040] text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-[#93C754]">Location</p>
+                                <p class="text-white">Nairobi CBD, Kenya</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-[#93C754]/30">
+                            <p class="font-semibold text-[#93C754] mb-4 text-center">Follow Us</p>
+                            <div class="flex justify-center space-x-5">
+                                <a href="https://www.facebook.com/share/1D5etZeuVs/" target="_blank" rel="noopener noreferrer"
+                                   class="bg-white/10 hover:bg-[#93C754] p-3 rounded-full transition-all duration-300 transform hover:scale-110">
+                                    <i class="fab fa-facebook-f text-white text-lg"></i>
+                                </a>
+                                <a href="https://wa.me/254717813291"
+                                   class="bg-white/10 hover:bg-[#93C754] p-3 rounded-full transition-all duration-300 transform hover:scale-110">
+                                    <i class="fab fa-whatsapp text-white text-lg"></i>
+                                </a>
+                                <a href="https://www.instagram.com/health_versations" target="_blank" rel="noopener noreferrer"
+                                   class="bg-white/10 hover:bg-[#93C754] p-3 rounded-full transition-all duration-300 transform hover:scale-110">
+                                    <i class="fab fa-instagram text-white text-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+                    <div class="bg-[#0A4040] p-4 text-center">
+                        <h3 class="text-white font-bold text-lg">Visit Us</h3>
+                        <p class="text-[#93C754] text-sm">Find us in Nairobi CBD</p>
+                    </div>
+                    <div class="h-80">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.808722050356!2d36.82114697469622!3d-1.2923591356496865!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f10d5c66309d1%3A0x6f0c2b5c9c5a33f0!2sNairobi%20CBD%2C%20Kenya!5e0!3m2!1sen!2sus!4v1690000000000!5m2!1sen!2sus"
+                            width="100%"
+                            height="100%"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <hr class="color-white m-4">
-
-        <!-- Copyright Section -->
-        <div class="bg-[#0A4040] text-center py-4 text-white">
-            <p>&copy; <span id="current-year"></span> HEALTH VERSATIONS. All rights reserved.</p>
-<p style="color: #93C754;">
-    Developed and designed by <a href="https://quickofficepointe.co.ke" target="_blank" style="color: #93C754; text-decoration: underline;">
-        Quick Office Pointe
-    </a>.
-</p>
-
-        </div>
-    </footer>
-
-    <!-- FeedBack Modal -->
-    <div id="rateUsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
-            <!-- Close Button -->
-            <button
-                id="closeModal"
-                class="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
-            >
-                &times;
-            </button>
-
-            <!-- Modal Title -->
-            <h2 class="text-2xl font-semibold text-emerald-600 text-center mb-6">
-                Rate Us
-            </h2>
-        <!-- Modal Form -->
-        <form
-        class="space-y-4"
-        method="POST"
-        action="{{ route('testimonials.store') }}"
-        >
-        @csrf
-        <!-- Full Name -->
-        <div>
-            <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">
-                Full Name
-            </label>
-            <input
-                type="text"
-                name="full_name"
-                id="fullName"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                placeholder="Enter your full name"
-                required
-            />
-        </div>
-        <div>
-            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
-                Email Address
-            </label>
-            <input
-                type="email"
-                name="email"
-                id="email"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                placeholder="Enter your email"
-                required
-            />
-        </div>
-        <!-- Rating (Stars) -->
-        <div>
-            <label for="rating" class="block text-sm font-medium text-gray-700 mb-1">
-                Rating (1-5 Stars)
-            </label>
-            <select
-                name="rating"
-                id="rating"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                required
-            >
-                <option value="" disabled selected>Select Rating</option>
-                <option value="1">1 Star</option>
-                <option value="2">2 Stars</option>
-                <option value="3">3 Stars</option>
-                <option value="4">4 Stars</option>
-                <option value="5">5 Stars</option>
-            </select>
-        </div>
-
-        <!-- Message -->
-        <div>
-            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">
-                Message
-            </label>
-            <textarea
-                name="message"
-                id="message"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                rows="4"
-                placeholder="Enter your message"
-                required
-            ></textarea>
-        </div>
-
-        <button
-            type="submit"
-            class="w-full bg-[#0A4040] text-[#93C754] font-bold py-3 px-4 hover:bg-emerald-700 transition-colors duration-300 font-medium rounded-lg"
-        >
-            Rate Us
-        </button>
-        </form>
-        </div>
     </div>
-<!-- Add this modal HTML at the bottom of your coaching packages section -->
-<div id="enrollmentModal" class="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center hidden z-50">
-    <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full relative">
-        <!-- Close Button -->
-        <button class="close-enrollment-modal absolute top-4 right-4 text-gray-700 text-2xl hover:text-gray-900">
-            &times;
-        </button>
+</section>
+    <!-- Testimonials Section, Blog Section, Contact Section, Footer -->
 
-        <h2 class="text-2xl font-bold text-[#0A4040] mb-6">Enrollment Information</h2>
+  </main>
 
-        <form id="enrollmentForm">
-            <input type="hidden" id="packageId" name="package_id">
-            <input type="hidden" id="packagePrice" name="package_price">
-            <input type="hidden" id="packageCurrency" name="package_currency">
-
-            <div class="mb-4">
-                <label for="enrollmentName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                <input type="text" id="enrollmentName" name="name" required
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#93C754] focus:border-[#93C754] transition duration-300">
-            </div>
-
-            <div class="mb-4">
-                <label for="enrollmentEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <input type="email" id="enrollmentEmail" name="email" required
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#93C754] focus:border-[#93C754] transition duration-300">
-            </div>
-
-            <div class="mb-4">
-                <label for="enrollmentPhone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                <input type="tel" id="enrollmentPhone" name="phone" required
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#93C754] focus:border-[#93C754] transition duration-300">
-            </div>
-
-            <div class="mb-4">
-                <label for="enrollmentCountry" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                <input type="text" id="enrollmentCountry" name="country" required
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#93C754] focus:border-[#93C754] transition duration-300">
-            </div>
-
-            <div class="flex justify-end">
-                <button type="button" class="close-enrollment-modal mr-3 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition duration-300">
-                    Cancel
-                </button>
-                <button type="submit" class="bg-[#0A4040] text-white px-6 py-2 rounded-md shadow-md hover:bg-opacity-90 transition duration-300">
-                    Proceed to Payment
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Modal Structure -->
-<div id="paymentModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
-    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <!-- Background overlay -->
-        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+  <!-- Footer -->
+  <footer class="bg-teal-800 text-white">
+    <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-start justify-between gap-8 py-8">
+      <div class="flex flex-col items-start gap-4">
+        <div class="flex items-center gap-2">
+          <img src="{{asset ('Assets/images/white logo.png') }}" alt="Health Versations Logo" class="h-16" loading="lazy">
+          <span class="text-2xl font-semibold text-green-300">HEALTH VERSATIONS</span>
         </div>
+        <a href="{{ route('custompackages.create') }}">
+          <button class="bg-green-500 hover:bg-green-600 text-teal-800 px-6 py-2 font-medium rounded-lg transition-colors">
+            Create a Custom Package for me
+          </button>
+        </a>
+      </div>
 
-        <!-- Modal content -->
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Complete Your Purchase</h3>
+      <div class="flex flex-col gap-2">
+        <h3 class="text-lg font-semibold text-green-300">Quick Links</h3>
+        <a href="/" class="hover:underline">Home</a>
+        <a href="{{ route('all.products') }}" class="hover:underline">Products</a>
+        <a href="{{ route('frontend.blogs.index') }}" class="hover:underline">Blogs</a>
+        <a href="{{route ('orders.track') }}" class="hover:underline">Track Order</a>
+      </div>
 
-                <!-- Updated Purchase form -->
-                <form id="purchaseForm" name="RequestforDebit" method="post" action="https://portal.host.iveri.com/Lite/Authorise.aspx">
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Package Selected:</label>
-                        <input type="text" id="packageName" readonly class="mt-1 block w-full rounded-md bg-gray-100 border-gray-300 shadow-sm sm:text-sm p-2 border">
-                    </div>
+      <div class="flex flex-col gap-2">
+        <h3 class="text-lg font-semibold text-green-300">Support</h3>
+        <a href="{{ route('contact.health') }}" class="hover:underline">Talk to Us</a>
+        <a href="{{ route('about.health') }}" class="hover:underline">About Us</a>
+        <a href="{{ route('faq.versation') }}" class="hover:underline">FAQs</a>
+        <a href="#" class="hover:underline rate-us-footer">Rate Us</a>
+      </div>
 
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Amount (KES):</label>
-                        <input type="number" id="purchaseAmount" readonly class="mt-1 block w-full rounded-md bg-gray-100 border-gray-300 shadow-sm sm:text-sm p-2 border">
-                    </div>
+      <div class="flex flex-col gap-2">
+        <h3 class="text-lg font-semibold text-green-300">Legal</h3>
+        <a href="{{ route('returns.refunds') }}" class="hover:underline">Return and Refund</a>
+        <a href="{{ route('terms.versation') }}" class="hover:underline">Terms & Conditions</a>
+        <a href="{{ route('privacypolicy.versation') }}" class="hover:underline">Privacy Policy</a>
+      </div>
 
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Your Email:</label>
-                        <input type="email" id="customerEmail" placeholder="you@example.com" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
-                    </div>
-
-                    <!-- Hidden fields updated for purchase -->
-                    <input type="hidden" name="Lite_Order_Amount">
-                    <input type="hidden" name="Ecom_ConsumerOrderID" value="AUTOGENERATE">
-                    <input type="hidden" name="Ecom_BillTo_Online_Email">
-                    <input type="hidden" id="packageDescription" name="Lite_Order_LineItems_Product_1" value="Coaching Package">
-                    <input type="hidden" name="Lite_Order_LineItems_Quantity_1" value="1">
-                    <input type="hidden" name="Lite_Order_LineItems_Amount_1">
-                    <input type="hidden" name="Lite_Merchant_ApplicationId" value="3a7f44fd-4bb4-432c-b483-32e5a19e100d">
-                    <input type="hidden" name="Lite_Website_Successful_Url" value="https://www.imbankgroup.com/ke/payment-success">
-                    <input type="hidden" name="Lite_Website_Fail_Url" value="https://www.imbankgroup.com/ke/payment-fail">
-                    <input type="hidden" name="Lite_Website_TryLater_Url" value="https://www.imbankgroup.com/ke/payment-try-later">
-                    <input type="hidden" name="Lite_Website_Error_Url" value="https://www.imbankgroup.com/ke/payment-error">
-                    <input type="hidden" name="Lite_ConsumerOrderID_PreFix" value="COACHING">
-                    <input type="hidden" name="Ecom_Payment_Card_Protocols" value="iVeri">
-                    <input type="hidden" name="Ecom_TransactionComplete" value="false">
-
-                    <div class="mt-5 sm:mt-6">
-                        <button type="submit" class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-[#93C754] text-base font-medium text-white hover:bg-[#7eae47] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
-                            Pay Now via Credit Card/Mpesa
-                        </button>
-                        <button type="button" id="cancelPayment" class="mt-3 inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
-                            Cancel
-                        </button>
-                    </div>
-                </form>
-            </div>
+      <div class="flex flex-col gap-2">
+        <h3 class="text-lg font-semibold text-green-300">Contact Us</h3>
+        <p>TELEPHONE: <span class="text-sm font-semibold text-[#93C754]">+254717813291</span></p>
+        <p>EMAIL: <span class="text-sm font-semibold text-[#93C754]">info@healthversation.com</span></p>
+        <div class="flex gap-4 mt-2">
+          <a href="https://www.facebook.com/share/1D5etZeuVs/" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition"><img src="{{asset ('Assets/images/facebook.svg') }}" alt="Facebook" class="h-6"></a>
+          <a href="https://wa.me/254717813291" class="hover:opacity-80 transition"><img src="{{asset ('Assets/images/whatsapp.svg') }}" alt="WhatsApp" class="h-6"></a>
+          <a href="https://www.instagram.com/health_versations" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition"><img src="{{asset ('Assets/images/instagram.svg') }}" alt="Instagram" class="h-6"></a>
         </div>
+      </div>
     </div>
-</div>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const modal = document.getElementById('paymentModal');
-    const cancelBtn = document.getElementById('cancelPayment');
-    const purchaseForm = document.getElementById('purchaseForm');
-    const purchaseAmount = document.getElementById('purchaseAmount');
-    const packageName = document.getElementById('packageName');
-    const packageDescription = document.getElementById('packageDescription');
-    const customerEmail = document.getElementById('customerEmail');
 
-    function openModalWithPackage(packageElement) {
-        const priceText = packageElement.querySelector('span.text-2xl').textContent;
-        const packageTitle = packageElement.querySelector('h3.text-xl').textContent;
+    <div class="bg-[#0A4040] text-center py-4 text-white">
+      <p>&copy; <span id="current-year"></span> HEALTH VERSATIONS. All rights reserved.</p>
+      <p style="color: #93C754;">
+        Developed and designed by <a href="https://quickofficepointe.co.ke" target="_blank" rel="noopener noreferrer" style="color: #93C754; text-decoration: underline;">
+          Quick Office Pointe
+        </a>.
+      </p>
+    </div>
+  </footer>
 
-        const numericPrice = parseFloat(priceText.replace(/[^0-9.]/g, ''));
+  <!-- Floating Cart -->
+  <a href="{{ route('cart.index') }}" id="cart-button" class="fixed bottom-4 right-4 bg-[#93C754] text-white p-4 rounded-full shadow-lg hover:bg-opacity-80 transition flex items-center justify-center z-40">
+    <img src="{{ asset('Assets/images/shopping-cart.svg') }}" alt="Cart Icon" class="w-6 h-6">
+    <span id="cart-counter" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">
+      {{ array_sum(array_column(session('cart', []), 'quantity')) }}
+    </span>
+  </a>
 
-        // Populate modal fields
-        purchaseAmount.value = numericPrice;
-        packageName.value = packageTitle;
-        packageDescription.value = packageTitle;
+  <!-- JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        modal.classList.remove('hidden');
-    }
-
-    function closeModal() {
-        modal.classList.add('hidden');
-        purchaseForm.reset();
-    }
-
-    cancelBtn.addEventListener('click', closeModal);
-
-    modal.addEventListener('click', function (e) {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
-
-    document.querySelectorAll('.coaching-swiper .swiper-slide a').forEach(button => {
-        button.addEventListener('click', function (e) {
-            e.preventDefault();
-            const packageCard = this.closest('.swiper-slide');
-            openModalWithPackage(packageCard);
-        });
-    });
-
-    purchaseForm.addEventListener('submit', function (e) {
-        let emailInput = customerEmail.value.trim();
-        let amount = parseFloat(purchaseAmount.value);
-
-        if (!emailInput || !emailInput.includes('@') || isNaN(amount)) {
-            alert("Please provide a valid email and ensure package details are correct.");
-            e.preventDefault();
-            return;
-        }
-
-        const finalAmount = amount * 100; // Convert to cents
-        const orderId = "COACH-" + Math.floor(100000 + Math.random() * 900000);
-
-        document.querySelector('input[name="Lite_Order_Amount"]').value = finalAmount;
-        document.querySelector('input[name="Ecom_BillTo_Online_Email"]').value = emailInput;
-        document.querySelector('input[name="Lite_Order_LineItems_Amount_1"]').value = finalAmount;
-        document.querySelector('input[name="Ecom_ConsumerOrderID"]').value = orderId;
-    });
-});
-</script>
-
-    <!-- Add Swiper JS at the end of body -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script>
-        // Fix: Move this outside of Swiper initialization
-document.addEventListener('DOMContentLoaded', function() {
-    // Read More functionality for testimonials
-    document.querySelectorAll('.read-more-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            console.log('Read More button clicked'); // Debug line
-
-            const testimonialCard = this.closest('.testimonial-content');
-            const shortText = testimonialCard.querySelector('.testimonial-text');
-            const fullText = testimonialCard.querySelector('.testimonial-full');
-
-            console.log('Short text hidden:', shortText.classList.contains('hidden')); // Debug
-
-            if (shortText.classList.contains('hidden')) {
-                // Currently showing full text, switch to short
-                shortText.classList.remove('hidden');
-                fullText.classList.add('hidden');
-                this.textContent = 'Read More';
-            } else {
-                // Currently showing short text, switch to full
-                shortText.classList.add('hidden');
-                fullText.classList.remove('hidden');
-                this.textContent = 'Read Less';
-            }
-        });
-    });
-});
-    </script>
-    <script>// Blog Read More functionality
-document.addEventListener('DOMContentLoaded', function() {
-    // Blog read more buttons
-    document.querySelectorAll('.blog-read-more-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            const blogContent = this.closest('.blog-content');
-            const blogText = blogContent.querySelector('.blog-text');
-            const blogFull = blogContent.querySelector('.blog-full');
-
-            if (blogText.classList.contains('hidden')) {
-                // Currently showing full text, switch to short
-                blogText.classList.remove('hidden');
-                blogFull.classList.add('hidden');
-                this.textContent = 'Read More';
-            } else {
-                // Currently showing short text, switch to full
-                blogText.classList.add('hidden');
-                blogFull.classList.remove('hidden');
-                this.textContent = 'Read Less';
-            }
-        });
-    });
-
-    // Initialize enhanced blog swiper if using swiper version
-    if (document.querySelector('.enhanced-blog-swiper')) {
-        const blogSwiper = new Swiper('.enhanced-blog-swiper', {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            navigation: {
-                nextEl: '.enhanced-blog-swiper .swiper-button-next',
-                prevEl: '.enhanced-blog-swiper .swiper-button-prev',
-            },
-            breakpoints: {
-                640: {
-                    slidesPerView: 2,
-                    spaceBetween: 20
-                },
-                1024: {
-                    slidesPerView: 3,
-                    spaceBetween: 30
-                },
-            }
-        });
-    }
-});</script>
-    <script>
-        // Initialize Swipers
-        document.addEventListener('DOMContentLoaded', function() {
-            // Coaching Packages Swiper
-            const coachingSwiper = new Swiper('.coaching-swiper', {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                navigation: {
-                    nextEl: '.coaching-swiper .swiper-button-next',
-                    prevEl: '.coaching-swiper .swiper-button-prev',
-                },
-                pagination: {
-                    el: '.coaching-swiper .swiper-pagination',
-                    clickable: true,
-                },
-                breakpoints: {
-                    640: {
-                        slidesPerView: 2,
-                    },
-                    1024: {
-                        slidesPerView: 3,
-                    },
-                }
-            });
-
-            // Blog Swiper
-
-
-            // Testimonials Swiper
-            const testimonialsSwiper = new Swiper('.testimonials-swiper', {
-                slidesPerView: 1,
-                spaceBetween: 30,
-                pagination: {
-                    el: '.testimonials-swiper .swiper-pagination',
-                    clickable: true,
-                },
-                breakpoints: {
-                    768: {
-                        slidesPerView: 2,
-                    },
-                    1024: {
-                        slidesPerView: 3,
-                    },
-                }
-            });
-        });
-    </script>
-
-<!-- SweetAlert2 JS -->
-<script src="{{asset ('Assets/js/main.js') }}"></script>
-<script src="{{asset ('Assets/js/modal.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const menuBtn = document.getElementById("menu-btn");
-        const mobileMenu = document.getElementById("mobile-menu");
-
-        menuBtn.addEventListener("click", function () {
-            mobileMenu.classList.toggle("hidden");
-        });
-    });
-</script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".order-now-btn").forEach(button => {
-            button.addEventListener("click", function (event) {
-                event.preventDefault();
-                let productName = this.getAttribute("data-product-name");
-                document.getElementById("productName").value = productName;
-                document.getElementById("trackingID").value = generateTrackingID();
-                document.getElementById("orderModal").classList.remove("hidden");
-            });
-        });
-
-        document.getElementById("deliveryMethod").addEventListener("change", function () {
-            document.getElementById("deliveryFields").classList.toggle("hidden", this.value !== "delivery");
-        });
-
-        let successMessage = document.getElementById("successMessage");
-        if (successMessage) {
-            setTimeout(() => successMessage.style.display = "none", 5000);
-        }
-    });
-
-    function closeModal() {
-        document.getElementById("orderModal").classList.add("hidden");
-    }
-
-    function generateTrackingID() {
-        return "TRK" + Math.floor(100000 + Math.random() * 900000);
-    }
-    </script>
-<script>
+  <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const successMessage = document.getElementById('successMessage');
-        const errorMessage = document.getElementById('errorMessage');
+        // Mobile Menu
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
 
-        if (successMessage) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: successMessage.getAttribute('data-message'),
-                confirmButtonText: 'OK'
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
             });
         }
 
-        if (errorMessage) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: errorMessage.getAttribute('data-message'),
-                confirmButtonText: 'OK'
-            });
-        }
-    });
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Quantity controls
-    document.querySelectorAll('.increase').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const quantityElement = this.parentElement.querySelector('.quantity');
-            quantityElement.textContent = parseInt(quantityElement.textContent) + 1;
-        });
-    });
-
-    document.querySelectorAll('.decrease').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const quantityElement = this.parentElement.querySelector('.quantity');
-            const current = parseInt(quantityElement.textContent);
-            if (current > 1) quantityElement.textContent = current - 1;
-        });
-    });
-
-    // Add to cart functionality
-    document.querySelectorAll('.add-to-cart').forEach(button => {
-        button.addEventListener('click', async function(e) {
-            e.preventDefault();
-
-            const productId = this.getAttribute('data-product-id');
-            const productCard = this.closest('.bg-white');
-            const quantity = parseInt(productCard.querySelector('.quantity').textContent);
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-            const cartUrl = document.body.getAttribute('data-cart-url');
-
-            const cartIcon = this.querySelector('img');
-            cartIcon.classList.add('animate-bounce');
-
-            try {
-                const response = await fetch(cartUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        product_id: productId,
-                        quantity: quantity
-                    })
-                });
-
-                if (!response.ok) throw new Error('Network response was not ok');
-                const data = await response.json();
-
-                if (data.success) {
-                    const counter = document.getElementById('cart-counter');
-                    if (counter) {
-                        counter.textContent = data.cart_count;
-                        const floatingCart = document.getElementById('cart-button');
-                        floatingCart.classList.add('animate-pulse');
-                        setTimeout(() => floatingCart.classList.remove('animate-pulse'), 1000);
-                    }
-
-                    showToast('Product added to cart!', 'success');
-                } else {
-                    showToast(data.message || 'Failed to add to cart', 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showToast('Failed to add to cart', 'error');
-            } finally {
-                cartIcon.classList.remove('animate-bounce');
-            }
-        });
-    });
-
-    function showToast(message, type = 'success') {
-        const toast = document.createElement('div');
-        toast.className = `fixed top-4 right-4 px-4 py-2 rounded shadow-lg text-white ${
-            type === 'success' ? 'bg-green-500' : 'bg-red-500'
-        }`;
-        toast.textContent = message;
-        document.body.appendChild(toast);
-
-        setTimeout(() => toast.remove(), 3000);
-    }
-});
-</script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-    // Coaching Packages Swiper
-    const coachingSwiper = new Swiper('.coaching-swiper', {
-        slidesPerView: 1,
-        spaceBetween: 20,
-        navigation: {
-            nextEl: '.coaching-swiper .swiper-button-next',
-            prevEl: '.coaching-swiper .swiper-button-prev',
-        },
-        pagination: {
-            el: '.coaching-swiper .swiper-pagination',
-            clickable: true,
-        },
-        breakpoints: {
-            640: {
-                slidesPerView: 2,
-                spaceBetween: 20
-            },
-            1024: {
-                slidesPerView: 3,
-                spaceBetween: 30
-            },
-        }
-    });
-});
-    </script>
-<script>
-    // Banner Carousel
-    document.addEventListener('DOMContentLoaded', function() {
-        // Banner carousel
+        // Banner Carousel
         const bannerContainer = document.querySelector('.banner-container');
         const bannerSlides = document.querySelectorAll('.banner-container > div');
         const bannerDotsContainer = document.querySelector('.banner-dots');
         let currentBannerIndex = 0;
 
-        // Create dots
-        bannerSlides.forEach((_, index) => {
-            const dot = document.createElement('button');
-            dot.className = `w-3 h-3 rounded-full ${index === 0 ? 'bg-white' : 'bg-white/50'}`;
-            dot.addEventListener('click', () => {
-                goToBannerSlide(index);
+        if (bannerContainer && bannerSlides.length > 0) {
+            bannerSlides.forEach((_, index) => {
+                const dot = document.createElement('button');
+                dot.className = `w-3 h-3 rounded-full ${index === 0 ? 'bg-white' : 'bg-white/50'}`;
+                dot.addEventListener('click', () => goToBannerSlide(index));
+                bannerDotsContainer.appendChild(dot);
             });
-            bannerDotsContainer.appendChild(dot);
-        });
 
-        const bannerDots = document.querySelectorAll('.banner-dots button');
+            const bannerDots = document.querySelectorAll('.banner-dots button');
 
-        function goToBannerSlide(index) {
-            currentBannerIndex = index;
-            const offset = -currentBannerIndex * 100;
-            bannerContainer.style.transform = `translateX(${offset}%)`;
-
-            // Update dots
-            bannerDots.forEach((dot, i) => {
-                dot.className = `w-3 h-3 rounded-full ${i === currentBannerIndex ? 'bg-white' : 'bg-white/50'}`;
-            });
-        }
-
-        // Auto-rotate banners
-        let bannerInterval = setInterval(() => {
-            currentBannerIndex = (currentBannerIndex + 1) % bannerSlides.length;
-            goToBannerSlide(currentBannerIndex);
-        }, 5000);
-
-        // Navigation buttons
-        document.querySelector('.banner-prev').addEventListener('click', () => {
-            clearInterval(bannerInterval);
-            currentBannerIndex = (currentBannerIndex - 1 + bannerSlides.length) % bannerSlides.length;
-            goToBannerSlide(currentBannerIndex);
-            bannerInterval = setInterval(() => {
-                currentBannerIndex = (currentBannerIndex + 1) % bannerSlides.length;
-                goToBannerSlide(currentBannerIndex);
-            }, 5000);
-        });
-
-        document.querySelector('.banner-next').addEventListener('click', () => {
-            clearInterval(bannerInterval);
-            currentBannerIndex = (currentBannerIndex + 1) % bannerSlides.length;
-            goToBannerSlide(currentBannerIndex);
-            bannerInterval = setInterval(() => {
-                currentBannerIndex = (currentBannerIndex + 1) % bannerSlides.length;
-                goToBannerSlide(currentBannerIndex);
-            }, 5000);
-        });
-
-        // Wellness products slider
-        const wellnessContainer = document.getElementById('wellness-slides-container');
-        const wellnessSlides = document.querySelectorAll('#wellness-slides-container > div');
-        let currentWellnessIndex = 0;
-        const slidesToShow = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
-
-        function updateWellnessSlider() {
-            const offset = -currentWellnessIndex * (100 / slidesToShow);
-            wellnessContainer.style.transform = `translateX(${offset}%)`;
-        }
-
-        document.querySelector('.wellness-prev').addEventListener('click', () => {
-            currentWellnessIndex = Math.max(0, currentWellnessIndex - 1);
-            updateWellnessSlider();
-        });
-
-        document.querySelector('.wellness-next').addEventListener('click', () => {
-            currentWellnessIndex = Math.min(
-                wellnessSlides.length - slidesToShow,
-                currentWellnessIndex + 1
-            );
-            updateWellnessSlider();
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            const newSlidesToShow = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
-            if (newSlidesToShow !== slidesToShow) {
-                currentWellnessIndex = 0;
-                updateWellnessSlider();
+            function goToBannerSlide(index) {
+                currentBannerIndex = index;
+                const offset = -currentBannerIndex * 100;
+                bannerContainer.style.transform = `translateX(${offset}%)`;
+                bannerDots.forEach((dot, i) => {
+                    dot.className = `w-3 h-3 rounded-full ${i === currentBannerIndex ? 'bg-white' : 'bg-white/50'}`;
+                });
             }
+
+            let bannerInterval = setInterval(() => {
+                currentBannerIndex = (currentBannerIndex + 1) % bannerSlides.length;
+                goToBannerSlide(currentBannerIndex);
+            }, 5000);
+
+            const prevBtn = document.querySelector('.banner-prev');
+            const nextBtn = document.querySelector('.banner-next');
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    clearInterval(bannerInterval);
+                    currentBannerIndex = (currentBannerIndex - 1 + bannerSlides.length) % bannerSlides.length;
+                    goToBannerSlide(currentBannerIndex);
+                    bannerInterval = setInterval(() => {
+                        currentBannerIndex = (currentBannerIndex + 1) % bannerSlides.length;
+                        goToBannerSlide(currentBannerIndex);
+                    }, 5000);
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    clearInterval(bannerInterval);
+                    currentBannerIndex = (currentBannerIndex + 1) % bannerSlides.length;
+                    goToBannerSlide(currentBannerIndex);
+                    bannerInterval = setInterval(() => {
+                        currentBannerIndex = (currentBannerIndex + 1) % bannerSlides.length;
+                        goToBannerSlide(currentBannerIndex);
+                    }, 5000);
+                });
+            }
+        }
+// Testimonial Read More Toggle
+function toggleTestimonial(button) {
+    const parent = button.parentElement;
+    const shortText = parent.querySelector('.testimonial-short');
+    const fullText = parent.querySelector('.testimonial-full');
+
+    if (fullText.classList.contains('hidden')) {
+        shortText.classList.add('hidden');
+        fullText.classList.remove('hidden');
+        button.textContent = 'Read Less';
+    } else {
+        shortText.classList.remove('hidden');
+        fullText.classList.add('hidden');
+        button.textContent = 'Read More';
+    }
+}
+// Read More Functionality for Testimonials
+function toggleReadMore(button) {
+    const parent = button.closest('.testimonial-content');
+    const shortText = parent.querySelector('.testimonial-text');
+    const fullText = parent.querySelector('.testimonial-full');
+
+    if (fullText.classList.contains('hidden')) {
+        shortText.classList.add('hidden');
+        fullText.classList.remove('hidden');
+        button.textContent = 'Read Less';
+    } else {
+        shortText.classList.remove('hidden');
+        fullText.classList.add('hidden');
+        button.textContent = 'Read More';
+    }
+}
+
+// Initialize Swipers
+const testimonialsSwiper = new Swiper('.testimonials-swiper', {
+    slidesPerView: 1,
+    spaceBetween: 30,
+    pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+    },
+    breakpoints: {
+        768: {
+            slidesPerView: 2,
+        },
+        1024: {
+            slidesPerView: 3,
+        },
+    }
+});
+
+const blogSwiper = new Swiper('.blog-swiper', {
+    slidesPerView: 1,
+    spaceBetween: 30,
+    pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+    },
+    navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+    },
+    breakpoints: {
+        640: {
+            slidesPerView: 1,
+        },
+        768: {
+            slidesPerView: 2,
+        },
+        1024: {
+            slidesPerView: 3,
+        },
+    },
+    autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+    },
+});
+// Rate Us Modal Functionality
+function initializeRateUsModal() {
+    const modal = document.getElementById('rateUsModal');
+    const openButton = document.getElementById('rateUsButton');
+    const closeButton = document.getElementById('closeModal');
+    const cancelButton = document.getElementById('cancelModal');
+    const modalContent = modal?.querySelector('.bg-white');
+    const ratingStars = document.querySelectorAll('.rating-star');
+    const selectedRating = document.getElementById('selectedRating');
+
+    if (openButton) {
+        openButton.addEventListener('click', function() {
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        });
+    }
+
+    function closeModal() {
+        modalContent.classList.remove('scale-100', 'opacity-100');
+        modalContent.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    if (closeButton) closeButton.addEventListener('click', closeModal);
+    if (cancelButton) cancelButton.addEventListener('click', closeModal);
+
+    modal?.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+    });
+
+    ratingStars.forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = parseInt(this.getAttribute('data-rating'));
+            selectedRating.value = rating;
+            ratingStars.forEach((s, index) => {
+                if (index < rating) {
+                    s.classList.remove('text-gray-300');
+                    s.classList.add('text-yellow-400');
+                } else {
+                    s.classList.remove('text-yellow-400');
+                    s.classList.add('text-gray-300');
+                }
+            });
         });
     });
-</script>
-    <style>
-    .animate-bounce {
-        animation: bounce 0.5s;
-    }
+}
+        // Product Quantity Controls
+        document.querySelectorAll('.increase').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const quantityElement = this.parentElement.querySelector('.quantity');
+                quantityElement.textContent = parseInt(quantityElement.textContent) + 1;
+            });
+        });
 
-    .animate-pulse {
-        animation: pulse 1s;
-    }
+        document.querySelectorAll('.decrease').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const quantityElement = this.parentElement.querySelector('.quantity');
+                const current = parseInt(quantityElement.textContent);
+                if (current > 1) quantityElement.textContent = current - 1;
+            });
+        });
 
-    @keyframes bounce {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-5px); }
-    }
+        // Add to Cart
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', async function(e) {
+                e.preventDefault();
+                const productId = this.getAttribute('data-product-id');
+                const productCard = this.closest('.bg-white');
+                const quantity = parseInt(productCard.querySelector('.quantity').textContent);
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+                const cartUrl = document.body.getAttribute('data-cart-url');
 
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-    }
-    </style>
+                const cartIcon = this.querySelector('img');
+                if (cartIcon) cartIcon.classList.add('animate-bounce');
+
+                try {
+                    const response = await fetch(cartUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            product_id: productId,
+                            quantity: quantity
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        const counter = document.getElementById('cart-counter');
+                        if (counter) counter.textContent = data.cart_count;
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Added to Cart!',
+                            text: 'Product added successfully',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    } else {
+                        throw new Error(data.message || 'Failed to add to cart');
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: error.message,
+                        confirmButtonText: 'OK'
+                    });
+                } finally {
+                    if (cartIcon) cartIcon.classList.remove('animate-bounce');
+                }
+            });
+        });
+
+        // Set current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Flash messages
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+
+        if (successMessage && successMessage.dataset.message) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: successMessage.dataset.message,
+                confirmButtonText: 'OK'
+            });
+        }
+
+        if (errorMessage && errorMessage.dataset.message) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: errorMessage.dataset.message,
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+  </script>
 </body>
 </html>
