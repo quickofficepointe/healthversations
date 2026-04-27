@@ -38,7 +38,24 @@ class ProductController extends Controller
         ], 500);
     }
 }
+/**
+ * Show quick view modal content
+ */
+public function quickView(Product $product)
+{
+    // Calculate 20% discount
+    $defaultDiscount = 20;
+    $currentPriceKES = $product->variants_count == 0 ? $product->price_kes : $product->variants->min('price_kes');
+    $currentPriceUSD = $product->variants_count == 0 ? $product->price_usd : $product->variants->min('price_usd');
 
+    $originalPriceKES = $currentPriceKES / (1 - $defaultDiscount / 100);
+    $originalPriceUSD = $currentPriceUSD / (1 - $defaultDiscount / 100);
+    $savingsKES = $originalPriceKES - $currentPriceKES;
+
+    $html = view('components.quick-view', compact('product', 'currentPriceKES', 'currentPriceUSD', 'originalPriceKES', 'originalPriceUSD', 'savingsKES', 'defaultDiscount'))->render();
+
+    return response()->json(['html' => $html]);
+}
 public function deleteVariant(ProductVariant $variant)
 {
     try {

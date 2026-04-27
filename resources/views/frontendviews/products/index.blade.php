@@ -170,6 +170,25 @@
     .star-empty {
         color: #E0E0E0;
     }
+
+    /* Quick View Modal Styles */
+    .quick-qty-btn {
+        transition: all 0.2s ease;
+    }
+
+    .quick-qty-btn:hover {
+        background-color: #e5e7eb;
+    }
+
+    .quick-quantity {
+        -moz-appearance: textfield;
+    }
+
+    .quick-quantity::-webkit-inner-spin-button,
+    .quick-quantity::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 </style>
 
 <div class="bg-gradient-to-b from-white to-gray-50">
@@ -202,27 +221,16 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             @forelse($products as $product)
             @php
-                // DEFAULT 20% DISCOUNT FOR ALL PRODUCTS
-                $defaultDiscount = 20; // 20% off everything
-                $hasDiscount = true; // Always show discount badge
-
-                // Get the current price (what customer pays)
+                $defaultDiscount = 20;
                 $currentPriceKES = $product->variants_count == 0 ? $product->price_kes : $product->variants->min('price_kes');
                 $currentPriceUSD = $product->variants_count == 0 ? $product->price_usd : $product->variants->min('price_usd');
-
-                // Calculate the original price for strikethrough (current price ÷ 0.8)
-                // Formula: Original = Current / (1 - discount/100)
                 $originalPriceKES = $currentPriceKES / (1 - $defaultDiscount / 100);
                 $originalPriceUSD = $currentPriceUSD / (1 - $defaultDiscount / 100);
-
-                // Calculate savings
                 $savingsKES = $originalPriceKES - $currentPriceKES;
-                $savingsUSD = $originalPriceUSD - $currentPriceUSD;
             @endphp
 
             <!-- Product Card -->
             <div class="product-card bg-white rounded-2xl shadow-lg hover:shadow-2xl group">
-                <!-- Product Image Container -->
                 <div class="image-container relative">
                     <img src="{{ asset($product->cover_image) }}"
                          alt="{{ $product->product_name }}"
@@ -231,12 +239,10 @@
                          height="250"
                          loading="lazy">
 
-                    <!-- Discount Badge - Always visible -->
                     <div class="discount-badge">
                         -{{ $defaultDiscount }}% OFF
                     </div>
 
-                    <!-- Quick View Overlay -->
                     <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
                         <button onclick="quickView({{ $product->id }})" class="bg-white text-[#0A4040] px-4 py-2 rounded-full font-semibold hover:bg-[#0A4040] hover:text-white transition-all">
                             Quick View
@@ -244,21 +250,17 @@
                     </div>
                 </div>
 
-                <!-- Product Info -->
                 <div class="p-5">
-                    <!-- Category Tag -->
                     <div class="mb-3">
                         <span class="text-xs font-semibold text-[#93C754] bg-green-50 px-2 py-1 rounded-full">
                             {{ $product->category->category_name ?? 'Premium Quality' }}
                         </span>
                     </div>
 
-                    <!-- Product Name -->
                     <h3 class="text-lg font-bold text-[#0A4040] mb-2 line-clamp-2 hover:text-[#52823C] transition-colors">
                         {{ $product->product_name }}
                     </h3>
 
-                    <!-- Rating Stars -->
                     <div class="flex items-center gap-2 mb-3">
                         <div class="rating-stars">
                             @php $rating = $product->avg_rating ?? 4.5; @endphp
@@ -273,9 +275,7 @@
                         <span class="text-xs text-gray-500">({{ $product->reviews_count ?? 0 }} reviews)</span>
                     </div>
 
-                    <!-- Price Section with Strikethrough -->
                     <div class="mb-4">
-                        <!-- KES Price -->
                         <div class="flex items-center flex-wrap gap-2 mb-1">
                             <span class="original-price text-gray-400">
                                 KES {{ number_format($originalPriceKES, 2) }}
@@ -287,7 +287,6 @@
                                 Save KES {{ number_format($savingsKES, 2) }}
                             </span>
                         </div>
-                        <!-- USD Price -->
                         <div class="flex items-center gap-2">
                             <span class="original-price text-gray-400 text-sm">
                                 ${{ number_format($originalPriceUSD, 2) }}
@@ -296,7 +295,6 @@
                                 ${{ number_format($currentPriceUSD, 2) }}
                             </span>
                         </div>
-                        <!-- Discount Percentage Highlight -->
                         <div class="mt-2">
                             <span class="text-xs text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded-full">
                                 <i class="fas fa-tag mr-1"></i>
@@ -305,12 +303,10 @@
                         </div>
                     </div>
 
-                    <!-- Short Description -->
                     <p class="text-gray-600 text-sm mb-4 line-clamp-2">
                         {!! Str::limit(strip_tags($product->description), 80) !!}
                     </p>
 
-                    <!-- Action Buttons -->
                     <div class="flex items-center justify-between gap-3">
                         <a href="{{ route('product.show', $product->slug) }}"
                            class="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-[#0A4040] font-semibold py-2 px-3 rounded-lg transition-all text-sm">
@@ -319,9 +315,7 @@
 
                         <button class="add-to-cart-btn flex-1"
                                 data-product-id="{{ $product->id }}"
-                                data-product-name="{{ $product->product_name }}"
-                                data-price-kes="{{ $currentPriceKES }}"
-                                data-price-usd="{{ $currentPriceUSD }}">
+                                data-product-name="{{ $product->product_name }}">
                             <i class="fas fa-shopping-cart"></i>
                             Add to Cart
                         </button>
@@ -399,7 +393,7 @@
     <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div class="sticky top-0 bg-white border-b p-4 flex justify-between items-center">
             <h3 class="text-xl font-bold text-[#0A4040]">Quick View</h3>
-            <button onclick="closeQuickView()" class="text-gray-500 hover:text-gray-700">
+            <button onclick="closeQuickView()" class="text-gray-500 hover:text-gray-700 transition-colors">
                 <i class="fas fa-times text-2xl"></i>
             </button>
         </div>
@@ -410,110 +404,261 @@
 </div>
 
 <script>
-// Add to Cart functionality
-document.querySelectorAll('.add-to-cart').forEach(button => {
-    button.addEventListener('click', async function() {
-        const productId = this.dataset.productId;
-        const productName = this.dataset.productName;
+document.addEventListener('DOMContentLoaded', function() {
+    // Add to Cart functionality for products listing page
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', async function() {
+            const productId = this.dataset.productId;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-        // Show loading state
-        const originalText = this.innerHTML;
-        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
-        this.disabled = true;
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            this.disabled = true;
 
-        try {
-            const response = await fetch('/cart/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({
-                    product_id: productId,
-                    quantity: 1
-                })
-            });
+            try {
+                const response = await fetch('{{ route("cart.add") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: 1
+                    })
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (data.success) {
-                this.innerHTML = '<i class="fas fa-check"></i> Added!';
-                this.style.background = '#10B981';
-                updateCartCount(data.cart_count);
+                if (data.success) {
+                    const cartCounter = document.getElementById('cart-counter');
+                    if (cartCounter) {
+                        cartCounter.textContent = data.cart_count;
+                        cartCounter.classList.add('animate-bounce');
+                        setTimeout(() => cartCounter.classList.remove('animate-bounce'), 500);
+                    }
+
+                    this.innerHTML = '<i class="fas fa-check"></i> Added!';
+                    this.style.background = '#10B981';
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Cart!',
+                        text: 'Product has been added to your cart.',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.style.background = '#52823C';
+                        this.disabled = false;
+                    }, 2000);
+                } else {
+                    throw new Error(data.message || 'Failed to add to cart');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                this.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
+                this.style.background = '#EF4444';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: error.message || 'Something went wrong. Please try again.',
+                    confirmButtonText: 'OK'
+                });
+
                 setTimeout(() => {
                     this.innerHTML = originalText;
                     this.style.background = '#52823C';
                     this.disabled = false;
                 }, 2000);
-                showNotification('Product added to cart!', 'success');
-            } else {
-                throw new Error(data.message || 'Failed to add to cart');
             }
-        } catch (error) {
-            this.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
-            this.style.background = '#EF4444';
-            setTimeout(() => {
-                this.innerHTML = originalText;
-                this.style.background = '#52823C';
-                this.disabled = false;
-            }, 2000);
-            showNotification(error.message, 'error');
-        }
+        });
     });
 });
 
-function updateCartCount(count) {
-    const cartCountElements = document.querySelectorAll('.cart-count');
-    cartCountElements.forEach(el => {
-        el.textContent = count;
-        if (count > 0) {
-            el.classList.remove('hidden');
-        } else {
-            el.classList.add('hidden');
-        }
-    });
-}
-
-function showNotification(message, type = 'success') {
-    const notification = document.createElement('div');
-    notification.className = `fixed top-20 right-4 z-50 px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 ${
-        type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-    }`;
-    notification.innerHTML = `
-        <div class="flex items-center gap-2">
-            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-            <span>${message}</span>
-        </div>
-    `;
-    document.body.appendChild(notification);
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-    setTimeout(() => {
-        notification.style.transform = 'translateX(400px)';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-}
-
+// Global functions for quick view
 function quickView(productId) {
     const modal = document.getElementById('quickViewModal');
     const content = document.getElementById('quickViewContent');
+
     modal.classList.remove('hidden');
     modal.classList.add('flex');
     content.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-3xl text-[#52823C]"></i><p class="mt-2">Loading...</p></div>';
 
     fetch(`/product/${productId}/quick-view`, {
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
     })
     .then(response => response.json())
-    .then(data => { content.innerHTML = data.html; })
-    .catch(error => { content.innerHTML = '<div class="text-center py-8 text-red-500">Error loading product details</div>'; });
+    .then(data => {
+        content.innerHTML = data.html;
+        // Initialize quick view functionality after content is loaded
+        initQuickViewFunctions();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        content.innerHTML = '<div class="text-center py-8 text-red-500">Error loading product details. Please try again.</div>';
+    });
 }
 
 function closeQuickView() {
     const modal = document.getElementById('quickViewModal');
     modal.classList.add('hidden');
     modal.classList.remove('flex');
+}
+
+function initQuickViewFunctions() {
+    const modal = document.getElementById('quickViewModal');
+    if (!modal) return;
+
+    // Quantity controls for quick view
+    const decreaseBtn = modal.querySelector('.quick-qty-decrease');
+    const increaseBtn = modal.querySelector('.quick-qty-increase');
+    const quantityInput = modal.querySelector('.quick-quantity');
+
+    if (decreaseBtn && increaseBtn && quantityInput) {
+        const maxStock = parseInt(quantityInput.getAttribute('max')) || 999;
+
+        // Remove existing listeners by cloning
+        const newDecreaseBtn = decreaseBtn.cloneNode(true);
+        const newIncreaseBtn = increaseBtn.cloneNode(true);
+        decreaseBtn.parentNode.replaceChild(newDecreaseBtn, decreaseBtn);
+        increaseBtn.parentNode.replaceChild(newIncreaseBtn, increaseBtn);
+
+        newDecreaseBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            let currentVal = parseInt(quantityInput.value);
+            if (currentVal > 1) {
+                quantityInput.value = currentVal - 1;
+            }
+        });
+
+        newIncreaseBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            let currentVal = parseInt(quantityInput.value);
+            if (currentVal < maxStock) {
+                quantityInput.value = currentVal + 1;
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Maximum quantity reached',
+                    text: `Only ${maxStock} items available in stock.`,
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        });
+
+        quantityInput.addEventListener('change', function() {
+            let val = parseInt(this.value);
+            if (isNaN(val) || val < 1) {
+                this.value = 1;
+            } else if (val > maxStock) {
+                this.value = maxStock;
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Maximum quantity reached',
+                    text: `Only ${maxStock} items available in stock.`,
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        });
+    }
+
+    // Add to cart button in quick view
+    const addToCartBtn = modal.querySelector('.quick-add-to-cart');
+    if (addToCartBtn) {
+        const newAddToCartBtn = addToCartBtn.cloneNode(true);
+        addToCartBtn.parentNode.replaceChild(newAddToCartBtn, addToCartBtn);
+
+        newAddToCartBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-product-id');
+            const quantityInput = modal.querySelector('.quick-quantity');
+            const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            this.disabled = true;
+
+            try {
+                const response = await fetch('{{ route("cart.add") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: quantity
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const cartCounter = document.getElementById('cart-counter');
+                    if (cartCounter) {
+                        cartCounter.textContent = data.cart_count;
+                        cartCounter.classList.add('animate-bounce');
+                        setTimeout(() => cartCounter.classList.remove('animate-bounce'), 500);
+                    }
+
+                    this.innerHTML = '<i class="fas fa-check"></i> Added!';
+                    this.style.background = '#10B981';
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Cart!',
+                        text: 'Product has been added to your cart.',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                    setTimeout(() => {
+                        closeQuickView();
+                    }, 1500);
+                } else {
+                    throw new Error(data.message || 'Failed to add to cart');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                this.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
+                this.style.background = '#EF4444';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: error.message || 'Something went wrong. Please try again.',
+                    confirmButtonText: 'OK'
+                });
+
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.style.background = '#52823C';
+                    this.disabled = false;
+                }, 2000);
+            }
+        });
+    }
 }
 </script>
 

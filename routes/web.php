@@ -52,7 +52,12 @@ use App\Models\versationcard;
 Route::get('/', function () {
     $currency = request()->query('currency', 'usd');
     $coachingpackages = CoachingPackages::with('features')->get();
-    $products = Product::with('images')->get();
+
+    // Show last added products first - order by created_at DESC
+    $products = Product::with('images')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
     $packages = package::all();
     $cards = versationcard::all();
     $banners = Banner::active()->ordered()->get();
@@ -78,7 +83,7 @@ Route::get('/', function () {
     }
 
     // Get consultation testimonials for before/after
-       $consultTestimonials = ConsultTestimonial::with('measurements')
+    $consultTestimonials = ConsultTestimonial::with('measurements')
         ->public()
         ->orderBy('created_at', 'desc')
         ->take(6)
@@ -452,3 +457,4 @@ Route::get('/testimonials/{slug}', [App\Http\Controllers\ConsultTestimonialContr
     // KCB Payment Routes
 Route::get('/payment/kcb/success', [KCBPaymentController::class, 'showSuccess'])->name('kcb.payment.success');
 Route::get('/payment/kcb/failure', [KCBPaymentController::class, 'showFailure'])->name('kcb.payment.failure');
+Route::get('/product/{product}/quick-view', [App\Http\Controllers\ProductController::class, 'quickView'])->name('product.quick-view');

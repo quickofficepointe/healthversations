@@ -315,7 +315,152 @@
         </div>
     </div>
 
-    <!-- Rest of the content remains same (tabbed content, modals, scripts) -->
-    <!-- ... keep your existing tabbed content, modals, and scripts ... -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Product Quantity Controls
+    const decreaseBtn = document.querySelector('.decrease');
+    const increaseBtn = document.querySelector('.increase');
+    const quantityInput = document.querySelector('.quantity');
+    const maxStockSpan = document.querySelector('.max-stock-display');
+    let maxStock = parseInt(maxStockSpan ? maxStockSpan.textContent : 999);
+
+    if (decreaseBtn && increaseBtn && quantityInput) {
+        decreaseBtn.addEventListener('click', function() {
+            let currentVal = parseInt(quantityInput.value);
+            if (currentVal > 1) {
+                quantityInput.value = currentVal - 1;
+            }
+        });
+
+        increaseBtn.addEventListener('click', function() {
+            let currentVal = parseInt(quantityInput.value);
+            if (currentVal < maxStock) {
+                quantityInput.value = currentVal + 1;
+            }
+        });
+
+        quantityInput.addEventListener('change', function() {
+            let val = parseInt(this.value);
+            if (isNaN(val) || val < 1) {
+                this.value = 1;
+            } else if (val > maxStock) {
+                this.value = maxStock;
+            }
+        });
+    }
+
+    // Variant Selection
+    const variantOptions = document.querySelectorAll('.variant-option');
+    const selectedVariantInput = document.getElementById('selectedVariant');
+
+    if (variantOptions.length && selectedVariantInput) {
+        variantOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Update active state
+                variantOptions.forEach(opt => {
+                    opt.classList.remove('border-[#93C754]', 'bg-green-50');
+                    opt.classList.add('border-gray-200');
+                    opt.setAttribute('aria-pressed', 'false');
+                });
+                this.classList.remove('border-gray-200');
+                this.classList.add('border-[#93C754]', 'bg-green-50');
+                this.setAttribute('aria-pressed', 'true');
+
+                // Update selected variant ID
+                const variantId = this.getAttribute('data-variant-id');
+                selectedVariantInput.value = variantId;
+
+                // Update max stock
+                const stock = parseInt(this.getAttribute('data-stock'));
+                maxStock = stock;
+                if (maxStockSpan) maxStockSpan.textContent = stock;
+
+                // Reset quantity to 1 if it exceeds new max
+                if (parseInt(quantityInput.value) > maxStock) {
+                    quantityInput.value = maxStock;
+                }
+            });
+        });
+    }
+
+    // Add to Cart Functionality
+    const addToCartBtn = document.querySelector('.add-to-cart');
+
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', async function() {
+            const productId = {{ $product->id }};
+            const quantity = parseInt(document.querySelector('.quantity').value);
+            const variantId = document.getElementById('selectedVariant') ? document.getElementById('selectedVariant').value : null;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+            // Prepare request body
+            const requestBody = {
+                product_id: productId,
+                quantity: quantity
+            };
+
+            if (variantId) {
+                requestBody.variant_id = variantId;
+            }
+
+            // Show loading state
+            const originalText = this.innerHTML;
+            this.innerHTML = '<span class="add-to-cart-text">Adding...</span><svg class="animate-spin ml-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+            this.disabled = true;
+
+            try {
+                const response = await fetch('{{ route("cart.add") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update cart counter
+                    const cartCounter = document.getElementById('cart-counter');
+                    if (cartCounter) {
+                        cartCounter.textContent = data.cart_count;
+                        cartCounter.classList.add('animate-bounce');
+                        setTimeout(() => cartCounter.classList.remove('animate-bounce'), 500);
+                    }
+
+                    // Show success notification
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Cart!',
+                        text: 'Product has been added to your cart successfully.',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+
+                    // Reset button
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                } else {
+                    throw new Error(data.message || 'Failed to add to cart');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: error.message || 'Something went wrong. Please try again.',
+                    confirmButtonText: 'OK'
+                });
+                this.innerHTML = originalText;
+                this.disabled = false;
+            }
+        });
+    }
+});
+</script>
 </div>
 @endsection
