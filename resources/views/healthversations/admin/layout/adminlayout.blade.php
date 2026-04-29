@@ -178,17 +178,27 @@
                         <i class="fas fa-shopping-cart mr-3"></i> Ebook Orders
                     </a>
                 </li>
-<!-- Add this after Versation Cards or before User Interactions -->
-<li class="mt-4">
-    <p class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-white text-opacity-70">
-        Meal Plans
-    </p>
-</li>
-<li>
-    <a href="{{ route('admin.meal-plans.index') }}" class="flex items-center px-3 py-3 text-sm rounded-md nav-link {{ request()->routeIs('admin.meal-plans.*') ? 'active' : '' }}">
-        <i class="fas fa-utensils mr-3"></i> Meal Plans
-    </a>
-</li>
+
+                <!-- Product Reviews -->
+                <li>
+                    <a href="{{ route('admin.reviews.index') }}" class="flex items-center px-3 py-3 text-sm rounded-md nav-link {{ request()->routeIs('admin.reviews.*') ? 'active' : '' }}">
+                        <i class="fas fa-star-half-alt mr-3"></i> Product Reviews
+                        <span class="ml-auto bg-purple-500 text-white text-xs rounded-full px-2 py-1" id="pendingReviewsCount"></span>
+                    </a>
+                </li>
+
+                <!-- Meal Plans -->
+                <li class="mt-4">
+                    <p class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-white text-opacity-70">
+                        Meal Plans
+                    </p>
+                </li>
+                <li>
+                    <a href="{{ route('admin.meal-plans.index') }}" class="flex items-center px-3 py-3 text-sm rounded-md nav-link {{ request()->routeIs('admin.meal-plans.*') ? 'active' : '' }}">
+                        <i class="fas fa-utensils mr-3"></i> Meal Plans
+                    </a>
+                </li>
+
                 <li class="mt-4">
                     <p class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-white text-opacity-70">
                         Services & Products</p>
@@ -213,6 +223,15 @@
                         <i class="fas fa-credit-card mr-3"></i> Versation Cards
                     </a>
                 </li>
+
+                <!-- ==================== BLOCKED SLOTS - ADDED HERE ==================== -->
+                <li>
+                    <a href="{{ route('admin.blocked-slots.index') }}" class="flex items-center px-3 py-3 text-sm rounded-md nav-link {{ request()->routeIs('admin.blocked-slots.*') ? 'active' : '' }}">
+                        <i class="fas fa-calendar-times mr-3"></i> Blocked Slots
+                        <span class="ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-1" id="blockedSlotsCount"></span>
+                    </a>
+                </li>
+                <!-- ==================== END BLOCKED SLOTS ==================== -->
 
                 <!-- NEW SECTIONS ADDED HERE -->
                 <li class="mt-4">
@@ -377,6 +396,27 @@
                 timer: 3000
             });
         @endif
+
+        // Function to update blocked slots count badge
+        function updateBlockedSlotsCount() {
+            fetch('{{ route("admin.blocked-slots.count") }}')
+                .then(response => response.json())
+                .then(data => {
+                    const badge = document.getElementById('blockedSlotsCount');
+                    if (badge && data.count > 0) {
+                        badge.textContent = data.count;
+                        badge.classList.remove('hidden');
+                    } else if (badge) {
+                        badge.classList.add('hidden');
+                    }
+                })
+                .catch(error => console.error('Error fetching blocked slots count:', error));
+        }
+
+        // Call the function on page load
+        updateBlockedSlotsCount();
+        // Update every 30 seconds
+        setInterval(updateBlockedSlotsCount, 30000);
     </script>
 
     @yield('scripts')

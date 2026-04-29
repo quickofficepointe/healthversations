@@ -63,7 +63,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 2",
+      "position": 2,
       "name": "Products",
       "item": "{{ route('all.products') }}"
     },
@@ -87,7 +87,7 @@
             <span class="font-bold text-lg">🔥 LIMITED TIME OFFER: 20% OFF ALL PRODUCTS! 🔥</span>
             <i class="fas fa-fire text-2xl"></i>
         </div>
-        <p class="text-sm mt-1 opacity-90">Use code automatically applied at checkout | Offer ends soon</p>
+        <p class="text-sm mt-1 opacity-90">Discount automatically applied at checkout | Offer ends soon</p>
     </div>
 
     <div class="flex flex-col md:flex-row items-start gap-8">
@@ -106,7 +106,7 @@
 
             <!-- Additional Images -->
             @if($product->images && $product->images->count())
-            <div class="flex gap-2 mt-4 overflow-x-auto scrollbar-hide pb-2">
+            <div class="flex gap-2 mt-4 overflow-x-auto pb-2">
                 @foreach($product->images as $index => $image)
                     @php
                         $imagePath = $image->image_path;
@@ -154,7 +154,6 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         @foreach($product->variants as $variant)
                             @php
-                                // Calculate discounted prices for variant
                                 $defaultDiscount = 20;
                                 $originalVariantPriceKES = $variant->price_kes;
                                 $currentVariantPriceKES = $originalVariantPriceKES;
@@ -260,7 +259,7 @@
                 <button class="add-to-cart flex items-center justify-center bg-[#93C754] text-white px-6 py-3 text-sm font-semibold uppercase rounded-lg shadow-md hover:bg-opacity-90 transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
                     {{ ($product->has_variations && $product->variants->count() ? $product->variants->first()->stock : $product->stock) <= 0 ? 'disabled' : '' }}>
                     <span class="add-to-cart-text">Add to Cart</span>
-                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg class="animate-spin ml-2 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
@@ -281,24 +280,14 @@
             <!-- Review Stars -->
             <div class="flex items-center mt-6 pt-6 border-t">
                 @php
-                    $averageRating = $product->reviews->avg('rating') ?? 0;
+                    $averageRating = $product->reviews->avg('star') ?? 0;
                     $reviewCount = $product->reviews->count();
                 @endphp
                 <div class="flex items-center">
                     @for($i = 1; $i <= 5; $i++)
-                        @if($i <= $averageRating)
+                        @if($i <= round($averageRating))
                             <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                            </svg>
-                        @elseif($i - 0.5 <= $averageRating)
-                            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                <defs>
-                                    <linearGradient id="half-star" x1="0" x2="100%" y1="0" y2="0">
-                                        <stop offset="50%" stop-color="currentColor"></stop>
-                                        <stop offset="50%" stop-color="#D1D5DB"></stop>
-                                    </linearGradient>
-                                </defs>
-                                <path fill="url(#half-star)" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                             </svg>
                         @else
                             <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
@@ -307,7 +296,7 @@
                         @endif
                     @endfor
                 </div>
-                <span class="ml-2 text-gray-600 text-sm">{{ number_format($averageRating, 1) }} ({{ $reviewCount }} reviews)</span>
+                <span class="ml-2 text-gray-600 text-sm">{{ number_format($averageRating, 1) }} ({{ $reviewCount }} {{ Str::plural('review', $reviewCount) }})</span>
                 <button class="open-review-modal ml-4 text-sm text-[#0A4040] font-semibold hover:underline focus:outline-none">
                     Write a review
                 </button>
@@ -315,8 +304,174 @@
         </div>
     </div>
 
+    <!-- Product Description Tabs -->
+    <div class="mt-12">
+        <div class="border-b border-gray-200">
+            <nav class="flex space-x-8">
+                <button class="tab-btn py-4 px-1 border-b-2 font-medium text-sm transition-colors" data-tab="description">
+                    Description
+                </button>
+                <button class="tab-btn py-4 px-1 border-b-2 font-medium text-sm transition-colors" data-tab="reviews">
+                    Reviews ({{ $reviewCount }})
+                </button>
+            </nav>
+        </div>
+
+        <!-- Description Tab -->
+        <div id="description-tab" class="tab-content py-6">
+            <div class="prose max-w-none">
+                {!! $product->description !!}
+            </div>
+        </div>
+
+        <!-- Reviews Tab -->
+        <div id="reviews-tab" class="tab-content py-6 hidden">
+            <div class="space-y-6">
+                @if($product->reviews->where('approved', true)->count() > 0)
+                    @foreach($product->reviews->where('approved', true) as $review)
+                        <div class="border-b border-gray-200 pb-4">
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        @if($i <= $review->star)
+                                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                            </svg>
+                                        @else
+                                            <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20">
+                                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                            </svg>
+                                        @endif
+                                    @endfor
+                                </div>
+                                <span class="ml-2 font-medium text-gray-800">{{ $review->name }}</span>
+                                <span class="ml-auto text-sm text-gray-500">{{ $review->created_at->format('M d, Y') }}</span>
+                            </div>
+                            <p class="text-gray-600">{{ $review->review }}</p>
+                        </div>
+                    @endforeach
+                @else
+                    <p class="text-gray-500 text-center py-8">No reviews yet. Be the first to review this product!</p>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Review Modal -->
+<div id="reviewModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white border-b p-4 flex justify-between items-center">
+            <h3 class="text-xl font-bold text-[#0A4040]">Write a Review</h3>
+            <button onclick="closeReviewModal()" class="text-gray-500 hover:text-gray-700 transition-colors">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+        <div class="p-6">
+            <form id="reviewForm" action="{{ route('reviews.store', $product->id) }}" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2">Your Name *</label>
+                    <input type="text" name="name" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#93C754] focus:border-transparent" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2">Your Email *</label>
+                    <input type="email" name="email" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#93C754] focus:border-transparent" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2">Rating *</label>
+                    <div class="flex space-x-2" id="reviewRatingStars">
+                        @for($i = 1; $i <= 5; $i++)
+                            <button type="button" class="text-3xl text-gray-300 hover:text-yellow-400 transition-colors rating-star-btn" data-rating="{{ $i }}">
+                                ★
+                            </button>
+                        @endfor
+                    </div>
+                    <input type="hidden" name="star" id="reviewStarValue" required>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-2">Your Review *</label>
+                    <textarea name="review" rows="4" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#93C754] focus:border-transparent" placeholder="Share your experience with this product..." required></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeReviewModal()" class="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors">Cancel</button>
+                    <button type="submit" class="bg-[#93C754] hover:bg-[#7eae47] text-white px-6 py-2 rounded-lg font-medium transition-colors">Submit Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Image Modal (if needed) -->
+<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center p-4">
+    <button onclick="closeImageModal()" class="absolute top-4 right-4 text-white text-3xl hover:text-gray-300 transition-colors">&times;</button>
+    <img id="modalImage" src="" alt="Product Image" class="max-w-full max-h-full object-contain">
+</div>
+
+<style>
+    .tab-btn {
+        border-color: transparent;
+        color: #6B7280;
+    }
+    .tab-btn.active {
+        border-color: #93C754;
+        color: #0A4040;
+    }
+    .rating-star-btn {
+        transition: all 0.2s ease;
+    }
+    .rating-star-btn:hover,
+    .rating-star-btn.active {
+        color: #FFB800;
+        transform: scale(1.1);
+    }
+    #reviewModal {
+        backdrop-filter: blur(4px);
+    }
+    .animate-spin {
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Tab functionality
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = {
+        description: document.getElementById('description-tab'),
+        reviews: document.getElementById('reviews-tab')
+    };
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+
+            tabBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            Object.values(tabContents).forEach(content => {
+                if (content) content.classList.add('hidden');
+            });
+
+            if (tabContents[tabId]) {
+                tabContents[tabId].classList.remove('hidden');
+            }
+        });
+    });
+
+    // Set default active tab
+    if (tabBtns.length > 0) {
+        tabBtns[0].classList.add('active');
+    }
+
     // Product Quantity Controls
     const decreaseBtn = document.querySelector('.decrease');
     const increaseBtn = document.querySelector('.increase');
@@ -345,6 +500,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.value = 1;
             } else if (val > maxStock) {
                 this.value = maxStock;
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Maximum quantity reached',
+                    text: `Only ${maxStock} items available in stock.`,
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
             }
         });
     }
@@ -356,7 +520,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (variantOptions.length && selectedVariantInput) {
         variantOptions.forEach(option => {
             option.addEventListener('click', function() {
-                // Update active state
                 variantOptions.forEach(opt => {
                     opt.classList.remove('border-[#93C754]', 'bg-green-50');
                     opt.classList.add('border-gray-200');
@@ -366,16 +529,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.classList.add('border-[#93C754]', 'bg-green-50');
                 this.setAttribute('aria-pressed', 'true');
 
-                // Update selected variant ID
                 const variantId = this.getAttribute('data-variant-id');
                 selectedVariantInput.value = variantId;
 
-                // Update max stock
                 const stock = parseInt(this.getAttribute('data-stock'));
                 maxStock = stock;
                 if (maxStockSpan) maxStockSpan.textContent = stock;
 
-                // Reset quantity to 1 if it exceeds new max
                 if (parseInt(quantityInput.value) > maxStock) {
                     quantityInput.value = maxStock;
                 }
@@ -393,7 +553,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const variantId = document.getElementById('selectedVariant') ? document.getElementById('selectedVariant').value : null;
             const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-            // Prepare request body
             const requestBody = {
                 product_id: productId,
                 quantity: quantity
@@ -403,7 +562,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 requestBody.variant_id = variantId;
             }
 
-            // Show loading state
             const originalText = this.innerHTML;
             this.innerHTML = '<span class="add-to-cart-text">Adding...</span><svg class="animate-spin ml-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
             this.disabled = true;
@@ -422,7 +580,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const data = await response.json();
 
                 if (data.success) {
-                    // Update cart counter
                     const cartCounter = document.getElementById('cart-counter');
                     if (cartCounter) {
                         cartCounter.textContent = data.cart_count;
@@ -430,7 +587,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         setTimeout(() => cartCounter.classList.remove('animate-bounce'), 500);
                     }
 
-                    // Show success notification
                     Swal.fire({
                         icon: 'success',
                         title: 'Added to Cart!',
@@ -441,7 +597,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         timer: 2000
                     });
 
-                    // Reset button
                     this.innerHTML = originalText;
                     this.disabled = false;
                 } else {
@@ -460,7 +615,184 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // ==================== REVIEW MODAL FUNCTIONALITY ====================
+
+    const openReviewBtn = document.querySelector('.open-review-modal');
+    const reviewModal = document.getElementById('reviewModal');
+
+    if (openReviewBtn && reviewModal) {
+        openReviewBtn.addEventListener('click', function() {
+            reviewModal.classList.remove('hidden');
+            reviewModal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    window.closeReviewModal = function() {
+        if (reviewModal) {
+            reviewModal.classList.add('hidden');
+            reviewModal.classList.remove('flex');
+            document.body.style.overflow = '';
+            const reviewForm = document.getElementById('reviewForm');
+            if (reviewForm) {
+                reviewForm.reset();
+            }
+            document.querySelectorAll('.rating-star-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-yellow-400');
+                btn.classList.add('text-gray-300');
+            });
+            document.getElementById('reviewStarValue').value = '';
+        }
+    };
+
+    if (reviewModal) {
+        reviewModal.addEventListener('click', function(e) {
+            if (e.target === reviewModal) {
+                closeReviewModal();
+            }
+        });
+    }
+
+    // Rating stars functionality
+    const ratingStars = document.querySelectorAll('.rating-star-btn');
+    const starValueInput = document.getElementById('reviewStarValue');
+
+    if (ratingStars.length && starValueInput) {
+        ratingStars.forEach(star => {
+            star.addEventListener('click', function() {
+                const rating = parseInt(this.getAttribute('data-rating'));
+                starValueInput.value = rating;
+
+                ratingStars.forEach((s, index) => {
+                    if (index < rating) {
+                        s.classList.add('active', 'text-yellow-400');
+                        s.classList.remove('text-gray-300');
+                    } else {
+                        s.classList.remove('active', 'text-yellow-400');
+                        s.classList.add('text-gray-300');
+                    }
+                });
+            });
+
+            star.addEventListener('mouseenter', function() {
+                const rating = parseInt(this.getAttribute('data-rating'));
+                ratingStars.forEach((s, index) => {
+                    if (index < rating) {
+                        s.classList.add('text-yellow-400');
+                        s.classList.remove('text-gray-300');
+                    } else {
+                        s.classList.add('text-gray-300');
+                        s.classList.remove('text-yellow-400');
+                    }
+                });
+            });
+
+            star.addEventListener('mouseleave', function() {
+                const currentRating = parseInt(starValueInput.value) || 0;
+                ratingStars.forEach((s, index) => {
+                    if (index < currentRating) {
+                        s.classList.add('text-yellow-400');
+                        s.classList.remove('text-gray-300');
+                    } else {
+                        s.classList.remove('text-yellow-400');
+                        s.classList.add('text-gray-300');
+                    }
+                });
+            });
+        });
+    }
+
+    // Handle review form submission
+    const reviewForm = document.getElementById('reviewForm');
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+
+            const rating = document.getElementById('reviewStarValue').value;
+            if (!rating) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Rating Required',
+                    text: 'Please select a star rating for your review.',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Review Submitted!',
+                        text: 'Thank you for your feedback. Your review will appear after approval.',
+                        confirmButtonText: 'OK'
+                    });
+                    closeReviewModal();
+                } else {
+                    throw new Error(data.message || 'Failed to submit review');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Submission Failed',
+                    text: error.message || 'Something went wrong. Please try again.',
+                    confirmButtonText: 'OK'
+                });
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    }
+});
+
+// Image Modal Functions
+function openImageModal(imageUrl, allImages, index) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    if (modal && modalImg) {
+        modalImg.src = imageUrl;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+}
+
+// Close image modal with escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeImageModal();
+        closeReviewModal();
+    }
 });
 </script>
-</div>
 @endsection

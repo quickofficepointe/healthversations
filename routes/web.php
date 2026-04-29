@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuperadminController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BannerController;
+use App\Http\Controllers\BlockedSlotController;
 use App\Http\Controllers\BlogcategoryController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CartController;
@@ -106,6 +107,7 @@ Route::get('/', function () {
         'consultTestimonials'
     ));
 });
+Route::get('/consultations/available-slots', [ConsultationController::class, 'getAvailableSlots'])->name('consultations.available-slots');
 // ==================== AUTHENTICATION ROUTES ====================
 Auth::routes(['verify' => true]);
 
@@ -167,8 +169,20 @@ Route::put('/custom-packages/{id}/update-status', [CustomPackageController::clas
 // ==================== ADMIN ROUTES ====================
 Route::middleware('admin')->group(function () {
     // Dashboard
+    // Blocked Slots Management
+    // Add this inside your admin middleware group
+Route::get('/admin/blocked-slots/count', [BlockedSlotController::class, 'getCount'])->name('admin.blocked-slots.count');
+Route::get('/admin/blocked-slots', [BlockedSlotController::class, 'index'])->name('admin.blocked-slots.index');
+Route::post('/admin/blocked-slots', [BlockedSlotController::class, 'store'])->name('admin.blocked-slots.store');
+Route::delete('/admin/blocked-slots/{id}', [BlockedSlotController::class, 'destroy'])->name('admin.blocked-slots.destroy');
+    // In your admin routes group
+Route::get('/admin/reviews', [ReviewController::class, 'adminIndex'])->name('admin.reviews.index');
+Route::post('/admin/reviews/{id}/approve', [ReviewController::class, 'approve'])->name('admin.reviews.approve');
+Route::delete('/admin/reviews/{id}/reject', [ReviewController::class, 'reject'])->name('admin.reviews.reject');
+Route::post('/admin/reviews/bulk-action', [ReviewController::class, 'bulkAction'])->name('admin.reviews.bulk-action');
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
- Route::get('users', [UserController::class, 'index'])->name('users.index');
+Route::get('/admin/reviews/pending-count', [ReviewController::class, 'getPendingCount'])->name('admin.reviews.pending-count');
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
 Route::get('consult/testimonials', [ConsultTestimonialController::class, 'index'])
     ->name('consult.admin.testimonials.index');
 

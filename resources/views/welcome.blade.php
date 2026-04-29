@@ -275,8 +275,7 @@
           <div class="inline-block bg-[#93C754]/90 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4">
             🎉 20% OFF SITEWIDE 🎉
           </div>
-          <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg">Transform Your Health Naturally</h1>
-          <p class="text-lg md:text-xl mb-6 drop-shadow-lg max-w-2xl mx-auto">Personalized wellness solutions, premium natural products, and expert coaching for a healthier you</p>
+
           <div class="flex flex-wrap justify-center gap-4">
             <a href="{{ route('all.products') }}" class="bg-[#93C754] hover:bg-[#7eae47] text-white px-6 py-3 rounded-lg font-bold transition-all transform hover:scale-105">
               Shop Now
@@ -526,7 +525,7 @@
                 </div>
 
                 <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-                  {{ Str::limit($product->description, 80) }}
+                  {!! Str::limit($product->description, 80) !!}
                 </p>
 
                 <div class="flex items-center justify-between mt-auto">

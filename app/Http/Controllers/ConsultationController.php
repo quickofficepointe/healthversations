@@ -24,13 +24,23 @@ class ConsultationController extends Controller
             'defaultLocation' => 'international'
         ]);
     }
+public function getAvailableSlots(Request $request)
+{
+    $date = $request->get('date');
+    $type = $request->get('type');
 
+    $availableSlots = Consultation::getAvailableTimeSlots($date);
+
+    return response()->json([
+        'available_slots' => $availableSlots
+    ]);
+}
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:100',
             'email' => 'required|email|max:100',
-            'phone' => 'required|string|max:20', 
+            'phone' => 'required|string|max:20',
             'type' => 'required|in:initial,followup,nutrition_review,specialized',
             'consultation_date' => 'required|date|after_or_equal:today',
             'consultation_time' => 'required|date_format:H:i',
@@ -59,11 +69,11 @@ class ConsultationController extends Controller
         // Get type label for email
         $typeLabels = [
             'initial' => 'Initial Consultation',
-            'followup' => 'Follow-up Consultation', 
+            'followup' => 'Follow-up Consultation',
             'nutrition_review' => 'Nutrition Review',
             'specialized' => 'Specialized Consultation'
         ];
-        
+
         $typeLabel = $typeLabels[$consultation->type] ?? $consultation->type;
         $amount = $consultation->location === Consultation::LOCATION_KENYA ? 'KES 3,000' : '$31 USD';
 
@@ -96,7 +106,7 @@ www.healthveration.com", function ($message) use ($consultation) {
             $message->to($consultation->email)
                     ->subject('Your Consultation Has Been Booked Successfully!');
         });
-        
+
         // Send email to sales team
         Mail::raw("NEW CONSULTATION BOOKING NOTIFICATION
 ==========================================
@@ -212,35 +222,35 @@ Created at: {$consultation->created_at}", function ($message) use ($consultation
         return 'x:' . $time . '-' . hash('sha256', $tokenData);
     }
 
-   
+
     // Show list of all consultations (INDEX)
     public function show(Request $request)
     {
         // Get filter parameters
         $status = $request->get('status');
         $payment = $request->get('payment');
-        
+
         // Start query
         $query = Consultation::query()->latest();
-        
+
         // Apply filters
         if ($status) {
             $query->where('status', $status);
         }
-        
+
         if ($payment) {
             $query->where('payment_status', $payment);
         }
-        
+
         // Get paginated results
         $consultations = $query->paginate(10);
-        
+
         // Get counts for stats
         $totalCount = Consultation::count();
         $pendingCount = Consultation::where('status', 'pending')->count();
         $approvedCount = Consultation::where('status', 'approved')->count();
         $unpaidCount = Consultation::where('payment_status', 'unpaid')->count();
-        
+
         return view('healthversations.admin.consultation.show', compact(
             'consultations',
             'totalCount',
@@ -249,7 +259,7 @@ Created at: {$consultation->created_at}", function ($message) use ($consultation
             'unpaidCount'
         ));
     }
-    
+
     public function edit(Consultation $consultation)
     {
         return view('admin.consultations.edit', compact('consultation'));

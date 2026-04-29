@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
 @section('title', 'Book Your Health Consultation | Personalized Wellness Coaching')
-@section('meta_description', 'Book a personalized health consultation with our expert wellness coaches. Choose from initial assessments, follow-ups, nutrition reviews, or specialized consultations. Start your wellness journey today.')
-@section('meta_keywords', 'health consultation, wellness coaching, nutrition consultation, health assessment, personalized wellness, Health Versations, online consultation')
+@section('meta_description', 'Book a personalized health consultation with our expert wellness coaches. Choose from online or physical consultations. Start your wellness journey today.')
+@section('meta_keywords', 'health consultation, wellness coaching, nutrition consultation, physical consultation, health assessment, personalized wellness, Health Versations')
 @section('meta_author', 'Health Versations Team')
 @section('meta_robots', 'index, follow')
 @section('canonical_url', route('consultations.create'))
 
 @section('og_title', 'Book Your Health Consultation | Health Versations')
-@section('og_description', 'Transform your health with personalized wellness coaching. Book your consultation today and get expert guidance on nutrition, gut health, and holistic wellness.')
+@section('og_description', 'Transform your health with personalized wellness coaching. Book your consultation today - online or physical sessions available.')
 @section('og_image', asset('Assets/images/consultation-banner.jpg'))
 @section('og_image:width', '1200')
 @section('og_image:height', '630')
@@ -16,12 +16,10 @@
 @section('og_type', 'website')
 
 @section('twitter_title', 'Book Your Health Consultation | Health Versations')
-@section('twitter_description', 'Expert wellness coaching personalized for your health goals. Book online today.')
+@section('twitter_description', 'Expert wellness coaching personalized for your health goals. Book online or physical consultation today.')
 @section('twitter_image', asset('Assets/images/consultation-banner.jpg'))
 @section('twitter_card', 'summary_large_image')
 
-@section('content')
-<!-- JSON-LD: Service Schema -->
 @push('json-ld')
 <script type="application/ld+json">
 {
@@ -34,22 +32,27 @@
     "@type": "MedicalClinic",
     "name": "Health Versations",
     "description": "Professional health and wellness consultation services",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Nairobi",
+      "addressCountry": "KE"
+    },
     "medicalSpecialty": "Wellness",
     "availableService": [
       {
         "@type": "MedicalProcedure",
-        "name": "Initial Health Assessment",
+        "name": "Physical Consultation",
+        "description": "In-person 2-hour comprehensive health assessment"
+      },
+      {
+        "@type": "MedicalProcedure",
+        "name": "Online Initial Consultation",
         "description": "Comprehensive 60-minute health evaluation"
       },
       {
         "@type": "MedicalProcedure",
-        "name": "Follow-up Consultation",
+        "name": "Online Follow-up Consultation",
         "description": "30-minute progress review session"
-      },
-      {
-        "@type": "MedicalProcedure",
-        "name": "Nutrition Review",
-        "description": "45-minute nutrition plan evaluation"
       }
     ]
   }
@@ -57,7 +60,6 @@
 </script>
 @endpush
 
-<!-- JSON-LD: Breadcrumb Schema -->
 @push('json-ld')
 <script type="application/ld+json">
 {
@@ -81,6 +83,7 @@
 </script>
 @endpush
 
+@section('content')
 <div class="bg-gradient-to-b from-gray-50 to-white py-8 md:py-12">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -95,6 +98,7 @@
             <div class="w-24 h-1 bg-gradient-to-r from-[#93C754] to-[#0A4040] mx-auto mb-6 rounded-full"></div>
             <p class="text-lg text-gray-600 max-w-2xl mx-auto">
                 Take the first step towards better health with personalized guidance from our expert wellness coaches.
+                Choose between online consultations or in-person sessions at our Nairobi office.
             </p>
         </div>
 
@@ -160,15 +164,16 @@
                                placeholder="2547XXXXXXXX">
                         <p class="text-xs text-gray-500 mt-1">Format: 2547XXXXXXXX (e.g., 254712345678)</p>
                     </div>
-                    <div>
+                    <div id="location-field">
                         <label for="location" class="block text-sm font-medium text-gray-700 mb-2">
-                            Location <span class="text-red-500">*</span>
+                            <i class="fas fa-map-marker-alt mr-2 text-[#93C754]"></i>Location
                         </label>
-                        <select name="location" id="location" required
+                        <select name="location" id="location"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#93C754] focus:border-[#93C754] transition">
-                            <option value="international" {{ old('location', 'international') == 'international' ? 'selected' : '' }}>🌍 International</option>
-                            <option value="kenya" {{ old('location') == 'kenya' ? 'selected' : '' }}>🇰🇪 Kenya</option>
+                            <option value="international" {{ old('location', 'international') == 'international' ? 'selected' : '' }}>🌍 International (Online)</option>
+                            <option value="kenya" {{ old('location') == 'kenya' ? 'selected' : '' }}>🇰🇪 Kenya (Online)</option>
                         </select>
+                        <p class="text-xs text-gray-500 mt-1">For physical consultations, location is fixed at our Nairobi office</p>
                     </div>
                 </div>
 
@@ -196,20 +201,22 @@
                     @foreach($consultationTypes as $value => $label)
                     <label class="consultation-type-card block cursor-pointer">
                         <input type="radio" name="type" value="{{ $value }}" class="sr-only peer"
-                               {{ old('type', App\Models\Consultation::TYPE_INITIAL) == $value ? 'checked' : '' }} required>
+                               {{ old('type', App\Models\Consultation::TYPE_PHYSICAL) == $value ? 'checked' : '' }} required>
                         <div class="p-5 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-[#93C754] peer-checked:border-[#93C754] peer-checked:bg-[#93C754]/5 transition-all">
                             <div class="flex flex-wrap justify-between items-start gap-4">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-3 mb-2">
                                         <div class="w-10 h-10 bg-[#93C754]/20 rounded-full flex items-center justify-center">
                                             @switch($value)
-                                                @case(App\Models\Consultation::TYPE_INITIAL)
+                                                @case('physical')
+                                                    <i class="fas fa-building text-[#0A4040]"></i>@break
+                                                @case('initial')
                                                     <i class="fas fa-clinic-medical text-[#0A4040]"></i>@break
-                                                @case(App\Models\Consultation::TYPE_FOLLOWUP)
+                                                @case('followup')
                                                     <i class="fas fa-chart-line text-[#0A4040]"></i>@break
-                                                @case(App\Models\Consultation::TYPE_NUTRITION_REVIEW)
+                                                @case('nutrition_review')
                                                     <i class="fas fa-apple-alt text-[#0A4040]"></i>@break
-                                                @case(App\Models\Consultation::TYPE_SPECIALIZED)
+                                                @case('specialized')
                                                     <i class="fas fa-heartbeat text-[#0A4040]"></i>@break
                                             @endswitch
                                         </div>
@@ -217,17 +224,22 @@
                                     </div>
                                     <p class="text-sm text-gray-600">
                                         @switch($value)
-                                            @case(App\Models\Consultation::TYPE_INITIAL)
-                                                Comprehensive health assessment including medical history, lifestyle review, and personalized recommendations. (60 min)
+                                            @case('physical')
+                                                In-person consultation at our Nairobi office (TOM MBOYA STREET, STAR MALL, 1st Floor, Shop A17).
+                                                Comprehensive health assessment, physical examination, and personalized recommendations.
+                                                <strong class="text-[#0A4040]">Includes a 2-hour dedicated session with our expert.</strong>
                                                 @break
-                                            @case(App\Models\Consultation::TYPE_FOLLOWUP)
-                                                Progress review session to track improvements and adjust your wellness plan. (30 min)
+                                            @case('initial')
+                                                Comprehensive health assessment including medical history, lifestyle review, and personalized recommendations via video call. (60 min)
                                                 @break
-                                            @case(App\Models\Consultation::TYPE_NUTRITION_REVIEW)
-                                                In-depth nutrition analysis with customized meal planning guidance. (45 min)
+                                            @case('followup')
+                                                Progress review session to track improvements and adjust your wellness plan via video call. (30 min)
                                                 @break
-                                            @case(App\Models\Consultation::TYPE_SPECIALIZED)
-                                                Focused consultation for specific health conditions including gut health, weight loss, or metabolic issues. (60 min)
+                                            @case('nutrition_review')
+                                                In-depth nutrition analysis with customized meal planning guidance via video call. (45 min)
+                                                @break
+                                            @case('specialized')
+                                                Focused consultation for specific health conditions including gut health, weight loss, or metabolic issues via video call. (60 min)
                                                 @break
                                         @endswitch
                                     </p>
@@ -235,14 +247,23 @@
                                 <div class="text-right">
                                     <span class="bg-[#93C754] text-white text-xs px-3 py-1 rounded-full whitespace-nowrap">
                                         @switch($value)
-                                            @case(App\Models\Consultation::TYPE_INITIAL) 60 min @break
-                                            @case(App\Models\Consultation::TYPE_FOLLOWUP) 30 min @break
-                                            @case(App\Models\Consultation::TYPE_NUTRITION_REVIEW) 45 min @break
-                                            @case(App\Models\Consultation::TYPE_SPECIALIZED) 60 min @break
+                                            @case('physical') 2 hours @break
+                                            @case('initial') 60 min @break
+                                            @case('followup') 30 min @break
+                                            @case('nutrition_review') 45 min @break
+                                            @case('specialized') 60 min @break
                                         @endswitch
                                     </span>
-                                    <p class="text-lg font-bold text-[#52823C] mt-2" id="fee-{{ $value }}">
-                                        {{ $defaultLocation === App\Models\Consultation::LOCATION_KENYA ? 'Ksh 3,000' : '$31' }}
+                                    <p class="text-lg font-bold text-[#52823C] mt-2 fee-display" data-type="{{ $value }}">
+                                        @if($value === 'physical')
+                                            Ksh 5,000
+                                        @elseif($value === 'initial')
+                                            <span class="online-fee-kenya">Ksh 3,000</span>
+                                            <span class="online-fee-int" style="display: none;">$31</span>
+                                        @else
+                                            <span class="online-fee-kenya">Ksh 3,000</span>
+                                            <span class="online-fee-int" style="display: none;">$31</span>
+                                        @endif
                                     </p>
                                 </div>
                             </div>
@@ -267,6 +288,7 @@
                                min="{{ date('Y-m-d') }}" required
                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#93C754] focus:border-[#93C754] transition"
                                value="{{ old('consultation_date') }}">
+                        <div id="date-error" class="text-red-500 text-xs mt-1 hidden"></div>
                     </div>
                     <div>
                         <label for="consultation_time" class="block text-sm font-medium text-gray-700 mb-2">
@@ -274,14 +296,14 @@
                         </label>
                         <select name="consultation_time" id="consultation_time" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#93C754] focus:border-[#93C754] transition">
-                            <option value="">Select a time</option>
-                            @foreach(['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'] as $time)
-                            <option value="{{ $time }}" {{ old('consultation_time') == $time ? 'selected' : '' }}>
-                                {{ date('g:i A', strtotime($time)) }}
-                            </option>
-                            @endforeach
+                            <option value="">Select a date first</option>
                         </select>
+                        <div id="time-error" class="text-red-500 text-xs mt-1 hidden"></div>
                     </div>
+                </div>
+                <div class="mt-4 p-3 bg-yellow-50 rounded-lg text-sm text-yellow-800">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    <span id="slot-info">Available time slots are shown based on your selected date and consultation type.</span>
                 </div>
             </div>
 
@@ -323,8 +345,11 @@
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">Consultation Fee:</span>
                         <span class="text-2xl font-bold text-[#52823C]" id="dynamic-fee">
-                            $31.00
+                            Ksh 5,000
                         </span>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2" id="fee-note">
+                        Physical consultation includes 2 hours of dedicated time with our expert at our Nairobi office.
                     </div>
                 </div>
 
@@ -355,7 +380,7 @@
                                     </div>
                                     <div>
                                         <h4 class="font-semibold text-gray-800">M-Pesa</h4>
-                                        <p class="text-sm text-gray-500">Pay with mobile money</p>
+                                        <p class="text-sm text-gray-500">Pay with mobile money (Kenya only)</p>
                                     </div>
                                 </div>
                             </div>
@@ -384,10 +409,10 @@
             </div>
             <div class="text-center p-4">
                 <div class="w-14 h-14 bg-[#93C754]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <i class="fas fa-video text-2xl text-[#0A4040]"></i>
+                    <i class="fas fa-building text-2xl text-[#0A4040]"></i>
                 </div>
-                <h3 class="font-semibold text-gray-800">Virtual Consultations</h3>
-                <p class="text-sm text-gray-500">Connect from anywhere worldwide</p>
+                <h3 class="font-semibold text-gray-800">Physical & Online</h3>
+                <p class="text-sm text-gray-500">Choose in-person or virtual sessions</p>
             </div>
             <div class="text-center p-4">
                 <div class="w-14 h-14 bg-[#93C754]/20 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -412,6 +437,32 @@
         </button>
     </div>
 </div>
+
+<style>
+.consultation-type-card input:checked + div {
+    border-color: #93C754;
+    box-shadow: 0 4px 12px rgba(147, 199, 84, 0.15);
+}
+.payment-method-card input:checked + div {
+    border-color: #93C754;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.spinner {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #93C754;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
 
 <script>
 // Global modal functions
@@ -439,62 +490,154 @@ function hidePaymentModal() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Show/hide timezone based on location
-    const locationField = document.getElementById('location');
+    // Get elements
+    const consultationTypeRadios = document.querySelectorAll('input[name="type"]');
+    const locationField = document.getElementById('location-field');
     const timezoneField = document.getElementById('timezone-field');
+    const locationSelect = document.getElementById('location');
+    const dynamicFee = document.getElementById('dynamic-fee');
+    const feeNote = document.getElementById('fee-note');
+    const dateInput = document.getElementById('consultation_date');
+    const timeSelect = document.getElementById('consultation_time');
 
-    if (locationField && timezoneField) {
-        locationField.addEventListener('change', function() {
-            timezoneField.classList.toggle('hidden', this.value === 'kenya');
-            updateFees();
-            updatePaymentMethods();
-        });
+    // Update fee display based on consultation type and location
+    function updateFeeDisplay() {
+        const selectedType = document.querySelector('input[name="type"]:checked')?.value;
+        const isPhysical = selectedType === 'physical';
+        const isKenya = locationSelect?.value === 'kenya';
+
+        if (isPhysical) {
+            dynamicFee.textContent = 'Ksh 5,000';
+            feeNote.innerHTML = 'Physical consultation includes 2 hours of dedicated time with our expert at our Nairobi office.';
+            // Hide location for physical consultations
+            if (locationField) locationField.style.display = 'none';
+            if (timezoneField) timezoneField.style.display = 'none';
+        } else {
+            if (locationField) locationField.style.display = 'block';
+            if (isKenya) {
+                dynamicFee.textContent = 'Ksh 3,000';
+                if (timezoneField) timezoneField.classList.add('hidden');
+                feeNote.innerHTML = 'Online consultation via video call. Link will be sent after payment confirmation.';
+            } else {
+                dynamicFee.textContent = '$31.00';
+                if (timezoneField) timezoneField.classList.remove('hidden');
+                feeNote.innerHTML = 'International online consultation via video call. Timezone adjusted for your convenience.';
+            }
+        }
+
+        // Refresh available slots when type changes
+        if (dateInput.value) {
+            loadAvailableSlots();
+        }
     }
 
     // Update payment method availability
     function updatePaymentMethods() {
-        const isKenya = locationField?.value === 'kenya';
+        const isPhysical = document.querySelector('input[name="type"]:checked')?.value === 'physical';
+        const isKenya = locationSelect?.value === 'kenya';
         const kcbRadio = document.querySelector('input[name="payment_method"][value="kcb"]');
+        const iveriRadio = document.querySelector('input[name="payment_method"][value="iveri"]');
 
         if (kcbRadio) {
             const kcbCard = kcbRadio.closest('.payment-method-card');
-
+            // M-Pesa only available for Kenya customers (both physical and online)
             if (isKenya) {
                 kcbCard?.classList.remove('opacity-50', 'cursor-not-allowed');
                 kcbRadio.disabled = false;
             } else {
                 kcbCard?.classList.add('opacity-50', 'cursor-not-allowed');
                 kcbRadio.disabled = true;
-                if (kcbRadio.checked) {
-                    const iveriRadio = document.querySelector('input[name="payment_method"][value="iveri"]');
-                    if (iveriRadio) iveriRadio.checked = true;
+                if (kcbRadio.checked && iveriRadio) {
+                    iveriRadio.checked = true;
                 }
             }
         }
     }
 
-    // Update fees when location changes
-    function updateFees() {
-        const isKenya = locationField?.value === 'kenya';
-        const feeDisplay = document.getElementById('dynamic-fee');
-        const consultationType = document.querySelector('input[name="type"]:checked')?.value || 'initial';
+    // Load available time slots
+    async function loadAvailableSlots() {
+        const date = dateInput.value;
+        const type = document.querySelector('input[name="type"]:checked')?.value;
 
-        if (feeDisplay) {
-            feeDisplay.textContent = isKenya ? 'Ksh 3,000' : '$31.00';
+        if (!date || !type) return;
+
+        timeSelect.innerHTML = '<option value="">Loading available slots...</option>';
+        timeSelect.disabled = true;
+
+        try {
+            const response = await fetch(`/consultations/available-slots?date=${date}&type=${type}`);
+            const data = await response.json();
+
+            timeSelect.innerHTML = '<option value="">Select a time</option>';
+
+            if (data.available_slots && data.available_slots.length > 0) {
+                data.available_slots.forEach(slot => {
+                    const option = document.createElement('option');
+                    option.value = slot;
+                    const time = new Date(`2000-01-01T${slot}`);
+                    option.textContent = time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                    timeSelect.appendChild(option);
+                });
+                timeSelect.disabled = false;
+                document.getElementById('time-error')?.classList.add('hidden');
+            } else {
+                timeSelect.innerHTML = '<option value="">No available slots for this date</option>';
+                timeSelect.disabled = true;
+                document.getElementById('time-error')?.classList.remove('hidden');
+                document.getElementById('time-error').textContent = 'No available time slots for this date. Please select another date.';
+            }
+        } catch (error) {
+            console.error('Error fetching available slots:', error);
+            timeSelect.innerHTML = '<option value="">Error loading slots. Please try again.</option>';
+            timeSelect.disabled = true;
         }
+    }
 
-        document.querySelectorAll('[id^="fee-"]').forEach(el => {
-            el.textContent = isKenya ? 'Ksh 3,000' : '$31';
+    // Event listeners
+    consultationTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            updateFeeDisplay();
+            updatePaymentMethods();
+            if (dateInput.value) loadAvailableSlots();
+
+            // Show/hide location based on type
+            if (this.value === 'physical') {
+                if (locationField) locationField.style.display = 'none';
+                if (timezoneField) timezoneField.style.display = 'none';
+            } else {
+                if (locationField) locationField.style.display = 'block';
+                if (locationSelect?.value === 'international') {
+                    if (timezoneField) timezoneField.style.display = 'block';
+                }
+            }
+        });
+    });
+
+    if (locationSelect) {
+        locationSelect.addEventListener('change', function() {
+            updateFeeDisplay();
+            updatePaymentMethods();
+            if (dateInput.value) loadAvailableSlots();
+
+            if (this.value === 'international') {
+                if (timezoneField) timezoneField.classList.remove('hidden');
+            } else {
+                if (timezoneField) timezoneField.classList.add('hidden');
+            }
         });
     }
 
-    // Update fees when consultation type changes
-    document.querySelectorAll('input[name="type"]').forEach(radio => {
-        radio.addEventListener('change', updateFees);
+    dateInput.addEventListener('change', function() {
+        loadAvailableSlots();
     });
 
-    updateFees();
+    // Initial setup
+    updateFeeDisplay();
     updatePaymentMethods();
+
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.min = today;
 
     // KCB Payment Functions
     async function checkKcbPaymentStatus(checkoutRequestId) {
@@ -518,6 +661,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <h3 class="text-xl font-semibold mb-2">Payment Successful!</h3>
                         <p class="text-gray-600">Your consultation has been booked successfully.</p>
                         <p class="text-sm text-gray-500 mt-2">Receipt: ${data.mpesa_receipt_number || 'N/A'}</p>
+                        <p class="text-sm text-gray-500">You will receive a confirmation email shortly.</p>
                     </div>
                 `);
                 clearInterval(window.paymentStatusInterval);
@@ -527,7 +671,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="text-red-600">
                         <i class="fas fa-times-circle text-5xl mb-4"></i>
                         <h3 class="text-xl font-semibold mb-2">Payment Failed</h3>
-                        <p class="text-gray-600">${data.result_description || 'Please try again.'}</p>
+                        <p class="text-gray-600">${data.result_description || 'Please try again or contact support.'}</p>
+                        <button onclick="hidePaymentModal()" class="mt-4 px-4 py-2 bg-[#93C754] text-white rounded-lg">Close</button>
                     </div>
                 `);
                 clearInterval(window.paymentStatusInterval);
@@ -560,9 +705,23 @@ document.addEventListener('DOMContentLoaded', function() {
         consultationForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
+            const selectedType = document.querySelector('input[name="type"]:checked');
+            if (!selectedType) {
+                alert('Please select a consultation type');
+                return;
+            }
+
             const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
             if (!paymentMethod) {
                 alert('Please select a payment method');
+                return;
+            }
+
+            const date = dateInput.value;
+            const time = timeSelect.value;
+
+            if (!date || !time) {
+                alert('Please select a consultation date and time');
                 return;
             }
 
@@ -606,61 +765,44 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <i class="fas fa-spinner fa-spin text-4xl mb-4"></i>
                                     <h3 class="text-xl font-semibold mb-2">Payment Initiated</h3>
                                     <p class="text-gray-600">${kcbResult.customer_message || 'Check your phone for M-Pesa prompt...'}</p>
+                                    <p class="text-sm text-gray-500 mt-2">Please enter your M-Pesa PIN to complete payment.</p>
                                 </div>
                             `);
                             window.paymentStatusInterval = setInterval(() => {
                                 checkKcbPaymentStatus(kcbResult.checkout_request_id);
                             }, 3000);
+
+                            setTimeout(() => {
+                                if (window.paymentStatusInterval) clearInterval(window.paymentStatusInterval);
+                            }, 300000);
+                        } else {
+                            throw new Error(kcbResult.message || 'Payment initiation failed');
                         }
                     }
                 } else {
-                    alert(data.message || 'Error creating consultation');
+                    alert(data.message || 'Error creating consultation. Please try again.');
                     submitButton.innerHTML = originalText;
                     submitButton.disabled = false;
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred. Please try again.');
+                alert(error.message || 'An error occurred. Please try again.');
                 submitButton.innerHTML = originalText;
                 submitButton.disabled = false;
             }
         });
     }
 
+    // Close modal on escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') hidePaymentModal();
     });
-});
 
-// Loading spinner styles
-const style = document.createElement('style');
-style.textContent = `
-.spinner {
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #93C754;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    animation: spin 1s linear infinite;
-    display: inline-block;
-    margin-right: 8px;
-    vertical-align: middle;
-}
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-.consultation-type-card input:checked + div {
-    border-color: #93C754;
-    box-shadow: 0 4px 12px rgba(147, 199, 84, 0.15);
-}
-.payment-method-card input:checked + div {
-    border-color: #93C754;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-.opacity-50 { opacity: 0.5; }
-.cursor-not-allowed { cursor: not-allowed; }
-`;
-document.head.appendChild(style);
+    // Close modal when clicking outside
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('payment-status-modal');
+        if (e.target === modal) hidePaymentModal();
+    });
+});
 </script>
 @endsection

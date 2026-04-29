@@ -14,16 +14,21 @@ class CartController extends Controller
         $totalKES = 0;
         $totalUSD = 0;
         $itemCount = 0;
-$total = 0;
-    foreach ($cartItems as $item) {
-        if (isset($item['price']) && isset($item['quantity'])) {
-            $total += $item['price'] * $item['quantity'];
-        }
-    }
+        $total = 0;
+
         foreach ($cartItems as $item) {
+            if (isset($item['price']) && isset($item['quantity'])) {
+                $total += $item['price'] * $item['quantity'];
+            }
+        }
+
+        foreach ($cartItems as &$item) {
             $totalKES += $item['price_kes'] * $item['quantity'];
             $totalUSD += $item['price_usd'] * $item['quantity'];
             $itemCount += $item['quantity'];
+            // Add unit price to each item for frontend
+            $item['unit_price_kes'] = $item['price_kes'];
+            $item['unit_price_usd'] = $item['price_usd'];
         }
 
         return view('frontendviews.cart.index', compact('cartItems', 'totalKES', 'totalUSD', 'itemCount', 'total'));
@@ -31,7 +36,7 @@ $total = 0;
 
     public function add(Request $request)
     {
-           $currency = $request->input('currency', session('currency', 'kes'));
+        $currency = $request->input('currency', session('currency', 'kes'));
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'variant_id' => 'nullable|exists:product_variants,id',
@@ -67,47 +72,43 @@ $total = 0;
         }
 
         $cart = session()->get('cart', []);
-    $cartKey = $this->generateCartKey($product->id, $variant ? $variant->id : null);
+        $cartKey = $this->generateCartKey($product->id, $variant ? $variant->id : null);
 
-    if (isset($cart[$cartKey])) {
-        $cart[$cartKey]['quantity'] += $request->quantity;
-    } else {
-        $cart[$cartKey] = [
-            "product_id" => $product->id,
-            "variant_id" => $variant ? $variant->id : null,
-            "name" => $product->product_name,
-            "variant_name" => $variant ? $variant->display_name : null,
-            "quantity" => $request->quantity,
-            "price_kes" => $variant ? $variant->price_kes : $product->price_kes,
-            "price_usd" => $variant ? $variant->price_usd : $product->price_usd,
-            "price" => $variant ? ($currency === 'kes' ? $variant->price_kes : $variant->price_usd)
+        if (isset($cart[$cartKey])) {
+            $cart[$cartKey]['quantity'] += $request->quantity;
+        } else {
+            $cart[$cartKey] = [
+                "product_id" => $product->id,
+                "variant_id" => $variant ? $variant->id : null,
+                "name" => $product->product_name,
+                "variant_name" => $variant ? $variant->display_name : null,
+                "quantity" => $request->quantity,
+                "price_kes" => $variant ? $variant->price_kes : $product->price_kes,
+                "price_usd" => $variant ? $variant->price_usd : $product->price_usd,
+                "price" => $variant ? ($currency === 'kes' ? $variant->price_kes : $variant->price_usd)
                               : ($currency === 'kes' ? $product->price_kes : $product->price_usd),
-            "image" => asset(''.$product->cover_image),
-            "slug" => $product->slug,
-            "id" => $cartKey // Add this line to match frontend expectations
-        ];
+                "image" => asset(''.$product->cover_image),
+                "slug" => $product->slug,
+                "id" => $cartKey
+            ];
+        }
+
+        session()->put('cart', $cart);
+
+        // Calculate new totals
+        $cartTotal = $this->calculateCartTotal($cart);
+        $itemTotal = $cart[$cartKey]['price_kes'] * $cart[$cartKey]['quantity'];
+
+        return response()->json([
+            'success' => true,
+            'cart_count' => $this->getCartItemCount($cart),
+            'cart_total' => $cartTotal,
+            'item_total' => $itemTotal,
+            'unit_price' => $cart[$cartKey]['price_kes'],
+            'message' => 'Product added to cart'
+        ]);
     }
 
-    session()->put('cart', $cart);
-
-    return response()->json([
-        'success' => true,
-        'cart_count' => $this->getCartItemCount($cart),
-        'message' => 'Product added to cart'
-    ]);
-    }
-public function showDetails($id)
-{
-    $order = CartOrder::findOrFail($id);
-    $items = is_array($order->items) ? $order->items : (json_decode($order->items, true) ?? []);
-    
-    $html = view('healthversations.admin.partials.order-details', [
-        'order' => $order,
-        'items' => $items
-    ])->render();
-    
-    return response()->json(['html' => $html]);
-}
     public function update(Request $request, $cartKey)
     {
         $request->validate([
@@ -127,7 +128,7 @@ public function showDetails($id)
         $item = $cart[$cartKey];
         if ($item['variant_id']) {
             $variant = ProductVariant::find($item['variant_id']);
-            if ($variant->stock < $request->quantity) {
+            if ($variant && $variant->stock < $request->quantity) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Not enough stock available for this variant'
@@ -135,7 +136,7 @@ public function showDetails($id)
             }
         } else {
             $product = Product::find($item['product_id']);
-            if ($product->stock < $request->quantity) {
+            if ($product && $product->stock < $request->quantity) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Not enough stock available'
@@ -143,12 +144,24 @@ public function showDetails($id)
             }
         }
 
+        // Update quantity
         $cart[$cartKey]['quantity'] = $request->quantity;
         session()->put('cart', $cart);
 
+        // Calculate updated values
+        $unitPriceKES = $cart[$cartKey]['price_kes'];
+        $itemTotalKES = $unitPriceKES * $request->quantity;
+        $cartTotalKES = $this->calculateCartTotal($cart);
+        $cartItemCount = $this->getCartItemCount($cart);
+
         return response()->json([
             'success' => true,
-            'message' => 'Cart updated successfully'
+            'message' => 'Cart updated successfully',
+            'unit_price' => $unitPriceKES,
+            'item_total' => $itemTotalKES,
+            'cart_total' => $cartTotalKES,
+            'cart_count' => $cartItemCount,
+            'quantity' => $request->quantity
         ]);
     }
 
@@ -159,9 +172,14 @@ public function showDetails($id)
         if (isset($cart[$cartKey])) {
             unset($cart[$cartKey]);
             session()->put('cart', $cart);
+
+            $cartTotal = $this->calculateCartTotal($cart);
+            $cartItemCount = $this->getCartItemCount($cart);
+
             return response()->json([
                 'success' => true,
-                'cart_count' => $this->getCartItemCount($cart),
+                'cart_count' => $cartItemCount,
+                'cart_total' => $cartTotal,
                 'message' => 'Product removed successfully'
             ]);
         }
@@ -225,5 +243,17 @@ public function showDetails($id)
     private function getCartItemCount($cart)
     {
         return array_sum(array_column($cart, 'quantity'));
+    }
+
+    /**
+     * Calculate total cart value in KES
+     */
+    private function calculateCartTotal($cart)
+    {
+        $total = 0;
+        foreach ($cart as $item) {
+            $total += $item['price_kes'] * $item['quantity'];
+        }
+        return $total;
     }
 }

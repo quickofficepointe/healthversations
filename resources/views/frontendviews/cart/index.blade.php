@@ -12,125 +12,118 @@
     <h1 class="text-3xl font-bold text-gray-800 mb-6">Your Shopping Cart</h1>
 
     @if(count($cartItems) > 0)
-  <!-- Cart items table - Mobile Responsive -->
-<div class="bg-white rounded-lg shadow-md overflow-hidden">
-    <!-- Desktop Table Headers (Hidden on mobile) -->
-    <div class="hidden md:grid grid-cols-12 bg-gray-100 p-4 font-semibold border-b">
-        <div class="col-span-6">Product</div>
-        <div class="col-span-2 text-center">Price</div>
-        <div class="col-span-2 text-center">Quantity</div>
-        <div class="col-span-2 text-center">Total</div>
-    </div>
-
-    @foreach($cartItems as $cartKey => $item)
-    <div class="border-b cart-item" data-id="{{ $cartKey }}">
-        <!-- Mobile Layout -->
-        <div class="md:hidden p-4">
-            <!-- Product Info -->
-            <div class="flex items-start mb-4">
-                <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="w-16 h-16 object-cover rounded mr-4">
-                <div class="flex-1">
-                    <h3 class="font-medium text-gray-800">{{ $item['name'] }}</h3>
-                    @if($item['variant_name'])
-                        <p class="text-sm text-gray-500">{{ $item['variant_name'] }}</p>
-                    @endif
-                </div>
-            </div>
-            
-            <!-- Price and Quantity Row -->
-            <div class="flex justify-between items-center mb-3">
-                <div class="text-gray-600 price">
-                    Ksh {{ number_format($item['price_kes'], 2) }}
-                </div>
-                
-                <!-- Quantity Controls -->
-                <div class="flex items-center">
-                    <button class="decrease-quantity bg-gray-200 hover:bg-gray-300 w-8 h-8 flex items-center justify-center rounded-l">
-                        <span class="text-lg">-</span>
-                    </button>
-                    <input type="number" value="{{ $item['quantity'] }}" min="1"
-                           class="quantity-input w-12 text-center border-t border-b border-gray-300 py-1 h-8">
-                    <button class="increase-quantity bg-gray-200 hover:bg-gray-300 w-8 h-8 flex items-center justify-center rounded-r">
-                        <span class="text-lg">+</span>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Total and Remove Row -->
-            <div class="flex justify-between items-center">
-                <div class="font-medium item-total">
-                    Ksh {{ number_format($item['price_kes'] * $item['quantity'], 2) }}
-                </div>
-                <button class="remove-item text-red-500 text-sm hover:text-red-700" data-id="{{ $cartKey }}">
-                    Remove
-                </button>
-            </div>
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <!-- Desktop Table Headers -->
+        <div class="hidden md:grid grid-cols-12 bg-gray-100 p-4 font-semibold border-b">
+            <div class="col-span-6">Product</div>
+            <div class="col-span-2 text-center">Price</div>
+            <div class="col-span-2 text-center">Quantity</div>
+            <div class="col-span-2 text-center">Total</div>
         </div>
 
-        <!-- Desktop Layout -->
-        <div class="hidden md:grid grid-cols-12 p-4 items-center">
-            <div class="col-span-6 flex items-center">
-                <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="w-16 h-16 object-cover rounded mr-4">
-                <div>
-                    <h3 class="font-medium text-gray-800">{{ $item['name'] }}</h3>
-                    @if($item['variant_name'])
-                        <p class="text-sm text-gray-500">{{ $item['variant_name'] }}</p>
-                    @endif
+        @foreach($cartItems as $cartKey => $item)
+        <div class="border-b cart-item" data-id="{{ $cartKey }}" data-unit-price="{{ $item['price_kes'] }}">
+            <!-- Mobile Layout -->
+            <div class="md:hidden p-4">
+                <div class="flex items-start mb-4">
+                    <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="w-16 h-16 object-cover rounded mr-4">
+                    <div class="flex-1">
+                        <h3 class="font-medium text-gray-800">{{ $item['name'] }}</h3>
+                        @if(isset($item['variant_name']) && $item['variant_name'])
+                            <p class="text-sm text-gray-500">{{ $item['variant_name'] }}</p>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mb-3">
+                    <div class="text-gray-600 unit-price-display">
+                        Ksh {{ number_format($item['price_kes'], 2) }}
+                    </div>
+
+                    <div class="flex items-center">
+                        <button class="decrease-quantity bg-gray-200 hover:bg-gray-300 w-8 h-8 flex items-center justify-center rounded-l">
+                            <span class="text-lg">-</span>
+                        </button>
+                        <input type="number" value="{{ $item['quantity'] }}" min="1" max="99"
+                               class="quantity-input w-12 text-center border-t border-b border-gray-300 py-1 h-8">
+                        <button class="increase-quantity bg-gray-200 hover:bg-gray-300 w-8 h-8 flex items-center justify-center rounded-r">
+                            <span class="text-lg">+</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <div class="font-medium item-total">
+                        Ksh {{ number_format($item['price_kes'] * $item['quantity'], 2) }}
+                    </div>
                     <button class="remove-item text-red-500 text-sm hover:text-red-700" data-id="{{ $cartKey }}">
                         Remove
                     </button>
                 </div>
             </div>
 
-            <div class="col-span-2 text-center text-gray-600 price">
-                Ksh {{ number_format($item['price_kes'], 2) }}
-            </div>
+            <!-- Desktop Layout -->
+            <div class="hidden md:grid grid-cols-12 p-4 items-center">
+                <div class="col-span-6 flex items-center">
+                    <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="w-16 h-16 object-cover rounded mr-4">
+                    <div>
+                        <h3 class="font-medium text-gray-800">{{ $item['name'] }}</h3>
+                        @if(isset($item['variant_name']) && $item['variant_name'])
+                            <p class="text-sm text-gray-500">{{ $item['variant_name'] }}</p>
+                        @endif
+                        <button class="remove-item text-red-500 text-sm hover:text-red-700 mt-1" data-id="{{ $cartKey }}">
+                            Remove
+                        </button>
+                    </div>
+                </div>
 
-            <div class="col-span-2 text-center">
-                <div class="flex justify-center items-center">
-                    <button class="decrease-quantity bg-gray-200 hover:bg-gray-300 w-8 h-8 flex items-center justify-center rounded-l">
-                        <span class="text-lg">-</span>
-                    </button>
-                    <input type="number" value="{{ $item['quantity'] }}" min="1"
-                           class="quantity-input w-12 text-center border-t border-b border-gray-300 py-1 h-8">
-                    <button class="increase-quantity bg-gray-200 hover:bg-gray-300 w-8 h-8 flex items-center justify-center rounded-r">
-                        <span class="text-lg">+</span>
-                    </button>
+                <div class="col-span-2 text-center text-gray-600 unit-price-display">
+                    Ksh {{ number_format($item['price_kes'], 2) }}
+                </div>
+
+                <div class="col-span-2 text-center">
+                    <div class="flex justify-center items-center">
+                        <button class="decrease-quantity bg-gray-200 hover:bg-gray-300 w-8 h-8 flex items-center justify-center rounded-l">
+                            <span class="text-lg">-</span>
+                        </button>
+                        <input type="number" value="{{ $item['quantity'] }}" min="1" max="99"
+                               class="quantity-input w-12 text-center border-t border-b border-gray-300 py-1 h-8">
+                        <button class="increase-quantity bg-gray-200 hover:bg-gray-300 w-8 h-8 flex items-center justify-center rounded-r">
+                            <span class="text-lg">+</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-span-2 text-center font-medium item-total">
+                    Ksh {{ number_format($item['price_kes'] * $item['quantity'], 2) }}
                 </div>
             </div>
+        </div>
+        @endforeach
 
-            <div class="col-span-2 text-center font-medium item-total">
-                Ksh {{ number_format($item['price_kes'] * $item['quantity'], 2) }}
+        <!-- Cart Summary -->
+        <div class="p-4 flex flex-col sm:flex-row justify-between items-center bg-gray-50 space-y-4 sm:space-y-0">
+            <div class="text-xl font-semibold">
+                Subtotal: <span class="text-green-600 cart-subtotal">Ksh {{ number_format($totalKES, 2) }}</span>
+            </div>
+            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                <a href="{{ route('all.products') }}" class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 text-center">
+                    Continue Shopping
+                </a>
+                <button id="proceedToCheckoutBtn" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-center">
+                    Proceed to Checkout
+                </button>
             </div>
         </div>
     </div>
-    @endforeach
-
-    <!-- Cart Summary -->
-    <div class="p-4 flex flex-col sm:flex-row justify-between items-center bg-gray-50 space-y-4 sm:space-y-0">
-        <div class="text-xl font-semibold">
-            Subtotal: <span class="text-green-600 cart-subtotal">Ksh {{ number_format($total, 2) }}</span>
-        </div>
-        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-            <a href="{{ route('all.products') }}" class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 text-center">
-                Continue Shopping
-            </a>
-            <button id="proceedToCheckoutBtn" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-center">
-                Proceed to Checkout
-            </button>
-        </div>
-    </div>
-</div>
 
     <!-- Checkout Form (Initially Hidden) -->
     <div id="checkoutFormSection" class="bg-white rounded-lg shadow-md p-6 mt-8 hidden">
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Checkout</h2>
 
-        <!-- Checkout Form -->
         <form id="checkoutForm" class="space-y-6">
             @csrf
 
-            <!-- Customer Information -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                     <label class="block mb-2 font-medium">First Name <span class="text-red-500">*</span></label>
@@ -156,12 +149,10 @@
             <!-- Payment Method Selection -->
             <div class="mb-6">
                 <h3 class="text-lg font-semibold mb-4">Payment Method</h3>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- M-Pesa Payment (First) -->
-                    <label class="payment-method-card">
+                    <label class="payment-method-card cursor-pointer">
                         <input type="radio" name="payment_method" value="kcb" class="sr-only peer" checked>
-                        <div class="p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[#0A4040] peer-checked:border-[#0A4040] peer-checked:bg-[#0A4040]/10">
+                        <div class="p-4 border-2 border-gray-200 rounded-lg hover:border-[#0A4040] peer-checked:border-[#0A4040] peer-checked:bg-[#0A4040]/10 transition-all">
                             <div class="flex items-center">
                                 <i class="fas fa-mobile-alt text-[#0A4040] text-xl mr-3"></i>
                                 <div>
@@ -172,10 +163,9 @@
                         </div>
                     </label>
 
-                    <!-- Card Payment (Second) -->
-                    <label class="payment-method-card">
+                    <label class="payment-method-card cursor-pointer">
                         <input type="radio" name="payment_method" value="iveri" class="sr-only peer">
-                        <div class="p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[#93C754] peer-checked:border-[#93C754] peer-checked:bg-[#93C754]/10">
+                        <div class="p-4 border-2 border-gray-200 rounded-lg hover:border-[#93C754] peer-checked:border-[#93C754] peer-checked:bg-[#93C754]/10 transition-all">
                             <div class="flex items-center">
                                 <i class="fas fa-credit-card text-[#93C754] text-xl mr-3"></i>
                                 <div>
@@ -191,32 +181,28 @@
             <!-- Delivery Method Selection -->
             <div class="mb-6">
                 <h3 class="text-lg font-semibold mb-4">Delivery Method</h3>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Pickup Option -->
                     <div class="border rounded-lg p-4 cursor-pointer delivery-option" data-method="pickup" data-cost="0" data-zone="B">
                         <div class="flex items-center">
                             <input type="radio" name="delivery_method" value="pickup" class="mr-2 delivery-method-radio" checked>
-                            <label class="font-medium">Pickup (FREE)</label>
+                            <label class="font-medium cursor-pointer">Pickup (FREE)</label>
                         </div>
                         <p class="text-sm text-gray-600 mt-2">TOM MBOYA STREET, STAR MALL, 1st Floor, Shop A17</p>
                     </div>
 
-                    <!-- Delivery Option -->
                     <div class="border rounded-lg p-4 cursor-pointer delivery-option" data-method="delivery" data-cost="" data-zone="">
                         <div class="flex items-center">
                             <input type="radio" name="delivery_method" value="delivery" class="mr-2 delivery-method-radio">
-                            <label class="font-medium">Home Delivery</label>
+                            <label class="font-medium cursor-pointer">Home Delivery</label>
                         </div>
                         <p class="text-sm text-gray-600 mt-2">Select your delivery zone below</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Delivery Zone Selection (Initially Hidden) -->
+            <!-- Delivery Zone Selection -->
             <div id="deliveryZoneSection" class="mb-6 hidden">
                 <h3 class="text-lg font-semibold mb-4">Select Delivery Zone</h3>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     @foreach([
                         'A' => ['name' => 'Zone A: CBD Delivery', 'rate' => 150, 'areas' => 'Around Nairobi CBD'],
@@ -236,7 +222,7 @@
                     <div class="border rounded-lg p-4 cursor-pointer zone-option" data-zone="{{ $zone }}" data-cost="{{ $details['rate'] }}">
                         <div class="flex items-center">
                             <input type="radio" name="delivery_zone" value="{{ $zone }}" class="mr-2 zone-radio">
-                            <label class="font-medium">{{ $details['name'] }}</label>
+                            <label class="font-medium cursor-pointer">{{ $details['name'] }}</label>
                         </div>
                         <p class="text-sm text-gray-600 mt-1">{{ $details['areas'] }}</p>
                         <p class="text-sm font-semibold mt-2">Rate: Ksh {{ number_format($details['rate'], 2) }}</p>
@@ -246,15 +232,13 @@
             </div>
 
             <!-- Shipping Information Container -->
-            <div id="shippingInfoContainer">
-                <!-- Shipping fields will be dynamically inserted here when delivery is selected -->
-            </div>
+            <div id="shippingInfoContainer"></div>
 
             <!-- Order Summary -->
             <div class="mb-6 p-4 bg-gray-50 rounded-lg">
                 <div class="flex justify-between mb-2">
                     <span>Subtotal:</span>
-                    <span class="text-gray-600 cart-subtotal">Ksh {{ number_format($total, 2) }}</span>
+                    <span class="text-gray-600 cart-subtotal">Ksh {{ number_format($totalKES, 2) }}</span>
                 </div>
                 <div class="flex justify-between mb-2">
                     <span>Delivery:</span>
@@ -262,7 +246,7 @@
                 </div>
                 <div class="flex justify-between text-lg font-bold">
                     <span>Total:</span>
-                    <span class="text-green-600 cart-total">Ksh {{ number_format($total, 2) }}</span>
+                    <span class="text-green-600 cart-total">Ksh {{ number_format($totalKES, 2) }}</span>
                 </div>
             </div>
 
@@ -310,21 +294,14 @@
 </form>
 
 <!-- Payment Status Modal -->
-<!-- Payment Status Modal -->
 <div id="payment-status-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 p-4 overflow-auto">
     <div class="flex items-center justify-center min-h-full">
         <div class="bg-white max-w-md mx-auto rounded-lg p-6 relative text-center">
-            <!-- Close button at top right - FIXED -->
-            <button id="close-payment-modal-top" 
-                    class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition">
+            <button id="close-payment-modal-top" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition">
                 <i class="fas fa-times text-xl"></i>
             </button>
-            <div id="payment-status-content" class="mt-4">
-                <!-- Content will be populated by JavaScript -->
-            </div>
-            <!-- Close button at bottom - FIXED -->
-            <button id="close-payment-modal-bottom"
-                    class="mt-6 px-6 py-2 bg-[#93C754] text-white rounded hover:bg-[#7eae47] transition">
+            <div id="payment-status-content" class="mt-4"></div>
+            <button id="close-payment-modal-bottom" class="mt-6 px-6 py-2 bg-[#93C754] text-white rounded hover:bg-[#7eae47] transition">
                 Close
             </button>
         </div>
@@ -333,52 +310,35 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Show checkout form when proceed button is clicked
     const proceedBtn = document.getElementById('proceedToCheckoutBtn');
     if (proceedBtn) {
         proceedBtn.addEventListener('click', function() {
             const checkoutForm = document.getElementById('checkoutFormSection');
             if (checkoutForm) {
                 checkoutForm.classList.remove('hidden');
-                window.scrollTo({
-                    top: checkoutForm.offsetTop - 20,
-                    behavior: 'smooth'
-                });
+                window.scrollTo({ top: checkoutForm.offsetTop - 20, behavior: 'smooth' });
             }
         });
     }
+
+    let cartSubtotal = {{ $totalKES }};
 
     // Delivery method selection
     const deliveryOptions = document.querySelectorAll('.delivery-option');
     const deliveryZoneSection = document.getElementById('deliveryZoneSection');
     const shippingInfoContainer = document.getElementById('shippingInfoContainer');
-    const zoneOptions = document.querySelectorAll('.zone-option');
     const deliveryCostDisplay = document.getElementById('deliveryCostDisplay');
-    const cartTotal = document.querySelector('.cart-total');
-    const cartSubtotal = parseFloat({{ $total }});
+    const cartTotalDisplay = document.querySelector('.cart-total');
 
-    // Shipping fields HTML template
     const shippingFieldsHTML = `
         <div id="shippingInfoSection">
             <h3 class="text-lg font-semibold mb-4">Shipping Information</h3>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                     <label class="block mb-2 font-medium">County <span class="text-red-500">*</span></label>
                     <select name="county" class="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-green-500 shipping-field" required>
                         <option value="">Select County</option>
-                        @foreach([
-                            'Baringo', 'Bomet', 'Bungoma', 'Busia', 'Elgeyo-Marakwet',
-                            'Embu', 'Garissa', 'Homa Bay', 'Isiolo', 'Kajiado',
-                            'Kakamega', 'Kericho', 'Kiambu', 'Kilifi', 'Kirinyaga',
-                            'Kisii', 'Kisumu', 'Kitui', 'Kwale', 'Laikipia',
-                            'Lamu', 'Machakos', 'Makueni', 'Mandera', 'Marsabit',
-                            'Meru', 'Migori', 'Mombasa', 'Murang\'a', 'Nairobi',
-                            'Nakuru', 'Nandi', 'Narok', 'Nyamira', 'Nyandarua',
-                            'Nyeri', 'Samburu', 'Siaya', 'Taita-Taveta', 'Tana River',
-                            'Tharaka-Nithi', 'Trans Nzoia', 'Turkana', 'Uasin Gishu',
-                            'Vihiga', 'Wajir', 'West Pokot'
-                        ] as $county)
+                        @foreach(['Baringo', 'Bomet', 'Bungoma', 'Busia', 'Elgeyo-Marakwet', 'Embu', 'Garissa', 'Homa Bay', 'Isiolo', 'Kajiado', 'Kakamega', 'Kericho', 'Kiambu', 'Kilifi', 'Kirinyaga', 'Kisii', 'Kisumu', 'Kitui', 'Kwale', 'Laikipia', 'Lamu', 'Machakos', 'Makueni', 'Mandera', 'Marsabit', 'Meru', 'Migori', 'Mombasa', 'Murang\'a', 'Nairobi', 'Nakuru', 'Nandi', 'Narok', 'Nyamira', 'Nyandarua', 'Nyeri', 'Samburu', 'Siaya', 'Taita-Taveta', 'Tana River', 'Tharaka-Nithi', 'Trans Nzoia', 'Turkana', 'Uasin Gishu', 'Vihiga', 'Wajir', 'West Pokot'] as $county)
                             <option value="{{ $county }}">{{ $county }}</option>
                         @endforeach
                     </select>
@@ -388,12 +348,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     <input type="text" name="subcounty" class="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-green-500 shipping-field" required>
                 </div>
             </div>
-
             <div class="mb-4">
                 <label class="block mb-2 font-medium">Location/Neighborhood <span class="text-red-500">*</span></label>
                 <input type="text" name="location" class="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-green-500 shipping-field" required>
             </div>
-
             <div class="mb-6">
                 <label class="block mb-2 font-medium">Detailed Address <span class="text-red-500">*</span></label>
                 <textarea name="address" rows="2" class="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-green-500 shipping-field" required></textarea>
@@ -401,35 +359,55 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     `;
 
+    function updateTotalDisplay() {
+        const deliveryCostText = deliveryCostDisplay.textContent;
+        let deliveryCost = 0;
+        if (deliveryCostText) {
+            deliveryCost = parseFloat(deliveryCostText.replace('Ksh ', '').replace(/,/g, '')) || 0;
+        }
+        const finalTotal = cartSubtotal + deliveryCost;
+        cartTotalDisplay.textContent = 'Ksh ' + finalTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+        const subtotalElements = document.querySelectorAll('.cart-subtotal');
+        subtotalElements.forEach(el => {
+            el.textContent = 'Ksh ' + cartSubtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        });
+    }
+
+    function updateDeliveryCost(cost, zone) {
+        deliveryCostDisplay.textContent = 'Ksh ' + cost.toFixed(2);
+        updateTotalDisplay();
+    }
+
+    function showShippingInfo() {
+        shippingInfoContainer.innerHTML = shippingFieldsHTML;
+    }
+
+    function removeShippingInfo() {
+        shippingInfoContainer.innerHTML = '';
+    }
+
     // Initialize with pickup selected
     updateDeliveryCost(0, 'B');
     removeShippingInfo();
+    deliveryZoneSection.classList.add('hidden');
 
     deliveryOptions.forEach(option => {
         option.addEventListener('click', function() {
-            // Update radio button selection
             const radio = this.querySelector('.delivery-method-radio');
             radio.checked = true;
-
             const method = this.getAttribute('data-method');
             const cost = this.getAttribute('data-cost');
             const zone = this.getAttribute('data-zone');
 
-            // Show/hide sections based on delivery method
             if (method === 'delivery') {
                 deliveryZoneSection.classList.remove('hidden');
                 showShippingInfo();
-                // Auto-select first zone if none selected
-                if (!document.querySelector('input[name="delivery_zone"]:checked')) {
-                    const firstZone = document.querySelector('.zone-option');
-                    if (firstZone) {
-                        const zoneRadio = firstZone.querySelector('.zone-radio');
-                        zoneRadio.checked = true;
-                        updateDeliveryCost(
-                            parseFloat(firstZone.getAttribute('data-cost')),
-                            firstZone.getAttribute('data-zone')
-                        );
-                    }
+                const firstZone = document.querySelector('.zone-option');
+                if (firstZone && !document.querySelector('input[name="delivery_zone"]:checked')) {
+                    const zoneRadio = firstZone.querySelector('.zone-radio');
+                    zoneRadio.checked = true;
+                    updateDeliveryCost(parseFloat(firstZone.getAttribute('data-cost')), firstZone.getAttribute('data-zone'));
                 }
             } else {
                 deliveryZoneSection.classList.add('hidden');
@@ -439,83 +417,153 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Zone selection
-    zoneOptions.forEach(option => {
+    document.querySelectorAll('.zone-option').forEach(option => {
         option.addEventListener('click', function() {
-            // Update radio button selection
             const radio = this.querySelector('.zone-radio');
             radio.checked = true;
-
-            // Update delivery cost
             const cost = parseFloat(this.getAttribute('data-cost'));
             const zone = this.getAttribute('data-zone');
             updateDeliveryCost(cost, zone);
         });
     });
 
-    function updateDeliveryCost(cost, zone) {
-        // Update display
-        deliveryCostDisplay.textContent = 'Ksh ' + cost.toFixed(2);
+    // Cart quantity update function
+    async function updateCartQuantity(cartItem, newQuantity) {
+        const cartKey = cartItem.getAttribute('data-id');
 
-        // Update order total
-        const total = cartSubtotal + cost;
-        cartTotal.textContent = 'Ksh ' + total.toFixed(2);
+        try {
+            const response = await fetch(`/cart/update/${cartKey}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ quantity: newQuantity })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                const unitPrice = parseFloat(cartItem.getAttribute('data-unit-price'));
+                const itemTotal = unitPrice * newQuantity;
+
+                const itemTotalElements = cartItem.querySelectorAll('.item-total');
+                itemTotalElements.forEach(el => {
+                    el.textContent = 'Ksh ' + itemTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                });
+
+                const quantityInputs = cartItem.querySelectorAll('.quantity-input');
+                quantityInputs.forEach(input => {
+                    input.value = newQuantity;
+                });
+
+                if (data.cart_total !== undefined) {
+                    cartSubtotal = data.cart_total;
+                    updateTotalDisplay();
+                }
+
+                const cartCounter = document.getElementById('cart-counter');
+                if (cartCounter && data.cart_count !== undefined) {
+                    cartCounter.textContent = data.cart_count;
+                }
+
+                return true;
+            } else {
+                throw new Error(data.message || 'Failed to update cart');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to update cart. Please try again.');
+            return false;
+        }
     }
 
-    function showShippingInfo() {
-        // Insert shipping fields into the container
-        shippingInfoContainer.innerHTML = shippingFieldsHTML;
-    }
-
-    function removeShippingInfo() {
-        // Completely remove shipping fields from the DOM
-        shippingInfoContainer.innerHTML = '';
-    }
-
-    // Cart quantity controls
+    // Quantity control event listeners
     document.querySelectorAll('.quantity-input').forEach(input => {
-        input.addEventListener('change', updateCart);
+        input.addEventListener('change', async function() {
+            const cartItem = this.closest('.cart-item');
+            let newQuantity = parseInt(this.value);
+            if (isNaN(newQuantity) || newQuantity < 1) newQuantity = 1;
+            await updateCartQuantity(cartItem, newQuantity);
+        });
     });
 
     document.querySelectorAll('.increase-quantity').forEach(button => {
-        button.addEventListener('click', function() {
-            const input = this.parentElement.querySelector('.quantity-input');
-            if (input) {
-                input.value = parseInt(input.value) + 1;
-                updateCart.call(input);
-            }
+        button.addEventListener('click', async function() {
+            const cartItem = this.closest('.cart-item');
+            const input = cartItem.querySelector('.quantity-input');
+            const newQuantity = parseInt(input.value) + 1;
+            await updateCartQuantity(cartItem, newQuantity);
         });
     });
 
     document.querySelectorAll('.decrease-quantity').forEach(button => {
-        button.addEventListener('click', function() {
-            const input = this.parentElement.querySelector('.quantity-input');
-            if (input && parseInt(input.value) > 1) {
-                input.value = parseInt(input.value) - 1;
-                updateCart.call(input);
+        button.addEventListener('click', async function() {
+            const cartItem = this.closest('.cart-item');
+            const input = cartItem.querySelector('.quantity-input');
+            const currentValue = parseInt(input.value);
+            if (currentValue > 1) {
+                const newQuantity = currentValue - 1;
+                await updateCartQuantity(cartItem, newQuantity);
             }
         });
     });
 
     // Remove item from cart
     document.querySelectorAll('.remove-item').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', async function() {
             const itemId = this.getAttribute('data-id');
-            if (itemId) {
-                removeFromCart(itemId);
+            if (!itemId) return;
+
+            try {
+                const response = await fetch(`/cart/remove/${itemId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const itemElement = document.querySelector(`.cart-item[data-id="${itemId}"]`);
+                    if (itemElement) itemElement.remove();
+
+                    if (document.querySelectorAll('.cart-item').length === 0) {
+                        location.reload();
+                    } else {
+                        const data = await response.json();
+                        if (data.cart_total !== undefined) {
+                            cartSubtotal = data.cart_total;
+                            updateTotalDisplay();
+                        }
+                        const cartCounter = document.getElementById('cart-counter');
+                        if (cartCounter && data.cart_count !== undefined) {
+                            cartCounter.textContent = data.cart_count;
+                        }
+                    }
+                } else {
+                    throw new Error('Failed to remove item');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to remove item from cart. Please try again.');
             }
         });
     });
 
     // Payment status modal functions
     function showPaymentStatusModal(content) {
+        const modal = document.getElementById('payment-status-modal');
         document.getElementById('payment-status-content').innerHTML = content;
-        document.getElementById('payment-status-modal').classList.remove('hidden');
+        modal.classList.remove('hidden');
         document.body.classList.add('overflow-hidden');
     }
 
     function hidePaymentStatusModal() {
-        document.getElementById('payment-status-modal').classList.add('hidden');
+        const modal = document.getElementById('payment-status-modal');
+        modal.classList.add('hidden');
         document.body.classList.remove('overflow-hidden');
         if (window.paymentStatusInterval) {
             clearInterval(window.paymentStatusInterval);
@@ -523,7 +571,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Unified KCB payment function - UPDATED
+    document.getElementById('close-payment-modal-top')?.addEventListener('click', hidePaymentStatusModal);
+    document.getElementById('close-payment-modal-bottom')?.addEventListener('click', hidePaymentStatusModal);
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') hidePaymentStatusModal();
+    });
+    document.addEventListener('click', function(e) {
+        if (e.target.id === 'payment-status-modal') hidePaymentStatusModal();
+    });
+
+    // KCB Payment
     async function initiateKcbPayment(paymentData) {
         try {
             const response = await fetch('{{ route("kcb.payment.initiate") }}', {
@@ -535,16 +592,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify(paymentData)
             });
-
             const data = await response.json();
-
             if (data.success) {
-                return {
-                    success: true,
-                    checkout_request_id: data.checkout_request_id,
-                    customer_message: data.customer_message,
-                    order_id: data.order_id // This should be the same as existing_order_id
-                };
+                return { success: true, checkout_request_id: data.checkout_request_id, customer_message: data.customer_message, order_id: data.order_id };
             } else {
                 throw new Error(data.message || 'Payment initiation failed');
             }
@@ -554,7 +604,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Check KCB payment status - UPDATED
     async function checkKcbPaymentStatus(checkoutRequestId) {
         try {
             const response = await fetch('{{ route("kcb.payment.status") }}', {
@@ -564,11 +613,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({
-                    checkout_request_id: checkoutRequestId
-                })
+                body: JSON.stringify({ checkout_request_id: checkoutRequestId })
             });
-
             const data = await response.json();
 
             if (data.success && data.status === 'completed') {
@@ -579,352 +625,162 @@ document.addEventListener('DOMContentLoaded', function() {
                         <p class="text-gray-600">Your order has been placed successfully.</p>
                         <p class="text-sm text-gray-500 mt-2">Order #: ${window.currentOrderId || data.order_id}</p>
                         <p class="text-sm text-gray-500">Receipt: ${data.mpesa_receipt_number || 'N/A'}</p>
-                        <p class="text-sm text-gray-500">You will receive an order confirmation email shortly.</p>
                     </div>
                 `);
-                
-                if (window.paymentStatusInterval) {
-                    clearInterval(window.paymentStatusInterval);
-                    window.paymentStatusInterval = null;
-                }
-
-                // Redirect to success page after 3 seconds
-               // Redirect to KCB success page after 3 seconds
-setTimeout(() => {
-    window.location.href = '{{ route("kcb.payment.success") }}?order_id=' + (window.currentOrderId || data.order_id);
-}, 3000);
-                
+                if (window.paymentStatusInterval) clearInterval(window.paymentStatusInterval);
+                setTimeout(() => { window.location.href = '{{ route("kcb.payment.success") }}?order_id=' + (window.currentOrderId || data.order_id); }, 3000);
             } else if (data.success && data.status === 'failed') {
                 showPaymentStatusModal(`
                     <div class="text-red-600">
                         <i class="fas fa-times-circle text-4xl mb-4"></i>
                         <h3 class="text-xl font-semibold mb-2">Payment Failed</h3>
                         <p class="text-gray-600">${data.result_description || 'Please try again.'}</p>
-                        <button onclick="hidePaymentStatusModal()"
-                                class="mt-4 px-6 py-2 bg-[#93C754] text-white rounded hover:bg-[#7eae47] transition">
-                            Try Again
-                        </button>
+                        <p class="text-sm text-gray-500 mt-4">You can close this window and try again from the checkout page.</p>
                     </div>
                 `);
-                
-                if (window.paymentStatusInterval) {
-                    clearInterval(window.paymentStatusInterval);
-                    window.paymentStatusInterval = null;
-                }
-                
-            } else if (!data.success) {
-                // Payment still pending
-                console.log('Payment status:', data.status);
+                if (window.paymentStatusInterval) clearInterval(window.paymentStatusInterval);
             }
         } catch (error) {
             console.error('Error checking payment status:', error);
         }
     }
 
-    // Handle form submission - COMPLETELY REWRITTEN
+    // Form submission
     const checkoutForm = document.getElementById('checkoutForm');
     const iveriForm = document.getElementById('iveriPaymentForm');
 
-    checkoutForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
+    if (checkoutForm) {
+        checkoutForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
 
-        const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
-        const deliveryMethod = document.querySelector('input[name="delivery_method"]:checked').value;
-        const submitButton = checkoutForm.querySelector('button[type="submit"]');
-        const originalText = submitButton.textContent;
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            const deliveryMethod = document.querySelector('input[name="delivery_method"]:checked').value;
+            const submitButton = checkoutForm.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
 
-        // Validate phone number
-        const phone = document.querySelector('input[name="phone"]').value;
-        if (!phone.startsWith('254') || phone.length !== 12) {
-            alert('Please enter a valid phone number in format 2547XXXXXXXX');
-            return;
-        }
-
-        // Show loading state
-        submitButton.innerHTML = '<span class="spinner"></span> Processing...';
-        submitButton.disabled = true;
-
-        try {
-            // Prepare order data using FormData
-            const formData = new FormData();
-
-            // Add basic customer info
-            formData.append('first_name', document.querySelector('input[name="first_name"]').value);
-            formData.append('last_name', document.querySelector('input[name="last_name"]').value);
-            formData.append('email', document.querySelector('input[name="email"]').value);
-            formData.append('phone', phone);
-            formData.append('delivery_method', deliveryMethod);
-            formData.append('delivery_zone', document.querySelector('input[name="delivery_zone"]:checked')?.value || 'B');
-            formData.append('payment_method', paymentMethod);
-
-            // Only add shipping info if delivery method is delivery AND fields exist
-            if (deliveryMethod === 'delivery') {
-                const county = document.querySelector('select[name="county"]');
-                const subcounty = document.querySelector('input[name="subcounty"]');
-                const location = document.querySelector('input[name="location"]');
-                const address = document.querySelector('textarea[name="address"]');
-
-                if (county && subcounty && location && address) {
-                    formData.append('county', county.value);
-                    formData.append('subcounty', subcounty.value);
-                    formData.append('location', location.value);
-                    formData.append('address', address.value);
-                }
-            } else {
-                // For pickup, send empty strings
-                formData.append('county', '');
-                formData.append('subcounty', '');
-                formData.append('location', '');
-                formData.append('address', '');
+            const phone = document.querySelector('input[name="phone"]').value;
+            if (!phone.startsWith('254') || phone.length !== 12) {
+                alert('Please enter a valid phone number in format 2547XXXXXXXX');
+                return;
             }
 
-            // Submit the order via AJAX first - THIS CREATES THE ORD- ORDER
-            const orderResponse = await fetch("{{ route('cart.order.process') }}", {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                },
-                body: formData
-            });
+            submitButton.innerHTML = '<span class="spinner"></span> Processing...';
+            submitButton.disabled = true;
 
-            const orderData = await orderResponse.json();
+            try {
+                const formData = new FormData();
+                formData.append('first_name', document.querySelector('input[name="first_name"]').value);
+                formData.append('last_name', document.querySelector('input[name="last_name"]').value);
+                formData.append('email', document.querySelector('input[name="email"]').value);
+                formData.append('phone', phone);
+                formData.append('delivery_method', deliveryMethod);
+                formData.append('delivery_zone', document.querySelector('input[name="delivery_zone"]:checked')?.value || 'B');
+                formData.append('payment_method', paymentMethod);
 
-            if (orderData.success && orderData.order_id) {
-                // STORE THE ORDER ID FOR LATER USE
-                window.currentOrderId = orderData.order_id;
-                
-                if (paymentMethod === 'iveri') {
-                    // Set iVeri form values
-                    document.getElementById('iveriOrderIdField').value = orderData.order_id;
-                    document.getElementById('iveriAmount').value = orderData.amount * 100;
-                    document.getElementById('iveriOrderId').value = orderData.order_id;
-                    document.getElementById('iveriToken').value = orderData.token;
-                    document.getElementById('iveriEmail').value = orderData.email;
-                    document.getElementById('iveriFirstName').value = orderData.first_name;
-                    document.getElementById('iveriLastName').value = orderData.last_name;
-                    document.getElementById('iveriDeliveryCost').value = orderData.delivery_cost;
-                    document.getElementById('iveriDeliveryZone').value = orderData.delivery_zone;
-
-                    // Submit iVeri form
-                    iveriForm.submit();
-                    
-                } else if (paymentMethod === 'kcb') {
-                    // IMPORTANT: Use the existing order_id when initiating payment
-                    // This prevents creating a duplicate CART- order
-                    const kcbPaymentData = {
-                        payment_type: 'product',
-                        phone_number: phone,
-                        amount: orderData.amount,
-                        currency: 'KES',
-                        customer_name: orderData.first_name + ' ' + orderData.last_name,
-                        email: orderData.email,
-                        existing_order_id: orderData.order_id, // PASS THE EXISTING ORDER ID
-                        reference_data: {
-                            // Pass minimal data since we're using existing order
-                            delivery_method: orderData.delivery_method,
-                            delivery_zone: orderData.delivery_zone,
-                            delivery_cost: orderData.delivery_cost,
-                            county: deliveryMethod === 'delivery' ? document.querySelector('select[name="county"]')?.value : '',
-                            subcounty: deliveryMethod === 'delivery' ? document.querySelector('input[name="subcounty"]')?.value : '',
-                            location: deliveryMethod === 'delivery' ? document.querySelector('input[name="location"]')?.value : '',
-                            address: deliveryMethod === 'delivery' ? document.querySelector('textarea[name="address"]')?.value : ''
-                        }
-                    };
-
-                    console.log('Initiating KCB payment with existing order:', orderData.order_id);
-
-                    const kcbResult = await initiateKcbPayment(kcbPaymentData);
-
-                    if (kcbResult.success) {
-                        // Show payment status modal
-                        showPaymentStatusModal(`
-                            <div class="text-blue-600">
-                                <i class="fas fa-spinner fa-spin text-4xl mb-4"></i>
-                                <h3 class="text-xl font-semibold mb-2">Payment Initiated</h3>
-                                <p class="text-gray-600">${kcbResult.customer_message || 'Check your phone for M-Pesa prompt...'}</p>
-                                <p class="text-sm text-gray-500 mt-2">Order #: ${orderData.order_id}</p>
-                                <p class="text-xs text-gray-500 mt-2">Checking payment status automatically</p>
-                            </div>
-                        `);
-
-                        // Store checkout request ID
-                        window.checkoutRequestId = kcbResult.checkout_request_id;
-
-                        // Start polling for payment status
-                        window.paymentStatusInterval = setInterval(() => {
-                            checkKcbPaymentStatus(kcbResult.checkout_request_id);
-                        }, 3000);
-                        
-                        // Auto-stop polling after 5 minutes (300 seconds)
-                        setTimeout(() => {
-                            if (window.paymentStatusInterval) {
-                                clearInterval(window.paymentStatusInterval);
-                                window.paymentStatusInterval = null;
-                                console.log('Stopped polling after 5 minutes');
-                            }
-                        }, 300000);
-                        
-                    } else {
-                        alert('Failed to initiate M-Pesa payment: ' + kcbResult.message);
-                        submitButton.innerHTML = originalText;
-                        submitButton.disabled = false;
-                    }
-                }
-            } else {
-                // Handle validation errors
-                if (orderData.errors) {
-                    let errorMessage = 'Please fix the following errors:\n';
-                    for (const [field, errors] of Object.entries(orderData.errors)) {
-                        errorMessage += `- ${errors.join(', ')}\n`;
-                    }
-                    alert(errorMessage);
+                if (deliveryMethod === 'delivery') {
+                    formData.append('county', document.querySelector('select[name="county"]')?.value || '');
+                    formData.append('subcounty', document.querySelector('input[name="subcounty"]')?.value || '');
+                    formData.append('location', document.querySelector('input[name="location"]')?.value || '');
+                    formData.append('address', document.querySelector('textarea[name="address"]')?.value || '');
                 } else {
-                    alert(orderData.message || 'Error processing order. Please try again.');
+                    formData.append('county', '');
+                    formData.append('subcounty', '');
+                    formData.append('location', '');
+                    formData.append('address', '');
                 }
+
+                const orderResponse = await fetch("{{ route('cart.order.process') }}", {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
+                    body: formData
+                });
+
+                const orderData = await orderResponse.json();
+
+                if (orderData.success && orderData.order_id) {
+                    window.currentOrderId = orderData.order_id;
+
+                    if (paymentMethod === 'iveri') {
+                        document.getElementById('iveriOrderIdField').value = orderData.order_id;
+                        document.getElementById('iveriAmount').value = orderData.amount * 100;
+                        document.getElementById('iveriOrderId').value = orderData.order_id;
+                        document.getElementById('iveriToken').value = orderData.token;
+                        document.getElementById('iveriEmail').value = orderData.email;
+                        document.getElementById('iveriFirstName').value = orderData.first_name;
+                        document.getElementById('iveriLastName').value = orderData.last_name;
+                        document.getElementById('iveriDeliveryCost').value = orderData.delivery_cost;
+                        document.getElementById('iveriDeliveryZone').value = orderData.delivery_zone;
+                        iveriForm.submit();
+                    } else if (paymentMethod === 'kcb') {
+                        const kcbPaymentData = {
+                            payment_type: 'product',
+                            phone_number: phone,
+                            amount: orderData.amount,
+                            currency: 'KES',
+                            customer_name: orderData.first_name + ' ' + orderData.last_name,
+                            email: orderData.email,
+                            existing_order_id: orderData.order_id,
+                            reference_data: {
+                                delivery_method: orderData.delivery_method,
+                                delivery_zone: orderData.delivery_zone,
+                                delivery_cost: orderData.delivery_cost
+                            }
+                        };
+
+                        const kcbResult = await initiateKcbPayment(kcbPaymentData);
+                        if (kcbResult.success) {
+                            showPaymentStatusModal(`
+                                <div class="text-blue-600">
+                                    <i class="fas fa-spinner fa-spin text-4xl mb-4"></i>
+                                    <h3 class="text-xl font-semibold mb-2">Payment Initiated</h3>
+                                    <p class="text-gray-600">${kcbResult.customer_message || 'Check your phone for M-Pesa prompt...'}</p>
+                                    <p class="text-sm text-gray-500 mt-2">Order #: ${orderData.order_id}</p>
+                                </div>
+                            `);
+                            window.checkoutRequestId = kcbResult.checkout_request_id;
+                            window.paymentStatusInterval = setInterval(() => checkKcbPaymentStatus(kcbResult.checkout_request_id), 3000);
+                            setTimeout(() => { if (window.paymentStatusInterval) clearInterval(window.paymentStatusInterval); }, 300000);
+                        } else {
+                            alert('Failed to initiate M-Pesa payment: ' + kcbResult.message);
+                            submitButton.innerHTML = originalText;
+                            submitButton.disabled = false;
+                        }
+                    }
+                } else {
+                    if (orderData.errors) {
+                        let errorMessage = 'Please fix the following errors:\n';
+                        for (const [field, errors] of Object.entries(orderData.errors)) {
+                            errorMessage += `- ${errors.join(', ')}\n`;
+                        }
+                        alert(errorMessage);
+                    } else {
+                        alert(orderData.message || 'Error processing order. Please try again.');
+                    }
+                    submitButton.innerHTML = originalText;
+                    submitButton.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
                 submitButton.innerHTML = originalText;
                 submitButton.disabled = false;
             }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again.');
-            submitButton.innerHTML = originalText;
-            submitButton.disabled = false;
-        }
-    });
-
-    // Close modal on escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            hidePaymentStatusModal();
-        }
-    });
-
-    // Close modal when clicking outside
-    document.addEventListener('click', function(e) {
-        if (e.target.id === 'payment-status-modal') {
-            hidePaymentStatusModal();
-        }
-    });
+        });
+    }
 });
-
-async function updateCart() {
-    const cartItem = this.closest('.cart-item');
-    if (!cartItem) return;
-
-    const cartKey = cartItem.getAttribute('data-id');
-    const quantity = this.value;
-
-    try {
-        const response = await fetch(`/cart/update/${cartKey}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                quantity: quantity
-            })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            // Update item total
-            const priceElement = cartItem.querySelector('.price');
-            const itemTotalElement = cartItem.querySelector('.item-total');
-
-            if (priceElement && itemTotalElement) {
-                const price = parseFloat(priceElement.textContent.replace('Ksh ', '').replace(/,/g, ''));
-                const total = price * quantity;
-                itemTotalElement.textContent = 'Ksh ' + total.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-            }
-
-            // Update cart total
-            updateCartTotal();
-        } else {
-            throw new Error(data.message || 'Failed to update cart');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Failed to update cart. Please try again.');
-    }
-}
-
-function updateCartTotal() {
-    let newTotal = 0;
-    document.querySelectorAll('.item-total').forEach(el => {
-        newTotal += parseFloat(el.textContent.replace('Ksh ', '').replace(/,/g, ''));
-    });
-
-    // Update displayed subtotal
-    document.querySelector('.cart-subtotal').textContent = 'Ksh ' + newTotal.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-
-    // Update the global subtotal variable
-    window.cartSubtotal = newTotal;
-
-    // Recalculate the total with delivery cost
-    const deliveryCost = parseFloat(document.getElementById('deliveryCostDisplay').textContent.replace('Ksh ', '').replace(/,/g, '') || 0);
-    document.querySelector('.cart-total').textContent = 'Ksh ' + (newTotal + deliveryCost).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-}
-
-async function removeFromCart(itemId) {
-    try {
-        const response = await fetch(`/cart/remove/${itemId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'Accept': 'application/json'
-            }
-        });
-
-        if (response.ok) {
-            // Remove item row from DOM
-            const itemElement = document.querySelector(`.cart-item[data-id="${itemId}"]`);
-            if (itemElement) {
-                itemElement.remove();
-            }
-
-            // Update cart total
-            updateCartTotal();
-
-            // If cart is empty, reload the page to show empty cart message
-            if (document.querySelectorAll('.cart-item').length === 0) {
-                location.reload();
-            }
-        } else {
-            throw new Error('Failed to remove item from cart');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Failed to remove item from cart. Please try again.');
-    }
-}
 </script>
 
 <style>
 .payment-method-card input:checked + div {
     border-color: inherit;
     background-color: inherit;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
 }
 .payment-method-card div {
     transition: all 0.2s ease;
 }
 .payment-method-card:hover div {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
 }
-
-.delivery-option input:checked + label {
-    font-weight: bold;
-}
-.zone-option input:checked + label {
-    font-weight: bold;
-}
-
-/* Loading spinner */
 .spinner {
     border: 3px solid #f3f3f3;
     border-top: 3px solid #93C754;
@@ -935,10 +791,17 @@ async function removeFromCart(itemId) {
     display: inline-block;
     margin-right: 8px;
 }
-
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+.quantity-input {
+    -moz-appearance: textfield;
+}
+.quantity-input::-webkit-inner-spin-button,
+.quantity-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 </style>
 @endsection
