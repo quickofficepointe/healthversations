@@ -27,16 +27,16 @@ class Consultation extends Model
         'payment_method'
     ];
 
-    // Consultation Types - ADDED PHYSICAL
+    // Consultation Types
     const TYPE_INITIAL = 'initial';
     const TYPE_FOLLOWUP = 'followup';
     const TYPE_NUTRITION_REVIEW = 'nutrition_review';
     const TYPE_SPECIALIZED = 'specialized';
-    const TYPE_PHYSICAL = 'physical'; // NEW: Physical consultation
+    const TYPE_PHYSICAL = 'physical';
 
     // Status Constants
     const STATUS_PENDING = 'pending';
-    const STATUS_APPROVED = 'approved';  // Changed from 'confirmed' to match your admin
+    const STATUS_APPROVED = 'approved';
     const STATUS_CONFIRMED = 'confirmed';
     const STATUS_COMPLETED = 'completed';
     const STATUS_CANCELLED = 'cancelled';
@@ -49,7 +49,6 @@ class Consultation extends Model
     const PAYMENT_REFUNDED = 'refunded';
     const PAYMENT_PROCESSING = 'processing';
 
-    // All valid payment statuses
     const PAYMENT_STATUSES = [
         self::PAYMENT_PENDING,
         self::PAYMENT_UNPAID,
@@ -64,11 +63,10 @@ class Consultation extends Model
     const LOCATION_INTERNATIONAL = 'international';
 
     // Fee Structure
-    const FEE_KENYA = 3000; // KSH for online
-    const FEE_INTERNATIONAL = 31; // USD for online
-    const FEE_PHYSICAL = 5000; // KSH for physical consultation (2 hours)
+    const FEE_KENYA = 3000;
+    const FEE_INTERNATIONAL = 31;
+    const FEE_PHYSICAL = 5500; // Physical consultation fee
 
-    // Get consultation types with labels
     public static function getTypes()
     {
         return [
@@ -80,7 +78,6 @@ class Consultation extends Model
         ];
     }
 
-    // Get consultation durations
     public function getDuration()
     {
         return match($this->type) {
@@ -103,11 +100,12 @@ class Consultation extends Model
         if ($this->type === self::TYPE_PHYSICAL) {
             $this->fee = self::FEE_PHYSICAL;
             $this->usd_equivalent = null;
+            $this->location = self::LOCATION_KENYA; // Force local location
         } elseif ($this->location === self::LOCATION_KENYA) {
             $this->fee = self::FEE_KENYA;
             $this->usd_equivalent = null;
         } else {
-            $this->fee = self::FEE_INTERNATIONAL * 150; // Convert to KSH for storage
+            $this->fee = self::FEE_INTERNATIONAL * 150;
             $this->usd_equivalent = self::FEE_INTERNATIONAL;
         }
     }
@@ -162,12 +160,10 @@ class Consultation extends Model
         ][$this->status] ?? 'bg-gray-100 text-gray-800';
     }
 
-    // Check if a time slot is available
     public static function isTimeSlotAvailable($date, $time, $type)
     {
-        $duration = $type === self::TYPE_PHYSICAL ? 120 : 60; // 2 hours for physical, 1 hour for online
+        $duration = $type === self::TYPE_PHYSICAL ? 120 : 60;
 
-        // Check if there's any blocked slot for this time
         $blockedSlot = BlockedSlot::where('blocked_date', $date)
             ->where(function($query) use ($time, $duration) {
                 $startTime = Carbon::parse($time);
@@ -187,16 +183,15 @@ class Consultation extends Model
             return false;
         }
 
-        // Check if there's already a booking at this time
         $existingBooking = self::where('consultation_date', $date)
             ->where('consultation_time', $time)
+            ->where('type', $type)
             ->whereIn('status', [self::STATUS_PENDING, self::STATUS_APPROVED])
             ->exists();
 
         return !$existingBooking;
     }
 
-    // Get available time slots for a date
     public static function getAvailableTimeSlots($date)
     {
         $allTimeSlots = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
@@ -212,6 +207,38 @@ class Consultation extends Model
 
             $isBooked = self::where('consultation_date', $date)
                 ->where('consultation_time', $time)
+                ->whereIn('status', [self::STATUS_PENDING, self::STATUS_APPROVED])
+                ->exists();
+
+            if (!$isBlocked && !$isBooked) {
+                $availableSlots[] = $time;
+            }
+        }
+
+        return $availableSlots;
+    }
+
+    public static function getAvailablePhysicalTimeSlots($date)
+    {
+        $allTimeSlots = ['08:00', '10:00', '12:00', '14:00'];
+        $availableSlots = [];
+
+        foreach ($allTimeSlots as $time) {
+            $startTime = Carbon::parse($time);
+            $endTime = (clone $startTime)->addMinutes(120);
+
+            $isBlocked = BlockedSlot::where('blocked_date', $date)
+                ->where(function($query) use ($startTime, $endTime) {
+                    $query->where('start_time', '<', $endTime)
+                          ->where('end_time', '>', $startTime);
+                })->exists();
+
+            $isBooked = self::where('consultation_date', $date)
+                ->where('type', self::TYPE_PHYSICAL)
+                ->where(function($query) use ($startTime, $endTime) {
+                    $query->where('consultation_time', '>=', $startTime->format('H:i'))
+                          ->where('consultation_time', '<', $endTime->format('H:i'));
+                })
                 ->whereIn('status', [self::STATUS_PENDING, self::STATUS_APPROVED])
                 ->exists();
 

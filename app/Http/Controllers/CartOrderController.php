@@ -9,18 +9,18 @@ use Illuminate\Support\Str;
 
 class CartOrderController extends Controller
 {
-   public function index(Request $request)
+public function index(Request $request)
 {
     $query = CartOrder::orderBy('created_at', 'desc');
-    
+
     // Filter by status if provided
     if ($request->has('status') && $request->status !== '') {
         $query->where('status', $request->status);
     }
-    
-    $cartOrders = $query->paginate(10);
-    
-    return view('healthversations.admin.products.index', compact('cartOrders'));
+
+    $orders = $query->paginate(10); // Changed from $cartOrders to $orders
+
+    return view('healthversations.admin.orders.index', compact('orders')); // Passing 'orders'
 }
 
     public function update(Request $request, $id)
@@ -43,24 +43,24 @@ public function showDetails($id)
 {
     try {
         $order = CartOrder::findOrFail($id);
-        
+
         // Safely decode items if needed
         $items = is_array($order->items) ? $order->items : json_decode($order->items, true);
-        
+
         // Return HTML for modal
         $html = view('healthversations.admin.partials.order-details', [
             'order' => $order,
             'items' => $items ?? []
         ])->render();
-        
+
         return response()->json([
             'success' => true,
             'html' => $html
         ]);
-        
+
     } catch (\Exception $e) {
         \Log::error('Error fetching order details: ' . $e->getMessage());
-        
+
         return response()->json([
             'success' => false,
             'error' => 'Order not found',
@@ -206,10 +206,10 @@ public function showDetails($id)
                    "Phone: {$order->customer_phone}\n" .
                    "Amount: KES {$order->amount}\n" .
                    "Delivery: " . ($order->delivery_method === 'pickup' ? 'Pickup' : 'Delivery to ' . $order->delivery_zone) . "\n\n" .
-                   ($order->delivery_method === 'delivery' ? 
+                   ($order->delivery_method === 'delivery' ?
                    "Shipping Address:\n" .
                    "{$order->address}, {$order->location}\n" .
-                   "{$order->subcounty}, {$order->county}\n\n" : 
+                   "{$order->subcounty}, {$order->county}\n\n" :
                    "Pickup Location: OM MBOYA STREET, STAR MALL, 1st Floor, Shop A17\n\n") .
                    "Items:\n" .
                    collect($order->items)->map(function($item) {

@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log; // Include the Log facade
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckProfileUpdate
@@ -36,6 +36,8 @@ class CheckProfileUpdate
 
     /**
      * Check if the user's profile is complete.
+     * ONLY requires city and phone_number to be filled.
+     * All other fields (country, description, health_goals, profile_picture) are optional.
      *
      * @param  \App\Models\User  $user
      * @return bool
@@ -44,19 +46,33 @@ class CheckProfileUpdate
     {
         $profile = $user->profile;
 
-        // Log the profile details to ensure we are checking the correct fields
+        // If no profile exists, it's not updated
+        if (!$profile) {
+            Log::debug('No profile found for user');
+            return false;
+        }
+
+        // Log the profile details for debugging
         Log::debug('User profile fields:', [
+            'city' => $profile->city ?? 'not set',
             'phone_number' => $profile->phone_number ?? 'not set',
-            'profile_picture' => $profile->profile_picture ?? 'not set',
+            'country' => $profile->country ?? 'not set',
             'description' => $profile->description ?? 'not set',
             'health_goals' => $profile->health_goals ?? 'not set',
+            'profile_picture' => $profile->profile_picture ?? 'not set',
         ]);
 
-        return $profile &&
-               !empty($profile->phone_number) &&
-               !empty($profile->profile_picture) &&
-               !empty($profile->description) && // Check if the description field is populated
-               !empty($profile->health_goals);  // Check if the health_goals field is populated
+        // ONLY check for REQUIRED fields: city AND phone_number
+        // Description, health_goals, profile_picture, and country are OPTIONAL
+        $isUpdated = !empty($profile->city) && !empty($profile->phone_number);
+
+        Log::debug('Profile updated check result:', [
+            'city_present' => !empty($profile->city),
+            'phone_present' => !empty($profile->phone_number),
+            'is_updated' => $isUpdated
+        ]);
+
+        return $isUpdated;
     }
 
     /**

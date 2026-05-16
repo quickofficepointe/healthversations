@@ -350,9 +350,9 @@ namespace App\Models {
      * @property string|null $recurring_day
      * @property boolean $is_recurring
      * @property string|null $reason
-     * @property string $end_time
-     * @property string $start_time
-     * @property \Illuminate\Support\Carbon $blocked_date
+     * @property string|null $end_time
+     * @property string|null $start_time
+     * @property \Illuminate\Support\Carbon|null $blocked_date
      * @property int $id
      * @method static \Illuminate\Database\Eloquent\Builder<BlockedSlot>|BlockedSlot whereId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<BlockedSlot>|BlockedSlot whereBlockedDate($value)

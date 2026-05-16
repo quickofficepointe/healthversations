@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\profile;
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +36,7 @@ class ProfileController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(profile $profile)
+    public function show(Profile $profile)
     {
         //
     }
@@ -44,7 +44,7 @@ class ProfileController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(profile $profile)
+    public function edit(Profile $profile)
     {
         $user = Auth::user();
         return view('healthversations.user.profiles.index', compact('user'));
@@ -58,50 +58,47 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         // Fetch the user's profile or create one if it doesn't exist
-        $profile = $user->profile ?? new Profile(); // Create a new Profile if none exists
+        $profile = $user->profile ?? new Profile();
 
-        // Validate input data
+        // Validate input data - ONLY city and phone_number are required
         $request->validate([
-            'country' => 'string|max:255',
-            'city' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:15',
-            'description' => 'nullable|string',
-            'health_goals' => 'nullable|string',
-            'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'country' => 'nullable|string|max:255',           // Optional
+            'city' => 'required|string|max:255',              // REQUIRED
+            'phone_number' => 'required|string|max:20',       // REQUIRED
+            'description' => 'nullable|string',               // Optional
+            'health_goals' => 'nullable|string',              // Optional
+            'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Optional
         ]);
 
         // Handle profile picture upload if provided
         if ($request->hasFile('profile_picture')) {
             // If a new profile picture is uploaded, delete the old one if it exists
             if ($profile->profile_picture) {
-                Storage::delete($profile->profile_picture);
+                Storage::disk('public')->delete($profile->profile_picture);
             }
 
             // Store the new profile picture
             $path = $request->file('profile_picture')->store('profile_pictures', 'public');
-            $profile->profile_picture = $path;  // Update the profile with the new picture path
+            $profile->profile_picture = $path;
         }
 
-        // Update other profile fields or create a new profile if it didn't exist
-        $profile->user_id = $user->id; // Ensure the profile is associated with the logged-in user
-        $profile->country = $request->input('country');
-        $profile->city = $request->input('city');
-        $profile->phone_number = $request->input('phone_number');
-        $profile->description = $request->input('description');
-        $profile->health_goals = $request->input('health_goals');
-        $profile->save(); // Save the profile
+        // Update profile fields
+        $profile->user_id = $user->id;
+        $profile->country = $request->input('country');           // Can be null
+        $profile->city = $request->input('city');                 // REQUIRED
+        $profile->phone_number = $request->input('phone_number'); // REQUIRED
+        $profile->description = $request->input('description');   // Can be null
+        $profile->health_goals = $request->input('health_goals'); // Can be null
+        $profile->save();
 
         // Redirect with success message
         return redirect()->route('home')->with('success', 'Profile updated successfully.');
     }
 
-
-
-
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(profile $profile)
+    public function destroy(Profile $profile)
     {
         //
     }
