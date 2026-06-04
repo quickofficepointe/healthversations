@@ -225,7 +225,7 @@
                                     <p class="text-sm text-gray-600">
                                         @switch($value)
                                             @case('physical')
-                                                In-person consultation at our Nairobi office (TOM MBOYA STREET, STAR MALL, 1st Floor, Shop A17).
+                                                In-person consultation at our Nairobi office (Trio complex behind garden city off Thika road).
                                                 Comprehensive health assessment, physical examination, and personalized recommendations.
                                                 <strong class="text-[#0A4040]">Includes a 2-hour dedicated session with our expert.</strong>
                                                 @break
@@ -256,7 +256,7 @@
                                     </span>
                                     <p class="text-lg font-bold text-[#52823C] mt-2 fee-display" data-type="{{ $value }}">
                                         @if($value === 'physical')
-                                            Ksh 5,000
+                                            Ksh 5,500
                                         @elseif($value === 'initial')
                                             <span class="online-fee-kenya">Ksh 3,000</span>
                                             <span class="online-fee-int" style="display: none;">$31</span>
@@ -345,7 +345,7 @@
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">Consultation Fee:</span>
                         <span class="text-2xl font-bold text-[#52823C]" id="dynamic-fee">
-                            Ksh 5,000
+                            Ksh 5,500
                         </span>
                     </div>
                     <div class="text-xs text-gray-500 mt-2" id="fee-note">
@@ -507,7 +507,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const isKenya = locationSelect?.value === 'kenya';
 
         if (isPhysical) {
-            dynamicFee.textContent = 'Ksh 5,000';
+            dynamicFee.textContent = 'Ksh 5,500';
             feeNote.innerHTML = 'Physical consultation includes 2 hours of dedicated time with our expert at our Nairobi office.';
             // Hide location for physical consultations
             if (locationField) locationField.style.display = 'none';

@@ -54,10 +54,29 @@ Route::get('/', function () {
     $currency = request()->query('currency', 'usd');
     $coachingpackages = CoachingPackages::with('features')->get();
 
-    // Show last added products first - order by created_at DESC
-    $products = Product::with('images')
-        ->orderBy('created_at', 'desc')
-        ->get();
+    // Alternate between old and new products (old, new, old, new...)
+    $allProducts = Product::with('images')->get();
+
+    $newProducts = $allProducts->filter(function($product) {
+        return $product->created_at->diffInDays(now()) <= 30; // Last 30 days
+    })->values();
+
+    $oldProducts = $allProducts->filter(function($product) {
+        return $product->created_at->diffInDays(now()) > 30;
+    })->values();
+
+    // Interleave old and new products
+    $products = collect();
+    $maxCount = max($newProducts->count(), $oldProducts->count());
+
+    for ($i = 0; $i < $maxCount; $i++) {
+        if ($i < $oldProducts->count()) {
+            $products->push($oldProducts[$i]); // Old first
+        }
+        if ($i < $newProducts->count()) {
+            $products->push($newProducts[$i]); // Then new
+        }
+    }
 
     $packages = package::all();
     $cards = versationcard::all();
