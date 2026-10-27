@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\manualorder;
+use App\Models\ManualOrder;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 
@@ -91,7 +91,7 @@ return response()->json([
     /**
      * Display the specified resource.
      */
-    public function show(manualorder $manualorder)
+    public function show(ManualOrder $manualorder)
     {
         //
     }
@@ -99,7 +99,7 @@ return response()->json([
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(manualorder $manualorder)
+    public function edit(ManualOrder $manualorder)
     {
         //
     }
@@ -107,7 +107,7 @@ return response()->json([
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, manualorder $manualorder)
+    public function update(Request $request, ManualOrder $manualorder)
     {
         //
     }
@@ -115,7 +115,7 @@ return response()->json([
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(manualorder $manualorder)
+    public function destroy(ManualOrder $manualorder)
     {
         //
     }

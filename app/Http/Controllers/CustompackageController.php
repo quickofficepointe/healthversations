@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\custompackage;
+use App\Models\CustomPackage;
 use Illuminate\Http\Request;
 
 class CustompackageController extends Controller
@@ -13,7 +13,7 @@ class CustompackageController extends Controller
     public function index()
     {
         //
-        $customPackages = custompackage::all();
+        $customPackages = CustomPackage::all();
         return view('healthversations.admin.customqoutes.index', compact('customPackages'));
 
     }
@@ -67,7 +67,7 @@ public function updateStatus(Request $request, $id)
     /**
      * Display the specified resource.
      */
-    public function show(custompackage $custompackage)
+    public function show(CustomPackage $custompackage)
     {
         //
     }
@@ -75,7 +75,7 @@ public function updateStatus(Request $request, $id)
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(custompackage $custompackage)
+    public function edit(CustomPackage $custompackage)
     {
         //
     }
@@ -83,7 +83,7 @@ public function updateStatus(Request $request, $id)
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, custompackage $custompackage)
+    public function update(Request $request, CustomPackage $custompackage)
     {
         //
     }
@@ -91,7 +91,7 @@ public function updateStatus(Request $request, $id)
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(custompackage $custompackage)
+    public function destroy(CustomPackage $custompackage)
     {
         //
     }

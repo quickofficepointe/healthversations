@@ -22,7 +22,7 @@ class CoachingPackages extends Model
 
     public function features(): HasMany
     {
-        return $this->hasMany(Packagefeatures::class, 'coachingpackage_id');
+        return $this->hasMany(PackageFeatures::class, 'coachingpackage_id');
     }
 
     // Method to format price based on currency

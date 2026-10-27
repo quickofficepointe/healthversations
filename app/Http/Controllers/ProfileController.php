@@ -72,12 +72,12 @@ class ProfileController extends Controller
 
         // Handle profile picture upload if provided
         if ($request->hasFile('profile_picture')) {
-            // If a new profile picture is uploaded, delete the old one if it exists
+            // If a new Profile picture is uploaded, delete the old one if it exists
             if ($profile->profile_picture) {
                 Storage::disk('public')->delete($profile->profile_picture);
             }
 
-            // Store the new profile picture
+            // Store the new Profile picture
             $path = $request->file('profile_picture')->store('profile_pictures', 'public');
             $profile->profile_picture = $path;
         }

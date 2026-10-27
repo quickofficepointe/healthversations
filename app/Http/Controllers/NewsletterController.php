@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\newsletter;
+use App\Models\Newsletter;
 use Illuminate\Http\Request;
 
 class NewsletterController extends Controller
@@ -47,7 +47,7 @@ class NewsletterController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(newsletter $newsletter)
+    public function show(Newsletter $newsletter)
     {
         //
     }
@@ -55,7 +55,7 @@ class NewsletterController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(newsletter $newsletter)
+    public function edit(Newsletter $newsletter)
     {
         //
     }

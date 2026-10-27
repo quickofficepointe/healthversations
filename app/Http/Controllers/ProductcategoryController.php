@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\productcategory;
+use App\Models\ProductCategory;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
@@ -14,7 +14,7 @@ class ProductcategoryController extends Controller
     public function index()
     {
         //
-        $productcategory = productcategory::all();
+        $productcategory = ProductCategory::all();
         return view('healthversations.admin.products.productcategory.index', compact('productcategory'));
     }
 
@@ -53,7 +53,7 @@ class ProductcategoryController extends Controller
 
         $data['slug'] = Str::slug($data['category_name']);
 
-        productcategory::create($data);
+        ProductCategory::create($data);
 
         return redirect()->back()->with('success', 'Package category created successfully!');
     }
@@ -61,7 +61,7 @@ class ProductcategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(productcategory $productcategory)
+    public function show(ProductCategory $productcategory)
     {
         //
     }

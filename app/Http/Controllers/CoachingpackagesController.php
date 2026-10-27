@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Coachingpackage;
 use App\Models\CoachingPackages;
-USE App\Models\Packagefeatures;
-use illuminate\Support\Facades\Storage;
+use App\Models\PackageFeatures;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
 class CoachingpackagesController extends Controller

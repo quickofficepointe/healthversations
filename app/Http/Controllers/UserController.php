@@ -119,6 +119,14 @@ class UserController extends Controller
         return view('healthversations.user.order-details', compact('order'));
     }
 
+    // Download the eTIMS invoice attached by admin
+    public function downloadEtimsInvoice($id)
+    {
+        $order = CartOrder::where('customer_email', Auth::user()->email)->findOrFail($id);
+
+        return CartOrderController::etimsInvoiceDownload($order);
+    }
+
     // My Consultations
     public function myConsultations()
     {
@@ -127,6 +135,14 @@ class UserController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
         return view('healthversations.user.consultations', compact('consultations'));
+    }
+
+    // Download the consultation eTIMS invoice attached by admin
+    public function downloadConsultationEtimsInvoice($id)
+    {
+        $consultation = Consultation::where('email', Auth::user()->email)->findOrFail($id);
+
+        return ConsultationController::etimsInvoiceDownload($consultation);
     }
 
     // My Ebooks
@@ -196,8 +212,9 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:500',
+            'phone_number' => 'nullable|string|max:20',
+            'city' => 'nullable|string|max:255',
+            'country' => 'nullable|string|max:255',
         ]);
 
         $user->update([
@@ -205,17 +222,14 @@ class UserController extends Controller
             'email' => $request->email,
         ]);
 
-        if ($user->profile) {
-            $user->profile->update([
-                'phone' => $request->phone,
-                'address' => $request->address,
-            ]);
-        } else {
-            $user->profile()->create([
-                'phone' => $request->phone,
-                'address' => $request->address,
-            ]);
-        }
+        $user->profile()->updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'phone_number' => $request->phone_number ?? '',
+                'city' => $request->city ?? '',
+                'country' => $request->country,
+            ]
+        );
 
         return back()->with('success', 'Profile updated successfully!');
     }
@@ -266,10 +280,15 @@ class UserController extends Controller
             ->get();
 
         $todayTracking = UserDailyHealthTracking::where('user_id', $user->id)
-            ->where('tracking_date', today())
+            ->whereDate('tracking_date', today())
             ->first();
 
-        return view('healthversations.user.meal-plan.dashboard', compact('activePlan', 'completedPlans', 'todayTracking'));
+        $todayMeals = UserDailyMealLog::where('user_id', $user->id)
+            ->whereDate('log_date', today())
+            ->get()
+            ->keyBy('meal_type');
+
+        return view('healthversations.user.meal-plan.dashboard', compact('activePlan', 'completedPlans', 'todayTracking', 'todayMeals'));
     }
 
     /**
@@ -281,7 +300,11 @@ class UserController extends Controller
 
         $activePlan = UserMealPlan::where('user_id', $user->id)
             ->where('status', 'active')
-            ->firstOrFail();
+            ->first();
+
+        if (!$activePlan) {
+            return redirect()->route('user.meal-plan.dashboard');
+        }
 
         $currentWeekPlan = $activePlan->weeklyPlans()
             ->where('week_number', $activePlan->current_week)
@@ -328,10 +351,15 @@ class UserController extends Controller
             return response()->json(['success' => false, 'message' => 'No active meal plan'], 400);
         }
 
+        // Unchecked checkboxes are not submitted, so read every flag explicitly
+        foreach (['walked_today', 'exercised_today', 'did_cardio', 'lifted_weights', 'ate_breakfast', 'ate_lunch', 'ate_dinner'] as $flag) {
+            $validated[$flag] = $request->boolean($flag);
+        }
+
         $tracking = UserDailyHealthTracking::updateOrCreate(
             [
                 'user_id' => $user->id,
-                'tracking_date' => today()
+                'tracking_date' => today()->toDateString()
             ],
             array_merge($validated, ['user_meal_plan_id' => $activePlan->id])
         );
@@ -372,8 +400,8 @@ class UserController extends Controller
         $data = [
             'user_id' => $user->id,
             'user_meal_plan_id' => $activePlan->id,
-            'user_weekly_plan_id' => $currentWeekPlan->id,
-            'log_date' => today(),
+            'user_weekly_plan_id' => optional($currentWeekPlan)->id,
+            'log_date' => today()->toDateString(),
             'meal_type' => $validated['meal_type'],
             'food_items' => $validated['food_items'] ?? null,
             'description' => $validated['description'] ?? null,
@@ -388,7 +416,7 @@ class UserController extends Controller
         $mealLog = UserDailyMealLog::updateOrCreate(
             [
                 'user_id' => $user->id,
-                'log_date' => today(),
+                'log_date' => today()->toDateString(),
                 'meal_type' => $validated['meal_type']
             ],
             $data
@@ -396,7 +424,7 @@ class UserController extends Controller
 
         // Update meal compliance
         $tracking = UserDailyHealthTracking::firstOrCreate(
-            ['user_id' => $user->id, 'tracking_date' => today()],
+            ['user_id' => $user->id, 'tracking_date' => today()->toDateString()],
             ['user_meal_plan_id' => $activePlan->id]
         );
 
@@ -495,7 +523,7 @@ class UserController extends Controller
         $weekEnd = now()->endOfWeek();
 
         $dailyTracking = UserDailyHealthTracking::where('user_id', $user->id)
-            ->whereBetween('tracking_date', [$weekStart, $weekEnd])
+            ->whereBetween('tracking_date', [$weekStart->toDateString(), $weekEnd->toDateString()])
             ->orderBy('tracking_date')
             ->get();
 
@@ -505,12 +533,13 @@ class UserController extends Controller
 
         $chartData = [];
         for ($date = clone $weekStart; $date <= $weekEnd; $date->modify('+1 day')) {
-            $tracking = $dailyTracking->firstWhere('tracking_date', $date->format('Y-m-d'));
+            $tracking = $dailyTracking->first(fn ($t) => $t->tracking_date->isSameDay($date));
             $chartData[] = [
                 'date' => $date->format('D'),
-                'water' => $tracking ? $tracking->water_intake_liters : 0,
-                'steps' => $tracking ? $tracking->steps_count : 0,
-                'sleep' => $tracking ? $tracking->sleep_hours : 0,
+                // null (not 0) for days without a check-in, so charts show a gap
+                'water' => $tracking ? $tracking->water_intake_liters : null,
+                'steps' => $tracking ? $tracking->steps_count : null,
+                'sleep' => $tracking ? $tracking->sleep_hours : null,
             ];
         }
 

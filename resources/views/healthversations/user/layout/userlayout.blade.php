@@ -95,6 +95,8 @@
         .status-processing { background: #DBEAFE; color: #1E40AF; }
         .status-completed { background: #D1FAE5; color: #065F46; }
         .status-cancelled { background: #FEE2E2; color: #991B1B; }
+        .status-confirmed, .status-approved { background: #DBEAFE; color: #1E40AF; }
+        .status-failed { background: #FEE2E2; color: #991B1B; }
 
         @media (max-width: 768px) {
             .sidebar {
@@ -158,10 +160,9 @@
                 <a href="{{ route('user.dashboard') }}" class="sidebar-link flex items-center px-3 py-2.5 text-sm rounded-md {{ request()->routeIs('user.dashboard') ? 'active' : '' }}">
                     <i class="fas fa-tachometer-alt w-5 mr-3"></i> Dashboard
                 </a>
-<!-- Add this after My Reviews or before the divider -->
-<a href="{{ route('user.meal-plan.dashboard') }}" class="sidebar-link flex items-center px-3 py-2.5 text-sm rounded-md {{ request()->routeIs('user.meal-plan.*') ? 'active' : '' }}">
-    <i class="fas fa-apple-alt w-5 mr-3"></i> My Meal Plan
-</a>
+                <a href="{{ route('user.meal-plan.dashboard') }}" class="sidebar-link flex items-center px-3 py-2.5 text-sm rounded-md {{ request()->routeIs('user.meal-plan.*') ? 'active' : '' }}">
+                    <i class="fas fa-apple-alt w-5 mr-3"></i> My Meal Plan
+                </a>
                 <a href="{{ route('user.orders') }}" class="sidebar-link flex items-center px-3 py-2.5 text-sm rounded-md {{ request()->routeIs('user.orders*') ? 'active' : '' }}">
                     <i class="fas fa-shopping-bag w-5 mr-3"></i> My Orders
                 </a>

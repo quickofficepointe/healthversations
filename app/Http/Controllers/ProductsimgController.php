@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\productsimg;
+use App\Models\ProductsImg;
 use Illuminate\Http\Request;
 
 class ProductsimgController extends Controller
@@ -34,7 +34,7 @@ class ProductsimgController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(productsimg $productsimg)
+    public function show(ProductsImg $productsimg)
     {
         //
     }
@@ -42,7 +42,7 @@ class ProductsimgController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(productsimg $productsimg)
+    public function edit(ProductsImg $productsimg)
     {
         //
     }
@@ -50,7 +50,7 @@ class ProductsimgController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, productsimg $productsimg)
+    public function update(Request $request, ProductsImg $productsimg)
     {
         //
     }
@@ -58,7 +58,7 @@ class ProductsimgController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(productsimg $productsimg)
+    public function destroy(ProductsImg $productsimg)
     {
         //
     }

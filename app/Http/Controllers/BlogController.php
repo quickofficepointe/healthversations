@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\blog;
+use App\Models\Blog;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Models\blogcategory;
@@ -16,7 +16,7 @@ class BlogController extends Controller
     public function index()
     {
         //
-        $blog= blog::all();
+        $blog= Blog::all();
         $blogcategory = blogcategory::all();
         return view('healthversations.admin.articles.article.index', compact('blog','blogcategory'));
     }

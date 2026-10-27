@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\faq;
+use App\Models\Faq;
 use Illuminate\Http\Request;
 
 class FaqController extends Controller
@@ -38,7 +38,7 @@ class FaqController extends Controller
             'answer' => 'required|string|max:1000',
         ]);
 
-        // Create a new FAQ entry
+        // Create a new Faq entry
         Faq::create([
             'question' => $request->question,
             'answer' => $request->answer,
@@ -51,7 +51,7 @@ class FaqController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(faq $faq)
+    public function show(Faq $faq)
     {
         //
     }
@@ -59,7 +59,7 @@ class FaqController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(faq $faq)
+    public function edit(Faq $faq)
     {
         //
     }

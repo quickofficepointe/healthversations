@@ -8,7 +8,7 @@
     <h2 class="text-2xl font-bold text-[#0A4040] mb-2">Payment Successful!</h2>
     <p class="text-gray-600 mb-4">Thank you for your order. Your payment has been processed successfully.</p>
     <p class="text-gray-600 mb-6">Order Reference: <span class="font-semibold">{{ $reference }}</span></p>
-    <a href="{{ route('orders.index') }}" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded font-bold">
+    <a href="{{ auth()->check() ? route('user.orders') : url('/') }}" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded font-bold">
         View Your Orders
     </a>
 </div>

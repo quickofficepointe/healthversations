@@ -36,12 +36,12 @@ class Product extends Model
 
     public function category()
     {
-        return $this->belongsTo(productcategory::class, 'category_id');
+        return $this->belongsTo(ProductCategory::class, 'category_id');
     }
 
     public function images()
     {
-        return $this->hasMany(productsimg::class);
+        return $this->hasMany(ProductsImg::class);
     }
 
     public function variants()
@@ -56,7 +56,7 @@ class Product extends Model
 
     public function reviews()
     {
-        return $this->morphMany(review::class, 'reviewable');
+        return $this->morphMany(Review::class, 'reviewable');
     }
 
     /**

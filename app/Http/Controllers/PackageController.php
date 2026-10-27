@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Package;
 use Illuminate\Support\Str;
-use App\Models\packagecategory;
+use App\Models\PackageCategory;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
@@ -16,14 +16,14 @@ class PackageController extends Controller
     public function index()
     {
         //
-        $package = package::all();
-        $packagecategory = packagecategory::all();
+        $package = Package::all();
+        $packagecategory = PackageCategory::all();
         return view('healthversations.admin.packages.package.index',compact('package','packagecategory'));
     }
 
     public function premiumpackages()
     {
-        $packages = package::all();
+        $packages = Package::all();
         return view('frontendviews.packages.index',compact('packages'));
     }
 
@@ -98,7 +98,7 @@ class PackageController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(package $package)
+    public function edit(Package $package)
     {
         //
     }
@@ -107,7 +107,7 @@ class PackageController extends Controller
      * Update the specified resource in storage.
      */
     // Remove the empty edit method since we're using modal
-// public function edit(package $package)
+// public function edit(Package $package)
 // {
 //     //
 // }

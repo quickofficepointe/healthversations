@@ -5,10 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Consultation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class ConsultationController extends Controller
 {
+    protected $salesEmail = 'sales@healthversations.com';
+
     public function index()
     {
         $consultations = Consultation::with('user')->latest()->paginate(10);
@@ -50,7 +54,15 @@ class ConsultationController extends Controller
             'consultation_time' => 'required|date_format:H:i',
             'health_concerns' => 'required|string|max:1000',
             'notes' => 'nullable|string|max:1000',
-            'payment_method' => 'required|in:iveri,kcb'
+            'payment_method' => 'required|in:iveri,kcb',
+            'etims_requested' => 'nullable|boolean',
+            'etims_kra_pin' => ['required_if:etims_requested,1', 'nullable', 'string', 'regex:/^[AP]\d{9}[A-Z]$/i'],
+            'etims_business_name' => 'nullable|string|max:255',
+        ];
+
+        $messages = [
+            'etims_kra_pin.required_if' => 'Please enter your KRA PIN for the eTIMS invoice.',
+            'etims_kra_pin.regex' => 'Enter a valid KRA PIN, e.g. A012345678Z.',
         ];
 
         // Only require location and timezone for non-physical consultations
@@ -59,10 +71,15 @@ class ConsultationController extends Controller
             $rules['timezone'] = 'required_if:location,' . Consultation::LOCATION_INTERNATIONAL . '|timezone';
         }
 
-        $validated = $request->validate($rules);
+        $validated = $request->validate($rules, $messages);
 
         $consultation = new Consultation();
         $consultation->fill($validated);
+
+        $etimsRequested = $request->boolean('etims_requested');
+        $consultation->etims_requested = $etimsRequested;
+        $consultation->etims_kra_pin = $etimsRequested ? strtoupper($request->etims_kra_pin) : null;
+        $consultation->etims_business_name = $etimsRequested ? $request->etims_business_name : null;
 
         // Force physical consultations to use Kenya location
         if ($consultation->type === Consultation::TYPE_PHYSICAL) {
@@ -126,6 +143,17 @@ class ConsultationController extends Controller
             ? "\n\nLocation: Trio Complex, Behind Garden City, Nairobi, Kenya\nPlease arrive 10 minutes before your appointment."
             : '';
 
+        $etimsCustomer = $consultation->etims_requested
+            ? "\n\neTIMS invoice: requested (KRA PIN {$consultation->etims_kra_pin}). We will email your eTIMS invoice once it has been generated."
+            : '';
+
+        $etimsSales = $consultation->etims_requested
+            ? "*** eTIMS INVOICE REQUESTED ***\n" .
+              "KRA PIN: {$consultation->etims_kra_pin}\n" .
+              "Business Name: " . ($consultation->etims_business_name ?: $consultation->name) . "\n" .
+              "Generate the invoice on eTIMS and attach it from the admin Consultation Orders page.\n\n"
+            : '';
+
         // Send email to customer
         Mail::raw("Dear {$consultation->name},
 
@@ -139,7 +167,7 @@ Date: " . date('F j, Y', strtotime($consultation->consultation_date)) . "
 Time: " . date('g:i A', strtotime($consultation->consultation_time)) . "
 Duration: " . $consultation->getDuration() . "
 Amount: {$amountDisplay}
-Payment Method: " . strtoupper($request->payment_method) . $physicalLocationInfo . "
+Payment Method: " . strtoupper($request->payment_method) . $physicalLocationInfo . $etimsCustomer . "
 
 HEALTH CONCERNS
 {$consultation->health_concerns}
@@ -164,7 +192,7 @@ www.healthversations.com", function ($message) use ($consultation) {
         Mail::raw("NEW CONSULTATION BOOKING
 ==========================================
 
-CUSTOMER DETAILS:
+{$etimsSales}CUSTOMER DETAILS:
 Name: {$consultation->name}
 Email: {$consultation->email}
 Phone: {$consultation->phone}
@@ -200,8 +228,8 @@ Consultation ID: {$consultation->id}
 Created: " . $consultation->created_at->format('F j, Y g:i A') . "
 
 -- Health Versations Notification", function ($message) use ($consultation) {
-            $message->to('sales@healthversations.com')
-                    ->subject('New Consultation Booking - ' . $consultation->name);
+            $message->to($this->salesEmail)
+                    ->subject(($consultation->etims_requested ? '[eTIMS] ' : '') . 'New Consultation Booking - ' . $consultation->name);
         });
 
         return response()->json([
@@ -305,7 +333,24 @@ Created: " . $consultation->created_at->format('F j, Y g:i A') . "
             $query->where('payment_status', $payment);
         }
 
-        $consultations = $query->paginate(10);
+        if ($request->etims === 'pending') {
+            $query->etimsPending();
+        } elseif ($request->etims === 'sent') {
+            $query->where('etims_requested', true)->whereNotNull('etims_invoice_path');
+        } elseif ($request->etims === 'requested') {
+            $query->where('etims_requested', true);
+        }
+
+        if ($search = $request->get('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $consultations = $query->paginate(10)->withQueryString();
+        $etimsPendingCount = Consultation::etimsPending()->count();
 
         $totalCount = Consultation::count();
         $pendingCount = Consultation::where('status', 'pending')->count();
@@ -317,8 +362,118 @@ Created: " . $consultation->created_at->format('F j, Y g:i A') . "
             'totalCount',
             'pendingCount',
             'approvedCount',
-            'unpaidCount'
+            'unpaidCount',
+            'etimsPendingCount'
         ));
+    }
+
+    /**
+     * Admin attaches the eTIMS invoice generated on KRA and sends it to the client and sales.
+     */
+    public function uploadEtimsInvoice(Request $request, $id)
+    {
+        $consultation = Consultation::findOrFail($id);
+
+        $request->validate([
+            'etims_invoice' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'etims_invoice_number' => 'nullable|string|max:100',
+        ]);
+
+        // Replace any previously attached invoice
+        if ($consultation->etims_invoice_path) {
+            Storage::disk('local')->delete($consultation->etims_invoice_path);
+        }
+
+        $file = $request->file('etims_invoice');
+        $path = $file->storeAs(
+            'etims-invoices',
+            'CONSULT-' . $consultation->id . '-' . time() . '.' . $file->getClientOriginalExtension(),
+            'local'
+        );
+
+        $consultation->update([
+            'etims_requested' => true,
+            'etims_invoice_number' => $request->etims_invoice_number,
+            'etims_invoice_path' => $path,
+        ]);
+
+        try {
+            $this->sendEtimsInvoice($consultation);
+            $consultation->update(['etims_invoice_sent_at' => now()]);
+        } catch (\Exception $e) {
+            Log::error("Failed to email eTIMS invoice for consultation {$consultation->id}: " . $e->getMessage());
+
+            return back()->with('error', 'Invoice saved, but the email could not be sent. Use "Resend" to try again.');
+        }
+
+        return back()->with('success', "eTIMS invoice attached and sent to {$consultation->email}.");
+    }
+
+    public function resendEtimsInvoice($id)
+    {
+        $consultation = Consultation::findOrFail($id);
+
+        if (!$consultation->hasEtimsInvoice()) {
+            return back()->with('error', 'No eTIMS invoice has been attached to this consultation yet.');
+        }
+
+        try {
+            $this->sendEtimsInvoice($consultation);
+            $consultation->update(['etims_invoice_sent_at' => now()]);
+        } catch (\Exception $e) {
+            Log::error("Failed to resend eTIMS invoice for consultation {$consultation->id}: " . $e->getMessage());
+
+            return back()->with('error', 'The email could not be sent. Please check the mail settings.');
+        }
+
+        return back()->with('success', "eTIMS invoice resent to {$consultation->email}.");
+    }
+
+    public function downloadEtimsInvoice($id)
+    {
+        $consultation = Consultation::findOrFail($id);
+
+        return self::etimsInvoiceDownload($consultation);
+    }
+
+    /**
+     * Shared by admin and client download routes.
+     */
+    public static function etimsInvoiceDownload(Consultation $consultation)
+    {
+        if (!$consultation->hasEtimsInvoice() || !Storage::disk('local')->exists($consultation->etims_invoice_path)) {
+            abort(404, 'eTIMS invoice not found.');
+        }
+
+        $extension = pathinfo($consultation->etims_invoice_path, PATHINFO_EXTENSION);
+
+        return Storage::disk('local')->download(
+            $consultation->etims_invoice_path,
+            'eTIMS-Invoice-Consultation-' . $consultation->id . '.' . $extension
+        );
+    }
+
+    /**
+     * Email the attached eTIMS invoice to the client, copying sales.
+     */
+    protected function sendEtimsInvoice(Consultation $consultation)
+    {
+        $filePath = Storage::disk('local')->path($consultation->etims_invoice_path);
+        $fileName = 'eTIMS-Invoice-Consultation-' . $consultation->id . '.' . pathinfo($filePath, PATHINFO_EXTENSION);
+
+        Mail::raw("Dear {$consultation->name},\n\n" .
+                   "Please find attached your eTIMS invoice for your {$consultation->type_label} on " .
+                   date('F j, Y', strtotime($consultation->consultation_date)) . ".\n\n" .
+                   ($consultation->etims_invoice_number ? "Invoice Number: {$consultation->etims_invoice_number}\n" : '') .
+                   "KRA PIN: {$consultation->etims_kra_pin}\n" .
+                   "Amount: KES " . number_format($consultation->fee, 2) . "\n\n" .
+                   "Thank you for choosing Health Versations.",
+            function ($message) use ($consultation, $filePath, $fileName) {
+                $message->to($consultation->email)
+                        ->cc($this->salesEmail)
+                        ->subject("eTIMS Invoice for Consultation #{$consultation->id}")
+                        ->attach($filePath, ['as' => $fileName]);
+            });
     }
 
     public function edit(Consultation $consultation)
@@ -331,15 +486,12 @@ Created: " . $consultation->created_at->format('F j, Y g:i A') . "
         $validated = $request->validate([
             'status' => 'required|in:' . implode(',', [
                 Consultation::STATUS_PENDING,
+                Consultation::STATUS_APPROVED,
                 Consultation::STATUS_CONFIRMED,
                 Consultation::STATUS_COMPLETED,
                 Consultation::STATUS_CANCELLED
             ]),
-            'payment_status' => 'required|in:' . implode(',', [
-                Consultation::PAYMENT_UNPAID,
-                Consultation::PAYMENT_PAID,
-                Consultation::PAYMENT_REFUNDED
-            ]),
+            'payment_status' => 'required|in:' . implode(',', Consultation::PAYMENT_STATUSES),
             'notes' => 'nullable|string|max:1000'
         ]);
 

@@ -353,6 +353,31 @@
                     </div>
                 </div>
 
+                <!-- eTIMS Invoice Request -->
+                <div class="mb-6 border border-gray-200 rounded-xl p-4">
+                    <label class="flex items-start cursor-pointer">
+                        <input type="checkbox" name="etims_requested" id="etimsRequested" value="1" class="mt-1 mr-3 h-4 w-4 text-[#93C754] rounded">
+                        <span>
+                            <span class="font-medium text-gray-800">I need an eTIMS invoice</span>
+                            <span class="block text-sm text-gray-500">We'll generate a KRA eTIMS invoice for this consultation and email it to you.</span>
+                        </span>
+                    </label>
+
+                    <div id="etimsFields" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 hidden">
+                        <div>
+                            <label for="etims_kra_pin" class="block text-sm font-medium text-gray-700 mb-2">KRA PIN <span class="text-red-500">*</span></label>
+                            <input type="text" name="etims_kra_pin" id="etims_kra_pin" maxlength="11" placeholder="A012345678Z"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl uppercase focus:ring-2 focus:ring-[#93C754] focus:border-[#93C754] transition">
+                            <p class="text-xs text-gray-500 mt-1">11 characters, e.g. A012345678Z</p>
+                        </div>
+                        <div>
+                            <label for="etims_business_name" class="block text-sm font-medium text-gray-700 mb-2">Business / Invoice Name</label>
+                            <input type="text" name="etims_business_name" id="etims_business_name" maxlength="255" placeholder="Leave blank to use your name"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#93C754] focus:border-[#93C754] transition">
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Payment Method Selection -->
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-3">Select Payment Method</label>
@@ -631,6 +656,14 @@ document.addEventListener('DOMContentLoaded', function() {
         loadAvailableSlots();
     });
 
+    // eTIMS invoice toggle
+    const etimsCheckbox = document.getElementById('etimsRequested');
+    if (etimsCheckbox) {
+        etimsCheckbox.addEventListener('change', function() {
+            document.getElementById('etimsFields').classList.toggle('hidden', !this.checked);
+        });
+    }
+
     // Initial setup
     updateFeeDisplay();
     updatePaymentMethods();
@@ -723,6 +756,17 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!date || !time) {
                 alert('Please select a consultation date and time');
                 return;
+            }
+
+            const etimsRequested = document.getElementById('etimsRequested')?.checked;
+            const kraPinInput = document.getElementById('etims_kra_pin');
+            if (etimsRequested) {
+                kraPinInput.value = kraPinInput.value.trim().toUpperCase();
+                if (!/^[AP]\d{9}[A-Z]$/.test(kraPinInput.value)) {
+                    alert('Please enter a valid KRA PIN for your eTIMS invoice (e.g. A012345678Z)');
+                    kraPinInput.focus();
+                    return;
+                }
             }
 
             const submitButton = consultationForm.querySelector('button[type="submit"]');

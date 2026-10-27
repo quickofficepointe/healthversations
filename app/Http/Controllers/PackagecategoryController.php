@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\packagecategory;
+use App\Models\PackageCategory;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ class PackagecategoryController extends Controller
     public function index()
     {
         //
-        $packagecategory = packagecategory::all();
+        $packagecategory = PackageCategory::all();
        return view('healthversations.admin.packages.packagecategory.index',compact('packagecategory'));
     }
 
@@ -35,7 +35,7 @@ class PackagecategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(packagecategory $packagecategory)
+    public function show(PackageCategory $packagecategory)
     {
         //
     }
@@ -43,7 +43,7 @@ class PackagecategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(packagecategory $packagecategory)
+    public function edit(PackageCategory $packagecategory)
     {
         //
     }

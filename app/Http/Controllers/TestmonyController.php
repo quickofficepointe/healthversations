@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\testmony;
+use App\Models\Testmony;
 use Illuminate\Http\Request;
 
 class TestmonyController extends Controller
@@ -40,7 +40,7 @@ class TestmonyController extends Controller
         ]);
 
         // Create and store the testimony
-        testmony::create([
+        Testmony::create([
             'full_name' => $request->input('full_name'),
             'email' => $request->input('email'),
             'message' => $request->input('message'),
@@ -65,7 +65,7 @@ class TestmonyController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(testmony $testmony)
+    public function show(Testmony $testmony)
     {
         //
     }
@@ -73,7 +73,7 @@ class TestmonyController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(testmony $testmony)
+    public function edit(Testmony $testmony)
     {
         //
     }
@@ -84,7 +84,7 @@ class TestmonyController extends Controller
     public function update(Request $request, $id)
     {
         // Find the testimony by ID
-        $testimony = testmony::findOrFail($id);
+        $testimony = Testmony::findOrFail($id);
 
         // Toggle the `is_enabled` status
         $testimony->is_enabled = !$testimony->is_enabled;
@@ -113,7 +113,7 @@ class TestmonyController extends Controller
     public function destroy($id, $request)
     {
         // Find the testimony by ID
-        $testimony = testmony::findOrFail($id);
+        $testimony = Testmony::findOrFail($id);
 
         // Delete the testimony
         $testimony->delete();

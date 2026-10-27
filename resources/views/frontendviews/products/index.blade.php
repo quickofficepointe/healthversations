@@ -525,8 +525,32 @@ function initQuickViewFunctions() {
     const increaseBtn = modal.querySelector('.quick-qty-increase');
     const quantityInput = modal.querySelector('.quick-quantity');
 
+    // Variant selector: keep price, stock and the quantity limit in sync with the chosen option
+    const variantSelect = modal.querySelector('.quick-variant');
+    if (variantSelect && quantityInput) {
+        const fmt = n => 'KES ' + Number(n).toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const applyVariant = () => {
+            const opt = variantSelect.selectedOptions[0];
+            if (!opt) return;
+            const price = parseFloat(opt.dataset.price), original = parseFloat(opt.dataset.original), stock = parseInt(opt.dataset.stock) || 0;
+            modal.querySelector('#quickViewPrice').textContent = fmt(price);
+            modal.querySelector('#quickViewOriginalPrice').textContent = fmt(original);
+            modal.querySelector('#quickViewSavings').textContent = 'Save ' + fmt(original - price);
+            modal.querySelector('#quickViewStock').innerHTML = stock > 0
+                ? `<span class="text-green-600"><i class="fas fa-check-circle mr-1"></i>In stock${stock <= 10 ? ' — only ' + stock + ' left' : ''}</span>`
+                : '<span class="text-red-500"><i class="fas fa-times-circle mr-1"></i>Out of stock</span>';
+            quantityInput.setAttribute('max', Math.max(stock, 1));
+            if (parseInt(quantityInput.value) > stock) quantityInput.value = Math.max(stock, 1);
+            const btn = modal.querySelector('.quick-add-to-cart');
+            if (btn) btn.disabled = stock < 1;
+        };
+        variantSelect.addEventListener('change', applyVariant);
+        applyVariant();
+    }
+
     if (decreaseBtn && increaseBtn && quantityInput) {
-        const maxStock = parseInt(quantityInput.getAttribute('max')) || 999;
+        // Read the limit on every click: it changes when a different variant is selected
+        const currentMax = () => parseInt(quantityInput.getAttribute('max')) || 999;
 
         // Remove existing listeners by cloning
         const newDecreaseBtn = decreaseBtn.cloneNode(true);
@@ -545,6 +569,7 @@ function initQuickViewFunctions() {
         newIncreaseBtn.addEventListener('click', function(e) {
             e.preventDefault();
             let currentVal = parseInt(quantityInput.value);
+            const maxStock = currentMax();
             if (currentVal < maxStock) {
                 quantityInput.value = currentVal + 1;
             } else {
@@ -562,6 +587,7 @@ function initQuickViewFunctions() {
 
         quantityInput.addEventListener('change', function() {
             let val = parseInt(this.value);
+            const maxStock = currentMax();
             if (isNaN(val) || val < 1) {
                 this.value = 1;
             } else if (val > maxStock) {
@@ -606,6 +632,7 @@ function initQuickViewFunctions() {
                     },
                     body: JSON.stringify({
                         product_id: productId,
+                        variant_id: modal.querySelector('.quick-variant')?.value || null,
                         quantity: quantity
                     })
                 });

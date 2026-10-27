@@ -24,7 +24,18 @@ class Consultation extends Model
         'status',
         'payment_status',
         'payment_reference',
-        'payment_method'
+        'payment_method',
+        'etims_requested',
+        'etims_kra_pin',
+        'etims_business_name',
+        'etims_invoice_number',
+        'etims_invoice_path',
+        'etims_invoice_sent_at',
+    ];
+
+    protected $casts = [
+        'etims_requested' => 'boolean',
+        'etims_invoice_sent_at' => 'datetime',
     ];
 
     // Consultation Types
@@ -93,6 +104,19 @@ class Consultation extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * eTIMS requested but no invoice attached yet.
+     */
+    public function scopeEtimsPending($query)
+    {
+        return $query->where('etims_requested', true)->whereNull('etims_invoice_path');
+    }
+
+    public function hasEtimsInvoice(): bool
+    {
+        return $this->etims_requested && !empty($this->etims_invoice_path);
     }
 
     public function calculateFee()
@@ -169,13 +193,9 @@ class Consultation extends Model
                 $startTime = Carbon::parse($time);
                 $endTime = (clone $startTime)->addMinutes($duration);
 
-                $query->where(function($q) use ($startTime, $endTime) {
-                    $q->where('start_time', '<=', $startTime)
-                      ->where('end_time', '>', $startTime);
-                })->orWhere(function($q) use ($startTime, $endTime) {
-                    $q->where('start_time', '<', $endTime)
-                      ->where('end_time', '>=', $endTime);
-                });
+                // Any overlap between the block and the requested slot
+                $query->where('start_time', '<', $endTime->format('H:i:s'))
+                      ->where('end_time', '>', $startTime->format('H:i:s'));
             })
             ->exists();
 
@@ -201,8 +221,8 @@ class Consultation extends Model
             $isBlocked = BlockedSlot::where('blocked_date', $date)
                 ->where(function($query) use ($time) {
                     $startTime = Carbon::parse($time);
-                    $query->where('start_time', '<=', $startTime)
-                          ->where('end_time', '>', $startTime);
+                    $query->where('start_time', '<=', $startTime->format('H:i:s'))
+                          ->where('end_time', '>', $startTime->format('H:i:s'));
                 })->exists();
 
             $isBooked = self::where('consultation_date', $date)
@@ -229,8 +249,8 @@ class Consultation extends Model
 
             $isBlocked = BlockedSlot::where('blocked_date', $date)
                 ->where(function($query) use ($startTime, $endTime) {
-                    $query->where('start_time', '<', $endTime)
-                          ->where('end_time', '>', $startTime);
+                    $query->where('start_time', '<', $endTime->format('H:i:s'))
+                          ->where('end_time', '>', $startTime->format('H:i:s'));
                 })->exists();
 
             $isBooked = self::where('consultation_date', $date)

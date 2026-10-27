@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\termscondition;
+use App\Models\TermsCondition;
 use Illuminate\Http\Request;
 
 class TermsconditionController extends Controller
@@ -13,7 +13,7 @@ class TermsconditionController extends Controller
     public function index()
     {
         //
-        $termsandconditions = termscondition::all();
+        $termsandconditions = TermsCondition::all();
         return view('healthversations.admin.termsandcondition.index', compact('termsandconditions'));
     }
 

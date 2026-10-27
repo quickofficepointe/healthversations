@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\package;
+use App\Models\Package;
 use App\Models\Product;
-use App\Models\review;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
@@ -32,7 +32,7 @@ class ReviewController extends Controller
     {
         $status = $request->get('status', 'pending');
 
-        $query = review::with('reviewable');
+        $query = Review::with('reviewable');
 
         if ($status === 'pending') {
             $query->where('approved', false);
@@ -43,9 +43,9 @@ class ReviewController extends Controller
         $reviews = $query->orderBy('created_at', 'desc')->paginate(20);
 
         // Get counts for badges
-        $pendingCount = review::where('approved', false)->count();
-        $approvedCount = review::where('approved', true)->count();
-        $totalCount = review::count();
+        $pendingCount = Review::where('approved', false)->count();
+        $approvedCount = Review::where('approved', true)->count();
+        $totalCount = Review::count();
 
         return view('healthversations.admin.reviews.index', compact('reviews', 'status', 'pendingCount', 'approvedCount', 'totalCount'));
     }
@@ -56,7 +56,7 @@ class ReviewController extends Controller
   public function approve($id)
 {
     try {
-        $review = review::findOrFail($id);
+        $review = Review::findOrFail($id);
         $review->approved = true;
         $review->save();
 
@@ -75,7 +75,7 @@ class ReviewController extends Controller
 public function reject($id)
 {
     try {
-        $review = review::findOrFail($id);
+        $review = Review::findOrFail($id);
         $review->delete();
 
         return response()->json([
@@ -103,10 +103,10 @@ public function reject($id)
         }
 
         if ($action === 'approve') {
-            review::whereIn('id', $ids)->update(['approved' => true]);
+            Review::whereIn('id', $ids)->update(['approved' => true]);
             return response()->json(['success' => true, 'message' => 'Reviews approved successfully']);
         } elseif ($action === 'reject') {
-            review::whereIn('id', $ids)->delete();
+            Review::whereIn('id', $ids)->delete();
             return response()->json(['success' => true, 'message' => 'Reviews deleted successfully']);
         }
 
@@ -118,7 +118,7 @@ public function reject($id)
      */
     public function getPendingCount()
     {
-        $count = review::where('approved', false)->count();
+        $count = Review::where('approved', false)->count();
         return response()->json(['count' => $count]);
     }
 
@@ -139,7 +139,7 @@ public function reject($id)
         $product = Product::findOrFail($productId);
 
         // Create the review using the correct relationship
-        $review = new review();
+        $review = new Review();
         $review->name = $validated['name'];
         $review->email = $validated['email'];
         $review->review = $validated['review'];
@@ -170,7 +170,7 @@ public function reject($id)
     /**
      * Display the specified resource.
      */
-    public function show(review $review)
+    public function show(Review $review)
     {
         //
     }
@@ -178,7 +178,7 @@ public function reject($id)
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(review $review)
+    public function edit(Review $review)
     {
         //
     }
@@ -186,7 +186,7 @@ public function reject($id)
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, review $review)
+    public function update(Request $request, Review $review)
     {
         //
     }
@@ -194,7 +194,7 @@ public function reject($id)
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(review $review)
+    public function destroy(Review $review)
     {
         //
     }

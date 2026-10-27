@@ -39,15 +39,15 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\VersationcardController;
-use App\Models\product;
+use App\Models\Product;
 use App\Models\Banner;
-use App\Models\blog;
+use App\Models\Blog;
 use App\Models\blogcategory;
 use App\Models\CoachingPackages;
 use App\Models\ConsultTestimonial;
-use App\Models\package;
-use App\Models\testmony;
-use App\Models\versationcard;
+use App\Models\Package;
+use App\Models\Testmony;
+use App\Models\Versationcard;
 // ==================== DEFAULT ROUTE ====================
 // ==================== DEFAULT ROUTE ====================
 Route::get('/', function () {
@@ -78,12 +78,12 @@ Route::get('/', function () {
         }
     }
 
-    $packages = package::all();
-    $cards = versationcard::all();
+    $packages = Package::all();
+    $cards = Versationcard::all();
     $banners = Banner::active()->ordered()->get();
 
     // Get all enabled testimonials
-    $testimonials = testmony::where('is_enabled', true)
+    $testimonials = Testmony::where('is_enabled', true)
         ->orderBy('created_at', 'desc')
         ->get();
 
@@ -109,7 +109,7 @@ Route::get('/', function () {
         ->take(6)
         ->get();
 
-    $blogs = blog::with('category')
+    $blogs = Blog::with('category')
         ->latest()
         ->take(6)
         ->get();
@@ -165,7 +165,9 @@ Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(functi
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
     Route::get('/orders', [UserController::class, 'myOrders'])->name('orders');
     Route::get('/orders/{id}', [UserController::class, 'orderDetails'])->name('orders.show');
+    Route::get('/orders/{id}/etims-invoice', [UserController::class, 'downloadEtimsInvoice'])->name('orders.etims');
     Route::get('/consultations', [UserController::class, 'myConsultations'])->name('consultations');
+    Route::get('/consultations/{id}/etims-invoice', [UserController::class, 'downloadConsultationEtimsInvoice'])->name('consultations.etims');
     Route::get('/ebooks', [UserController::class, 'myEbooks'])->name('ebooks');
     Route::get('/ebooks/download/{id}', [UserController::class, 'downloadEbook'])->name('ebooks.download');
     Route::get('/coaching', [UserController::class, 'myCoaching'])->name('coaching');
@@ -184,9 +186,36 @@ Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(functi
     });
     });
 
-Route::put('/custom-packages/{id}/update-status', [CustomPackageController::class, 'updateStatus'])->name('custompackages.updateStatus');
 // ==================== ADMIN ROUTES ====================
 Route::middleware('admin')->group(function () {
+    // Product (cart) orders & eTIMS invoices
+    Route::get('/admin/cart-orders/{id}/details', [CartOrderController::class, 'showDetails'])->name('admin.cart-orders.details');
+    Route::post('/admin/cart-orders/{id}/etims', [CartOrderController::class, 'uploadEtimsInvoice'])->name('admin.cart-orders.etims.upload');
+    Route::post('/admin/cart-orders/{id}/etims/resend', [CartOrderController::class, 'resendEtimsInvoice'])->name('admin.cart-orders.etims.resend');
+    Route::get('/admin/cart-orders/{id}/etims/download', [CartOrderController::class, 'downloadEtimsInvoice'])->name('admin.cart-orders.etims.download');
+
+    // Legacy single-product orders
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+    Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
+
+    // FAQ Management
+    Route::get('/admin/faqs', [FaqController::class, 'index'])->name('faqs.index');
+    Route::post('/admin/faqs', [FaqController::class, 'store'])->name('faqs.store');
+    Route::put('/admin/faqs/{id}', [FaqController::class, 'update'])->name('faqs.update');
+    Route::delete('/admin/faqs/{id}', [FaqController::class, 'destroy'])->name('faqs.destroy');
+
+    // Video Management
+    Route::get('/admin/videos', [VideoController::class, 'index'])->name('videos.index');
+    Route::post('/admin/videos', [VideoController::class, 'store'])->name('videos.store');
+    Route::get('/admin/videos/{id}/edit', [VideoController::class, 'edit'])->name('videos.edit');
+    Route::put('/admin/videos/{video}', [VideoController::class, 'update'])->name('videos.update');
+    Route::delete('/admin/videos/{id}', [VideoController::class, 'destroy'])->name('videos.destroy');
+
+    Route::get('ebookorders/', [EbookOrderController::class, 'index'])->name('admin.ebook-orders.index');
+    Route::delete('/contact/{id}', [ContactController::class, 'destroy'])->name('contact.destroy');
+    Route::put('/custom-packages/{id}/update-status', [CustompackageController::class, 'updateStatus'])->name('custompackages.updateStatus');
+
     // Dashboard
     // Blocked Slots Management
     // Add this inside your admin middleware group
@@ -231,10 +260,10 @@ Route::post('consult/testimonials/bulk-action', [ConsultTestimonialController::c
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
     // Product Categories
     Route::get('/productcategories', [ProductcategoryController::class, 'index'])->name('productcategories.index');
-    Route::post('/productcategories', [ProductCategoryController::class, 'store'])->name('productcategories.store');
-   Route::get('/admin/productcategories/{productCategory}/edit', [ProductCategoryController::class, 'edit'])->name('productcategories.edit');
-    Route::put('/productcategories/{productCategory}', [ProductCategoryController::class, 'update'])->name('productcategories.update');
-    Route::delete('/productcategories/{productCategory}', [ProductCategoryController::class, 'destroy'])->name('productcategories.destroy');
+    Route::post('/productcategories', [ProductcategoryController::class, 'store'])->name('productcategories.store');
+   Route::get('/admin/productcategories/{productCategory}/edit', [ProductcategoryController::class, 'edit'])->name('productcategories.edit');
+    Route::put('/productcategories/{productCategory}', [ProductcategoryController::class, 'update'])->name('productcategories.update');
+    Route::delete('/productcategories/{productCategory}', [ProductcategoryController::class, 'destroy'])->name('productcategories.destroy');
 // Add discount update route
 Route::put('/admin/products/{id}/discount', [ProductController::class, 'updateDiscount'])->name('products.update.discount');
     // Products
@@ -256,10 +285,10 @@ Route::put('/allproducts/{product}', [ProductController::class, 'update'])->name
 
     // Package Categories
     Route::get('packagecategories', [PackagecategoryController::class, 'index'])->name('packagecategories.index');
-    Route::post('packagecategories', [PackageCategoryController::class, 'store'])->name('packagecategories.store');
-    Route::get('packagecategories/{id}', [PackageCategoryController::class, 'show'])->name('packagecategories.show');
-    Route::put('packagecategories/{id}', [PackageCategoryController::class, 'update'])->name('packagecategories.update');
-    Route::delete('packagecategories/{id}', [PackageCategoryController::class, 'destroy'])->name('packagecategories.destroy');
+    Route::post('packagecategories', [PackagecategoryController::class, 'store'])->name('packagecategories.store');
+    Route::get('packagecategories/{id}', [PackagecategoryController::class, 'show'])->name('packagecategories.show');
+    Route::put('packagecategories/{id}', [PackagecategoryController::class, 'update'])->name('packagecategories.update');
+    Route::delete('packagecategories/{id}', [PackagecategoryController::class, 'destroy'])->name('packagecategories.destroy');
 
     // Packages
     Route::get('all/packages', [PackageController::class, 'index'])->name('packages.index');
@@ -270,6 +299,10 @@ Route::put('/allproducts/{product}', [ProductController::class, 'update'])->name
 
     // Orders Management
      Route::get('consultationorders/', [ConsultationController::class, 'show'])->name('admin.const-orders.index');
+    Route::put('consultationorders/{consultation}', [ConsultationController::class, 'update'])->name('admin.const-orders.update');
+    Route::post('/admin/consultations/{id}/etims', [ConsultationController::class, 'uploadEtimsInvoice'])->name('admin.const-orders.etims.upload');
+    Route::post('/admin/consultations/{id}/etims/resend', [ConsultationController::class, 'resendEtimsInvoice'])->name('admin.const-orders.etims.resend');
+    Route::get('/admin/consultations/{id}/etims/download', [ConsultationController::class, 'downloadEtimsInvoice'])->name('admin.const-orders.etims.download');
     Route::put('ebooksorder/{id}', [EbookOrderController::class, 'update'])->name('admin.ebook-orders.update');
     Route::get('cart/order', [CartOrderController::class, 'index'])->name('admin.cart-orders.index');
     Route::put('cartorder/{id}', [CartOrderController::class, 'update'])->name('admin.cart-orders.update');
@@ -294,10 +327,10 @@ Route::put('/allproducts/{product}', [ProductController::class, 'update'])->name
 
     // Versation Cards
     Route::get('versationcards', [VersationcardController::class, 'index'])->name("versation.index");
-    Route::post('versationcards', [VersationCardController::class, 'store'])->name('versation.store');
-    Route::get('versationcards/{id}', [VersationCardController::class, 'show'])->name('versation.show');
-    Route::put('versationcards/{id}', [VersationCardController::class, 'update'])->name('versation.update');
-    Route::delete('versationcards/{id}', [VersationCardController::class, 'destroy'])->name('versation.destroy');
+    Route::post('versationcards', [VersationcardController::class, 'store'])->name('versation.store');
+    Route::get('versationcards/{id}', [VersationcardController::class, 'show'])->name('versation.show');
+    Route::put('versationcards/{id}', [VersationcardController::class, 'update'])->name('versation.update');
+    Route::delete('versationcards/{id}', [VersationcardController::class, 'destroy'])->name('versation.destroy');
 
     // Blog Categories
     Route::get('/blogcategory', [BlogcategoryController::class, 'index'])->name('blogcategories.index');
@@ -314,9 +347,9 @@ Route::put('/allproducts/{product}', [ProductController::class, 'update'])->name
 
     // Privacy Policy
     Route::get('/privacy-policy', [PrivacypolicyController::class, 'index'])->name('privacy.index');
-    Route::post('/privacy-policy/store', [PrivacyPolicyController::class, 'store'])->name('privacy.store');
-    Route::post('/privacy-policy/update', [PrivacyPolicyController::class, 'update'])->name('privacy.update');
-    Route::delete('/privacy-policy', [PrivacyPolicyController::class, 'destroy'])->name('privacy.destroy');
+    Route::post('/privacy-policy/store', [PrivacypolicyController::class, 'store'])->name('privacy.store');
+    Route::post('/privacy-policy/update', [PrivacypolicyController::class, 'update'])->name('privacy.update');
+    Route::delete('/privacy-policy', [PrivacypolicyController::class, 'destroy'])->name('privacy.destroy');
 
     // Terms and Conditions
     Route::get('/terms-and-condition', [TermsconditionController::class, 'index'])->name('terms.index');
@@ -377,10 +410,9 @@ Route::get('/all-packages', [PackageController::class, 'allpackages'])->name('pa
 // Content Pages
 Route::get('/articles', [BlogController::class,'blogview'])->name('article.versation');
 Route::get('/healthliving', [PackageController::class,'healthyliving'])->name('versation.healthy');
-Route::get('/aboutus', [BlogController::class,'aboutus'])->name('about.versation');
 Route::get('/privacypolicy', [PrivacypolicyController::class,'privacy'])->name('privacypolicy.versation');
 Route::get('/termsandconditions', [TermsconditionController::class,'terms'])->name('terms.versation');
-Route::get('/faqs', [FaqController::class,'faqs'])->name('faq.versation');
+Route::get('/faqs', [FaqController::class,'versation'])->name('faq.versation');
 Route::get('/terms-and-conditions', [TermsconditionController::class, 'terms'])->name('terms.frontend');
 Route::get('/aboutus', [ContactController::class, 'aboutus'])->name('about.health');
 Route::get('/talktous', [ContactController::class, 'index'])->name('contact.health');
@@ -390,35 +422,23 @@ Route::get('/returns-and-refunds', [ContactController::class, 'refundndreturn'])
 Route::get('/blogs', [BlogController::class, 'blogs'])->name('frontend.blogs.index');
 Route::get('/article/{slug}', [BlogController::class, 'show'])->name('frontend.blogs.show');
 
-// FAQ Management
-Route::get('/faqs', [FaqController::class, 'index'])->name('faqs.index');
-Route::post('/faqs', [FaqController::class, 'store'])->name('faqs.store');
-Route::put('/faqs/{id}', [FaqController::class, 'update'])->name('faqs.update');
-Route::delete('/faqs/{id}', [FaqController::class, 'destroy'])->name('faqs.destroy');
-Route::get('/faqs/versation', [FaqController::class, 'versation'])->name('faq.versation');
+// FAQs (public): old URL kept as a permanent redirect for existing links and search results
+Route::permanentRedirect('/faqs/versation', '/faqs');
 
 // Orders
 Route::post('/order/submit', [OrderController::class, 'store'])->name('order.submit');
 Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
-Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
-Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
 Route::get('/order/{slug}', [OrderController::class, 'showOrderPage'])->name('order.page');
 Route::get('/track-order', [OrderController::class, 'track'])->name('orders.track');
 
-// Videos
-Route::get('/videos', [VideoController::class, 'showVideos'])->name('videos.show');
-Route::get('videos', [VideoController::class, 'index'])->name('videos.index');
+// Videos (public)
+Route::get('/videos', [VideoController::class, 'showVideos']);
 Route::get('videos/show', [VideoController::class, 'showVideos'])->name('videos.show');
-Route::post('videos', [VideoController::class, 'store'])->name('videos.store');
-Route::get('videos/{id}/edit', [VideoController::class, 'edit'])->name('videos.edit');
-Route::put('videos/{video}', [VideoController::class, 'update'])->name('videos.update');
-Route::delete('videos/{id}', [VideoController::class, 'destroy'])->name('videos.destroy');
 
 // Custom Packages
 Route::post('/orders/store', [ManualorderController::class, 'store'])->name('order.store');
 Route::get('/custompackages/create', [CustompackageController::class, 'create'])->name('custompackages.create');
-Route::post('/custompackages', [CustomPackageController::class, 'store'])->name('custompackages.store');
+Route::post('/custompackages', [CustompackageController::class, 'store'])->name('custompackages.store');
 
 // Cart
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
@@ -435,7 +455,6 @@ Route::get('/consultations/create', [ConsultationController::class, 'create'])->
 Route::post('/consultations', [ConsultationController::class, 'store'])->name('consultations.store');
 
 // Ebooks
-  Route::get('ebookorders/', [EbookOrderController::class, 'index'])->name('admin.ebook-orders.index');
 Route::get('/ebooks', [EbookController::class, 'show'])->name('ebooks.show');
 Route::post('/ebooks/purchase', [EbookController::class, 'purchase'])->name('ebooks.purchase');
 Route::get('/ebook/download/{order}/{token}', [EbookOrderController::class, 'download'])->name('ebook.download');
@@ -480,9 +499,7 @@ Route::prefix('kcb-payment')->group(function () {
     // Test endpoint - KEEP (same route)
     Route::get('/test-auth', [KCBPaymentController::class, 'testKcbAuth'])->name('kcb.test.auth');
 });
-Route::get('/admin/cart-orders/{id}/details', [CartOrderController::class, 'showDetails'])->name('admin.cart-orders.details');
 Route::get('/consultations/{consultation}/process-payment', [ConsultationController::class, 'processPayment'])->name('consultations.process-payment');
-Route::delete('/contact/{id}', [ContactController::class, 'destroy'])->name('contact.destroy');
 // In routes/web.php - Add the full namespace
 Route::get('/testimonials/{slug}', [App\Http\Controllers\ConsultTestimonialController::class, 'show'])
     ->name('testimonials.show');

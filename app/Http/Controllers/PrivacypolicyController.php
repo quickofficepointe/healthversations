@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\privacypolicy;
+use App\Models\PrivacyPolicy;
 use Illuminate\Http\Request;
 
 class PrivacypolicyController extends Controller
@@ -13,13 +13,13 @@ class PrivacypolicyController extends Controller
     public function index()
     {
         //
-        $privacypolicy = privacypolicy::all();
+        $privacypolicy = PrivacyPolicy::all();
         return view('healthversations.admin.privacypolicy.index', compact('privacypolicy'));
     }
 
 public function privacy()
 {
-    $privacypolicy = privacypolicy::all();
+    $privacypolicy = PrivacyPolicy::all();
 
     return view('frontendviews.privacy.index',compact('privacypolicy'));
 }

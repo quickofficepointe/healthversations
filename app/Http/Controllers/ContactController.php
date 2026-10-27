@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\contact;
+use App\Models\Contact;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
@@ -47,7 +47,7 @@ class ContactController extends Controller
             'message' => 'required|string',  // Message is required and should be a string
         ]);
 
-        // Create a new contact record in the database
+        // Create a new Contact record in the database
         Contact::create([
             'name' => $validated['name'],
             'phone_number' => $validated['phone_number'],
@@ -73,7 +73,7 @@ class ContactController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(contact $contact)
+    public function edit(Contact $contact)
     {
         //
     }
@@ -81,7 +81,7 @@ class ContactController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, contact $contact)
+    public function update(Request $request, Contact $contact)
     {
         //
     }

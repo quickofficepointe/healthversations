@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CoachingEnrollment;
-use App\Models\CoachingPackage;
-use App\Models\Package;
+use App\Models\CoachingPackages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
@@ -23,7 +22,7 @@ class CoachingEnrollmentController extends Controller
             'package_currency' => 'required|in:KES'
         ]);
 
-        $package = Package::findOrFail($request->package_id);
+        $package = CoachingPackages::findOrFail($request->package_id);
 
         // Create enrollment record
         $enrollment = CoachingEnrollment::create([
@@ -46,7 +45,7 @@ class CoachingEnrollmentController extends Controller
 
 Your consultation has been successfully booked! We have received your booking for the following package:
 
-Package: {$package->name}
+Package: {$package->package_name}
 Order ID: {$enrollment->order_id}
 Amount: KES {$request->package_price}
 
@@ -71,7 +70,7 @@ Customer Name: {$request->name}
 Customer Email: {$request->email}
 Customer Phone: {$request->phone}
 Country: {$request->country}
-Package: {$package->name}
+Package: {$package->package_name}
 Amount: KES {$request->package_price}
 
 Please contact the customer to schedule their consultation session.",

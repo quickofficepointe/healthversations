@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\product;
-use App\Models\productVariant;
+use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Models\ProductsImg;
-use App\Models\productcategory;
+use App\Models\ProductCategory;
 use App\Models\VariationAttribute;
 use App\Models\VariationAttributeValue;
-use App\Models\ProductImage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log; // Add this import
 use Illuminate\Support\Facades\Storage;
@@ -18,8 +17,8 @@ class ProductController extends Controller
 {
     public function index ()
     {
-        $products = product::with(['category', 'variants', 'images'])->get();
-        $productcategory = productcategory::all();
+        $products = Product::with(['category', 'variants', 'images'])->get();
+        $productcategory = ProductCategory::all();
         return view('healthversations.admin.products.product.index', compact('products', 'productcategory'));
     }public function getVariants(Product $product)
 {
@@ -43,6 +42,8 @@ class ProductController extends Controller
  */
 public function quickView(Product $product)
 {
+    $product->load(['variants', 'images', 'category'])->loadCount('variants');
+
     // Calculate 20% discount
     $defaultDiscount = 20;
     $currentPriceKES = $product->variants_count == 0 ? $product->price_kes : $product->variants->min('price_kes');
@@ -69,7 +70,7 @@ public function deleteVariant(ProductVariant $variant)
     }
 }
 
-public function deleteImage(ProductImage $image)
+public function deleteImage(ProductsImg $image)
 {
     try {
         // Remove the '/storage/' prefix to get the correct path
@@ -89,13 +90,13 @@ public function deleteImage(ProductImage $image)
     public function allproducts()
     {
         // Get products with eager loading
-        $products = product::with(['category', 'variants'])
+        $products = Product::with(['category', 'variants'])
             ->withCount('variants')
             ->latest()
             ->paginate(12);
 
         // Get all categories with product counts
-        $categories = productcategory::withCount('products')->get();
+        $categories = ProductCategory::withCount('products')->get();
 
         // Prepare meta tags
         $metaDescription = "Discover our premium health & wellness products. " .

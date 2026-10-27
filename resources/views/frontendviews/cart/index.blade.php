@@ -206,11 +206,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     @foreach([
                         'A' => ['name' => 'Zone A: CBD Delivery', 'rate' => 150, 'areas' => 'Around Nairobi CBD'],
-                        'J' => ['name' => 'Zone J', 'rate' => 350, 'areas' => 'Roasters, Mountain Mall, Garden City, TRM, Lumumba Drive, USIU, Ngumba etc.'],
-                        'D' => ['name' => 'Zone D', 'rate' => 400, 'areas' => 'Kangemi, Loresho, Mountain View, Spring Valley, Lower Kabete etc.'],
-                        'F' => ['name' => 'Zone F', 'rate' => 400, 'areas' => 'Junction Mall, Lavington, Kibra, Dagoretti Corner, Kawangware, Wanyee etc.'],
+                        'J' => ['name' => 'Zone J', 'rate' => 450, 'areas' => 'Roasters, Mountain Mall, Garden City, TRM, Lumumba Drive, USIU, Ngumba etc.'],
+                        'D' => ['name' => 'Zone D', 'rate' => 450, 'areas' => 'Kangemi, Loresho, Mountain View, Spring Valley, Lower Kabete etc.'],
+                        'F' => ['name' => 'Zone F', 'rate' => 450, 'areas' => 'Junction Mall, Lavington, Kibra, Dagoretti Corner, Kawangware, Wanyee etc.'],
                         'K' => ['name' => 'Zone K', 'rate' => 400, 'areas' => 'Outside Nairobi via courier – 2NK, Nakonns, Chania, Northrift, Genesis, Easy Coach etc.'],
-                        'N' => ['name' => 'Zone N', 'rate' => 400, 'areas' => 'Donholm, Uhuru Estate, Buruburu, Fedha, Tassia, Savanah, Pipeline, Mtindwa, Lucky Summer'],
+                        'N' => ['name' => 'Zone N', 'rate' => 450, 'areas' => 'Donholm, Uhuru Estate, Buruburu, Fedha, Tassia, Savanah, Pipeline, Mtindwa, Lucky Summer'],
                         'G' => ['name' => 'Zone G', 'rate' => 450, 'areas' => 'Ruaka, Runda, Nyari, Gigiri, UNEP, Muchatha, Thindigua, Muthaiga North, Fourways, Ridgeways, Komarock, Tassia etc.'],
                         'M' => ['name' => 'Zone M', 'rate' => 450, 'areas' => 'Mirema, Kahawa Sukari, Zimmerman, Githurai, Kahawa West, Kahawa Wendani, Clayworks etc.'],
                         'H' => ['name' => 'Zone H', 'rate' => 600, 'areas' => 'Gateway Mall, Syokimau, Kinoo, Kenyatta Road, Ruiru Bypass'],
@@ -219,6 +219,7 @@
                         'R' => ['name' => 'Zone R', 'rate' => 900, 'areas' => 'Athi River'],
                         'Q' => ['name' => 'Zone Q', 'rate' => 1350, 'areas' => 'Thika Town, Kamulu, Kitengela']
                     ] as $zone => $details)
+                    @php $details['rate'] = \App\Models\CartOrder::DELIVERY_ZONE_RATES[$zone] ?? $details['rate']; @endphp
                     <div class="border rounded-lg p-4 cursor-pointer zone-option" data-zone="{{ $zone }}" data-cost="{{ $details['rate'] }}">
                         <div class="flex items-center">
                             <input type="radio" name="delivery_zone" value="{{ $zone }}" class="mr-2 zone-radio">
@@ -233,6 +234,29 @@
 
             <!-- Shipping Information Container -->
             <div id="shippingInfoContainer"></div>
+
+            <!-- eTIMS Invoice Request -->
+            <div class="mb-6 border rounded-lg p-4">
+                <label class="flex items-start cursor-pointer">
+                    <input type="checkbox" name="etims_requested" id="etimsRequested" value="1" class="mt-1 mr-3 h-4 w-4 text-green-600 rounded">
+                    <span>
+                        <span class="font-medium">I need an eTIMS invoice</span>
+                        <span class="block text-sm text-gray-600">We'll generate a KRA eTIMS invoice for this order and email it to you.</span>
+                    </span>
+                </label>
+
+                <div id="etimsFields" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 hidden">
+                    <div>
+                        <label class="block mb-2 font-medium">KRA PIN <span class="text-red-500">*</span></label>
+                        <input type="text" name="etims_kra_pin" maxlength="11" placeholder="A012345678Z" class="w-full border px-4 py-2 rounded-lg uppercase focus:ring-2 focus:ring-green-500">
+                        <p class="text-xs text-gray-500 mt-1">11 characters, e.g. A012345678Z</p>
+                    </div>
+                    <div>
+                        <label class="block mb-2 font-medium">Business / Invoice Name</label>
+                        <input type="text" name="etims_business_name" maxlength="255" placeholder="Leave blank to use your name" class="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                </div>
+            </div>
 
             <!-- Order Summary -->
             <div class="mb-6 p-4 bg-gray-50 rounded-lg">
@@ -645,6 +669,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // eTIMS invoice toggle
+    const etimsCheckbox = document.getElementById('etimsRequested');
+    if (etimsCheckbox) {
+        etimsCheckbox.addEventListener('change', function() {
+            document.getElementById('etimsFields').classList.toggle('hidden', !this.checked);
+        });
+    }
+
     // Form submission
     const checkoutForm = document.getElementById('checkoutForm');
     const iveriForm = document.getElementById('iveriPaymentForm');
@@ -664,6 +696,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
+            const etimsRequested = document.getElementById('etimsRequested')?.checked;
+            const kraPin = (document.querySelector('input[name="etims_kra_pin"]')?.value || '').trim().toUpperCase();
+            if (etimsRequested && !/^[AP]\d{9}[A-Z]$/.test(kraPin)) {
+                alert('Please enter a valid KRA PIN for your eTIMS invoice (e.g. A012345678Z)');
+                return;
+            }
+
             submitButton.innerHTML = '<span class="spinner"></span> Processing...';
             submitButton.disabled = true;
 
@@ -676,6 +715,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 formData.append('delivery_method', deliveryMethod);
                 formData.append('delivery_zone', document.querySelector('input[name="delivery_zone"]:checked')?.value || 'B');
                 formData.append('payment_method', paymentMethod);
+                formData.append('etims_requested', etimsRequested ? '1' : '0');
+                if (etimsRequested) {
+                    formData.append('etims_kra_pin', kraPin);
+                    formData.append('etims_business_name', document.querySelector('input[name="etims_business_name"]')?.value || '');
+                }
 
                 if (deliveryMethod === 'delivery') {
                     formData.append('county', document.querySelector('select[name="county"]')?.value || '');

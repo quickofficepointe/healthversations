@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\order;
-use App\Models\product;
-use App\Models\productvariant;
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -86,7 +86,7 @@ protected function calculateTotals(Product $product, ?ProductVariant $variant, i
 
     public function index()
     {
-        $orders = order::with(['product', 'variant'])->latest()->get();
+        $orders = Order::with(['product', 'variant'])->latest()->get();
         return view('healthversations.admin.orders.index', compact('orders'));
     }
 
@@ -114,7 +114,7 @@ protected function calculateTotals(Product $product, ?ProductVariant $variant, i
         ]);
 
         // Verify product/variant stock
-        $product = product::find($validated['product_id']);
+        $product = Product::find($validated['product_id']);
         $variant = $validated['variant_id'] ? ProductVariant::find($validated['variant_id']) : null;
 
         if ($variant) {

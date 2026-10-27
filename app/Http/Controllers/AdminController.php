@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\admin;
-use App\Models\blog;
-use App\Models\contact;
-use App\Models\custompackage;
-use App\Models\order;
-use App\Models\package;
-use App\Models\product;
-use App\Models\review;
-use App\Models\subscribe;
+use App\Models\Admin;
+use App\Models\Blog;
+use App\Models\CartOrder;
+use App\Models\Consultation;
+use App\Models\Contact;
+use App\Models\EbookOrder;
+use App\Models\Product;
+use App\Models\Review;
+use App\Models\Subscribe;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -27,88 +28,85 @@ class AdminController extends Controller
 
 
     public function dashboard()
-{
-    // Basic counts
-    $stats = [
-        'blogs' => blog::all(),
-        'contacts' => contact::all(),
-        'customPackages' => custompackage::all(),
-        'orders' => order::all(),
-        'packages' => package::all(),
-        'products' => product::all(),
-        'reviews' => Review::all(),
-        'subscribers' => Subscribe::all(),
-    ];
+    {
+        $paidStatuses = ['confirmed', 'processing', 'completed'];
 
-    // Chart data
-    $stats['ordersByMonth'] = order::selectRaw('count(*) as count, DATE_FORMAT(created_at, "%b") as month')
-        ->where('created_at', '>=', now()->subMonths(6))
-        ->groupBy('month')
-        ->orderBy('created_at')
-        ->get();
-
-    $stats['subscribersByMonth'] = Subscribe::selectRaw('count(*) as count, DATE_FORMAT(created_at, "%b") as month')
-        ->where('created_at', '>=', now()->subMonths(6))
-        ->groupBy('month')
-        ->orderBy('created_at')
-        ->get();
-
-    $stats['maxOrders'] = max($stats['ordersByMonth']->max('count'), 1);
-    $stats['maxSubscribers'] = max($stats['subscribersByMonth']->max('count'), 1);
-
-    // Recent activity
-    $stats['recentActivities'] = $this->getRecentActivities();
-
-    return view('healthversations.admin.index', $stats);
-}
-
-protected function getRecentActivities()
-{
-    $activities = [];
-
-    // Recent orders
-    $recentOrders = Order::latest()->take(3)->get();
-    foreach ($recentOrders as $order) {
-        $activities[] = [
-            'icon' => 'shopping-cart',
-            'color' => 'purple',
-            'title' => 'New Order #'.$order->id,
-            'description' => 'Total: $'.number_format($order->total, 2),
-            'time' => $order->created_at->diffForHumans()
+        $stats = [
+            'orderCount' => CartOrder::count(),
+            'pendingOrders' => CartOrder::where('status', 'pending')->count(),
+            'revenue' => CartOrder::whereIn('status', $paidStatuses)->sum('amount'),
+            'etimsPending' => CartOrder::etimsPending()->count(),
+            'consultationCount' => Consultation::count(),
+            'pendingConsultations' => Consultation::where('status', 'pending')->count(),
+            'ebookOrderCount' => EbookOrder::count(),
+            'contactCount' => Contact::count(),
+            'newContacts' => Contact::where('created_at', '>=', now()->subMonth())->count(),
+            'subscriberCount' => Subscribe::count(),
+            'productCount' => Product::count(),
+            'inStockCount' => Product::where('stock', '>', 0)->count(),
+            'reviewCount' => Review::count(),
+            'pendingReviews' => Review::where('approved', false)->count(),
+            'avgRating' => (float) Review::avg('star'),
+            'blogCount' => Blog::count(),
         ];
+
+        // Last 6 months, grouped in PHP so it works with MySQL ONLY_FULL_GROUP_BY
+        $months = collect(range(5, 0))->map(fn ($i) => now()->startOfMonth()->subMonths($i));
+        $since = $months->first();
+
+        $orders = CartOrder::where('created_at', '>=', $since)->get(['created_at', 'amount', 'status']);
+        $subscribers = Subscribe::where('created_at', '>=', $since)->pluck('created_at');
+
+        $stats['chartLabels'] = $months->map(fn ($m) => $m->format('M Y'));
+        $stats['ordersByMonth'] = $months->map(fn ($m) => $orders->filter(fn ($o) => $o->created_at->isSameMonth($m))->count());
+        $stats['revenueByMonth'] = $months->map(fn ($m) => (float) $orders
+            ->filter(fn ($o) => $o->created_at->isSameMonth($m) && in_array($o->status, $paidStatuses))
+            ->sum('amount'));
+        $stats['subscribersByMonth'] = $months->map(fn ($m) => $subscribers->filter(fn ($d) => $d->isSameMonth($m))->count());
+
+        $stats['recentOrders'] = CartOrder::latest()->take(6)->get();
+        $stats['recentActivities'] = $this->getRecentActivities();
+
+        return view('healthversations.admin.index', $stats);
     }
 
-    // Recent subscribers
-    $recentSubscribers = subscribe::latest()->take(2)->get();
-    foreach ($recentSubscribers as $subscriber) {
-        $activities[] = [
-            'icon' => 'user-plus',
-            'color' => 'blue',
-            'title' => 'New Subscriber',
-            'description' => substr($subscriber->email, 0, 3).'****@'.explode('@', $subscriber->email)[1],
-            'time' => $subscriber->created_at->diffForHumans()
-        ];
+    protected function getRecentActivities()
+    {
+        $activities = collect();
+
+        foreach (Consultation::latest()->take(3)->get() as $consultation) {
+            $activities->push([
+                'icon' => 'calendar-check',
+                'color' => 'green',
+                'title' => 'Consultation booked by ' . $consultation->name,
+                'description' => 'For ' . ($consultation->consultation_date ? Carbon::parse($consultation->consultation_date)->format('M d, Y') : 'TBD'),
+                'at' => $consultation->created_at,
+            ]);
+        }
+
+        foreach (Subscribe::latest()->take(3)->get() as $subscriber) {
+            $parts = explode('@', $subscriber->email);
+            $activities->push([
+                'icon' => 'user-plus',
+                'color' => 'blue',
+                'title' => 'New Subscriber',
+                'description' => substr($parts[0], 0, 3) . '****@' . ($parts[1] ?? ''),
+                'at' => $subscriber->created_at,
+            ]);
+        }
+
+        foreach (Review::latest()->take(3)->get() as $review) {
+            $activities->push([
+                'icon' => 'star',
+                'color' => 'yellow',
+                'title' => 'New Review by ' . $review->name,
+                'description' => 'Rating: ' . $review->star . '/5' . ($review->approved ? '' : ' (awaiting approval)'),
+                'at' => $review->created_at,
+            ]);
+        }
+
+        return $activities->sortByDesc('at')->take(6)->values();
     }
-
-    // Recent reviews
-    $recentReviews = review::latest()->take(2)->get();
-    foreach ($recentReviews as $review) {
-        $activities[] = [
-            'icon' => 'star',
-            'color' => 'yellow',
-            'title' => 'New Review',
-            'description' => 'Rating: '.$review->rating.'/5',
-            'time' => $review->created_at->diffForHumans()
-        ];
-    }
-
-    // Sort by time
-    usort($activities, function($a, $b) {
-        return strtotime($b['time']) - strtotime($a['time']);
-    });
-
-    return array_slice($activities, 0, 5);
-}
     /**
      * Show the form for creating a new resource.
      */
@@ -128,7 +126,7 @@ protected function getRecentActivities()
     /**
      * Display the specified resource.
      */
-    public function show(admin $admin)
+    public function show(Admin $admin)
     {
         //
     }
@@ -136,7 +134,7 @@ protected function getRecentActivities()
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(admin $admin)
+    public function edit(Admin $admin)
     {
         //
     }
@@ -144,7 +142,7 @@ protected function getRecentActivities()
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, admin $admin)
+    public function update(Request $request, Admin $admin)
     {
         //
     }
@@ -152,7 +150,7 @@ protected function getRecentActivities()
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(admin $admin)
+    public function destroy(Admin $admin)
     {
         //
     }

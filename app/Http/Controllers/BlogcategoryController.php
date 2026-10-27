@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
-class BlogCategoryController extends Controller
+class BlogcategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -44,7 +44,7 @@ class BlogCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-   public function update(Request $request, BlogCategory $category)
+   public function update(Request $request, blogcategory $category)
 {
     $validated = $request->validate([
         'categoryname' => 'required|string|max:255|unique:blogcategories,categoryname,' . $category->id . ',id',
@@ -71,7 +71,7 @@ class BlogCategoryController extends Controller
      */
     public function destroy($id)  // Change parameter to $id to match route
 {
-    $category = BlogCategory::findOrFail($id);
+    $category = blogcategory::findOrFail($id);
 
     // Delete associated image if exists
     if ($category->cover_image) {
@@ -110,7 +110,7 @@ class BlogCategoryController extends Controller
     private function createUniqueSlug($name)
     {
         $slug = Str::slug($name);
-        $count = BlogCategory::where('slug', $slug)->count();
+        $count = blogcategory::where('slug', $slug)->count();
         return $count ? "{$slug}-{$count}" : $slug;
     }
 }

@@ -49,7 +49,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function profile()
     {
-        return $this->hasOne(profile::class);
+        return $this->hasOne(Profile::class);
     }
 
 

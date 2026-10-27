@@ -95,9 +95,14 @@
                 <tbody class="divide-y divide-gray-200">
                     @forelse($recentOrders ?? [] as $order)
                     <tr>
-                        <td class="px-6 py-4 text-sm text-gray-900">#{{ $order->id }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">
+                            {{ $order->order_id }}
+                            @if($order->hasEtimsInvoice())
+                                <span class="ml-1 text-xs text-green-700"><i class="fas fa-file-invoice"></i> eTIMS</span>
+                            @endif
+                        </td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ $order->created_at->format('M d, Y') }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">${{ number_format($order->total_amount ?? $order->total, 2) }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">KES {{ number_format($order->amount, 2) }}</td>
                         <td class="px-6 py-4">
                             <span class="status-badge status-{{ strtolower($order->status ?? 'pending') }}">
                                 {{ ucfirst($order->status ?? 'Pending') }}
@@ -136,10 +141,10 @@
                         <p class="text-sm text-gray-500">Purchased: {{ $ebook->created_at->format('M d, Y') }}</p>
                     </div>
                     <div class="flex space-x-3">
-                        <span class="status-badge status-{{ $ebook->payment_status === 'completed' ? 'completed' : 'pending' }}">
-                            {{ ucfirst($ebook->payment_status ?? 'Pending') }}
+                        <span class="status-badge status-{{ strtolower($ebook->status ?? 'pending') }}">
+                            {{ ucfirst($ebook->status ?? 'Pending') }}
                         </span>
-                        @if($ebook->payment_status === 'completed')
+                        @if($ebook->status === 'completed')
                         <a href="{{ route('user.ebooks.download', $ebook->id) }}" class="text-primary-600 hover:text-primary-700">
                             <i class="fas fa-download"></i> Download
                         </a>

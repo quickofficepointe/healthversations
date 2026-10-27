@@ -19,7 +19,7 @@ class ProductCategory extends Model
      // Relationship to products
      public function products()
      {
-         return $this->hasMany(product::class, 'category_id');
+         return $this->hasMany(Product::class, 'category_id');
      }
 
      // Accessors for consistent attribute naming

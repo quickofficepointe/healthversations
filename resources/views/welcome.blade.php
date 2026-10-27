@@ -270,22 +270,7 @@
       </div>
 
       <!-- Hero Text Overlay -->
-      <div class="absolute inset-0 flex items-center justify-center text-center text-white z-10 bg-black/30">
-        <div class="px-4">
-          <div class="inline-block bg-[#93C754]/90 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4">
-            🎉 20% OFF SITEWIDE 🎉
-          </div>
-
-          <div class="flex flex-wrap justify-center gap-4">
-            <a href="{{ route('all.products') }}" class="bg-[#93C754] hover:bg-[#7eae47] text-white px-6 py-3 rounded-lg font-bold transition-all transform hover:scale-105">
-              Shop Now
-            </a>
-            <a href="{{ route('consultations.create') }}" class="bg-white hover:bg-gray-100 text-[#0A4040] px-6 py-3 rounded-lg font-bold transition-all transform hover:scale-105">
-              Book Consultation
-            </a>
-          </div>
-        </div>
-      </div>
+      
 
       <!-- Banner Navigation -->
       <button class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full hover:bg-opacity-75 transition z-20">
@@ -525,7 +510,7 @@
                 </div>
 
                 <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-                  {!! Str::limit($product->description, 80) !!}
+                  {{ Str::limit(trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($product->description)))), 80) }}
                 </p>
 
                 <div class="flex items-center justify-between mt-auto">
@@ -1310,5 +1295,22 @@ function initializeRateUsModal() {
         }
     });
   </script>
+  <script>
+function toggleReadMore(button) {
+    const container = button.parentElement;
+    const shortText = container.querySelector('.testimonial-text');
+    const fullText = container.querySelector('.testimonial-full');
+
+    if (fullText.classList.contains('hidden')) {
+        fullText.classList.remove('hidden');
+        shortText.classList.add('hidden');
+        button.textContent = 'Read Less';
+    } else {
+        fullText.classList.add('hidden');
+        shortText.classList.remove('hidden');
+        button.textContent = 'Read More';
+    }
+}
+</script>
 </body>
 </html>

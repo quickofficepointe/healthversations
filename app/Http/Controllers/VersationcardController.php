@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\versationcard;
+use App\Models\Versationcard;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ class VersationcardController extends Controller
     public function index()
     {
         //
-        $versationscard = versationcard::all();
+        $versationscard = Versationcard::all();
         return view('healthversations.admin.versationcards.index', compact('versationscard'));
     }
 
@@ -46,8 +46,8 @@ class VersationcardController extends Controller
             $imagePath = null;
         }
 
-        // Create the new VersationCard
-        $versationCard = VersationCard::create([
+        // Create the new Versationcard
+        $versationCard = Versationcard::create([
             'name' => $request->name,
             'description' => $request->description,
             'tags' => $request->tags,
@@ -62,7 +62,7 @@ class VersationcardController extends Controller
     // Show a single Versation Card
     public function show($id)
     {
-        $versationCard = VersationCard::findOrFail($id);
+        $versationCard = Versationcard::findOrFail($id);
         return response()->json($versationCard);
     }
 
@@ -77,7 +77,7 @@ class VersationcardController extends Controller
         ]);
 
         // Find the VersationCard by ID
-        $versationCard = VersationCard::findOrFail($id);
+        $versationCard = Versationcard::findOrFail($id);
 
         // Handle image upload if present
         if ($request->hasFile('cover_image')) {
@@ -107,7 +107,7 @@ class VersationcardController extends Controller
     // Destroy a Versation Card
     public function destroy($id)
     {
-        $versationCard = VersationCard::findOrFail($id);
+        $versationCard = Versationcard::findOrFail($id);
 
         // Delete cover image if it exists
         if ($versationCard->cover_image) {

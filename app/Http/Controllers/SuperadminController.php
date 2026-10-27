@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\superadmin;
+use App\Models\SuperAdmin;
 use Illuminate\Http\Request;
 
 class SuperadminController extends Controller
@@ -36,7 +36,7 @@ class SuperadminController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(superadmin $superadmin)
+    public function show(SuperAdmin $superadmin)
     {
         //
     }
@@ -44,7 +44,7 @@ class SuperadminController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(superadmin $superadmin)
+    public function edit(SuperAdmin $superadmin)
     {
         //
     }
@@ -52,7 +52,7 @@ class SuperadminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, superadmin $superadmin)
+    public function update(Request $request, SuperAdmin $superadmin)
     {
         //
     }
@@ -60,7 +60,7 @@ class SuperadminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(superadmin $superadmin)
+    public function destroy(SuperAdmin $superadmin)
     {
         //
     }

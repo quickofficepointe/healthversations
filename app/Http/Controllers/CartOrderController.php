@@ -3,88 +3,186 @@
 namespace App\Http\Controllers;
 
 use App\Models\CartOrder;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
 class CartOrderController extends Controller
 {
-public function index(Request $request)
-{
-    $query = CartOrder::orderBy('created_at', 'desc');
+    protected $salesEmail = 'sales@healthversation.com';
 
-    // Filter by status if provided
-    if ($request->has('status') && $request->status !== '') {
-        $query->where('status', $request->status);
+    public function index(Request $request)
+    {
+        $query = CartOrder::orderBy('created_at', 'desc');
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->etims === 'pending') {
+            $query->etimsPending();
+        } elseif ($request->etims === 'sent') {
+            $query->where('etims_requested', true)->whereNotNull('etims_invoice_path');
+        } elseif ($request->etims === 'requested') {
+            $query->where('etims_requested', true);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('order_id', 'like', "%{$search}%")
+                  ->orWhere('customer_name', 'like', "%{$search}%")
+                  ->orWhere('customer_email', 'like', "%{$search}%")
+                  ->orWhere('customer_phone', 'like', "%{$search}%");
+            });
+        }
+
+        $orders = $query->paginate(15)->withQueryString();
+        $etimsPendingCount = CartOrder::etimsPending()->count();
+
+        return view('healthversations.admin.orders.cart-orders', compact('orders', 'etimsPendingCount'));
     }
-
-    $orders = $query->paginate(10); // Changed from $cartOrders to $orders
-
-    return view('healthversations.admin.orders.index', compact('orders')); // Passing 'orders'
-}
 
     public function update(Request $request, $id)
     {
         $order = CartOrder::findOrFail($id);
 
         $validated = $request->validate([
-            'status' => 'required|in:pending,completed,failed'
+            'status' => ['required', Rule::in(CartOrder::STATUSES)],
         ]);
 
         $order->update($validated);
 
-        return redirect()->route('admin.cart-orders.index')
-            ->with('success', 'Order status updated successfully');
+        return back()->with('success', 'Order status updated successfully');
     }
-/**
- * Show order details via AJAX
- */
-public function showDetails($id)
-{
-    try {
+
+    /**
+     * Show order details via AJAX
+     */
+    public function showDetails($id)
+    {
         $order = CartOrder::findOrFail($id);
+        $items = is_array($order->items) ? $order->items : (json_decode($order->items, true) ?? []);
 
-        // Safely decode items if needed
-        $items = is_array($order->items) ? $order->items : json_decode($order->items, true);
-
-        // Return HTML for modal
-        $html = view('healthversations.admin.partials.order-details', [
-            'order' => $order,
-            'items' => $items ?? []
-        ])->render();
+        $html = view('healthversations.admin.orders.partials.order-details', compact('order', 'items'))->render();
 
         return response()->json([
             'success' => true,
-            'html' => $html
+            'html' => $html,
+        ]);
+    }
+
+    /**
+     * Admin attaches the eTIMS invoice generated on KRA and sends it to the customer and sales.
+     */
+    public function uploadEtimsInvoice(Request $request, $id)
+    {
+        $order = CartOrder::findOrFail($id);
+
+        $request->validate([
+            'etims_invoice' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'etims_invoice_number' => 'nullable|string|max:100',
         ]);
 
-    } catch (\Exception $e) {
-        \Log::error('Error fetching order details: ' . $e->getMessage());
+        // Replace any previously attached invoice
+        if ($order->etims_invoice_path) {
+            Storage::disk('local')->delete($order->etims_invoice_path);
+        }
 
-        return response()->json([
-            'success' => false,
-            'error' => 'Order not found',
-            'html' => '<div class="text-red-500 text-center py-4">Error loading order details.</div>'
-        ], 404);
+        $file = $request->file('etims_invoice');
+        $path = $file->storeAs(
+            'etims-invoices',
+            $order->order_id . '-' . time() . '.' . $file->getClientOriginalExtension(),
+            'local'
+        );
+
+        $order->update([
+            'etims_requested' => true,
+            'etims_invoice_number' => $request->etims_invoice_number,
+            'etims_invoice_path' => $path,
+        ]);
+
+        try {
+            $this->sendEtimsInvoice($order);
+            $order->update(['etims_invoice_sent_at' => now()]);
+        } catch (\Exception $e) {
+            Log::error("Failed to email eTIMS invoice for order {$order->order_id}: " . $e->getMessage());
+
+            return back()->with('error', 'Invoice saved, but the email could not be sent. Use "Resend" to try again.');
+        }
+
+        return back()->with('success', "eTIMS invoice attached and sent to {$order->customer_email}.");
     }
-}
+
+    public function resendEtimsInvoice($id)
+    {
+        $order = CartOrder::findOrFail($id);
+
+        if (!$order->hasEtimsInvoice()) {
+            return back()->with('error', 'No eTIMS invoice has been attached to this order yet.');
+        }
+
+        try {
+            $this->sendEtimsInvoice($order);
+            $order->update(['etims_invoice_sent_at' => now()]);
+        } catch (\Exception $e) {
+            Log::error("Failed to resend eTIMS invoice for order {$order->order_id}: " . $e->getMessage());
+
+            return back()->with('error', 'The email could not be sent. Please check the mail settings.');
+        }
+
+        return back()->with('success', "eTIMS invoice resent to {$order->customer_email}.");
+    }
+
+    public function downloadEtimsInvoice($id)
+    {
+        $order = CartOrder::findOrFail($id);
+
+        return $this->etimsInvoiceDownload($order);
+    }
+
+    /**
+     * Shared by admin and customer download routes.
+     */
+    public static function etimsInvoiceDownload(CartOrder $order)
+    {
+        if (!$order->hasEtimsInvoice() || !Storage::disk('local')->exists($order->etims_invoice_path)) {
+            abort(404, 'eTIMS invoice not found.');
+        }
+
+        $extension = pathinfo($order->etims_invoice_path, PATHINFO_EXTENSION);
+
+        return Storage::disk('local')->download(
+            $order->etims_invoice_path,
+            'eTIMS-Invoice-' . $order->order_id . '.' . $extension
+        );
+    }
+
     public function process(Request $request)
     {
-        // Custom validation rules
         $validated = $request->validate([
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
             'email' => 'required|email|max:100',
             'phone' => 'required|string|max:20',
             'delivery_method' => 'required|in:pickup,delivery',
-            'delivery_zone' => 'required_if:delivery_method,delivery|string|max:1',
+            'delivery_zone' => ['required_if:delivery_method,delivery', 'nullable', 'string', Rule::in(array_merge(array_keys(CartOrder::DELIVERY_ZONE_RATES), ['B']))],
             'county' => 'required_if:delivery_method,delivery|nullable|string|max:100',
             'subcounty' => 'required_if:delivery_method,delivery|nullable|string|max:100',
             'location' => 'required_if:delivery_method,delivery|nullable|string|max:100',
             'address' => 'required_if:delivery_method,delivery|nullable|string|max:500',
+            'payment_method' => 'nullable|in:kcb,iveri',
+            'etims_requested' => 'nullable|boolean',
+            'etims_kra_pin' => ['required_if:etims_requested,1', 'nullable', 'string', 'regex:/^[AP]\d{9}[A-Z]$/i'],
+            'etims_business_name' => 'nullable|string|max:255',
+        ], [
+            'etims_kra_pin.required_if' => 'Please enter your KRA PIN for the eTIMS invoice.',
+            'etims_kra_pin.regex' => 'Enter a valid KRA PIN, e.g. A012345678Z.',
         ]);
 
-        // Get cart items from session
         $cartItems = session('cart', []);
         if (empty($cartItems)) {
             return response()->json([
@@ -93,7 +191,6 @@ public function showDetails($id)
             ], 400);
         }
 
-        // Calculate total amount
         $subtotal = 0;
         $items = [];
         foreach ($cartItems as $item) {
@@ -109,22 +206,13 @@ public function showDetails($id)
             ];
         }
 
-        // Calculate delivery cost
         $deliveryCost = 0;
-        $deliveryZone = null;
 
         if ($request->delivery_method === 'delivery') {
-            $zoneRates = [
-                'A' => 150, 'J' => 350, 'D' => 400, 'F' => 400,
-                'K' => 400, 'N' => 400, 'G' => 450, 'M' => 450,
-                'H' => 600, 'O' => 650, 'P' => 800, 'R' => 900, 'Q' => 1350
-            ];
-
             $deliveryZone = $request->delivery_zone;
-            $deliveryCost = $zoneRates[$deliveryZone] ?? 0;
+            $deliveryCost = CartOrder::DELIVERY_ZONE_RATES[$deliveryZone] ?? 0;
         } else {
             $deliveryZone = 'B'; // Pickup zone
-            // For pickup, set shipping fields to null
             $validated['county'] = null;
             $validated['subcounty'] = null;
             $validated['location'] = null;
@@ -132,12 +220,11 @@ public function showDetails($id)
         }
 
         $totalAmount = $subtotal + $deliveryCost;
+        $etimsRequested = $request->boolean('etims_requested');
 
-        // Create order record
         $order = CartOrder::create([
-            'order_id' => 'ORD-' . Str::random(10),
+            'order_id' => 'ORD-' . strtoupper(Str::random(10)),
             'amount' => $totalAmount,
-            'subtotal' => $subtotal,
             'delivery_cost' => $deliveryCost,
             'delivery_zone' => $deliveryZone,
             'delivery_method' => $request->delivery_method,
@@ -149,19 +236,25 @@ public function showDetails($id)
             'subcounty' => $validated['subcounty'],
             'location' => $validated['location'],
             'address' => $validated['address'],
-            'status' => 'pending'
+            'status' => 'pending',
+            'payment_method' => $request->payment_method,
+            'etims_requested' => $etimsRequested,
+            'etims_kra_pin' => $etimsRequested ? strtoupper($request->etims_kra_pin) : null,
+            'etims_business_name' => $etimsRequested ? $request->etims_business_name : null,
         ]);
 
-        // Send email notifications
-        $this->sendOrderNotifications($order);
+        // A mail failure must not block the customer from paying
+        try {
+            $this->sendOrderNotifications($order);
+        } catch (\Exception $e) {
+            Log::error("Order notification failed for {$order->order_id}: " . $e->getMessage());
+        }
 
-        // Generate iVeri token
         $token = $this->generateIveriToken(
             $totalAmount * 100, // Convert to cents
             $request->email
         );
 
-        // Return JSON response for AJAX handling
         return response()->json([
             'success' => true,
             'order_id' => $order->order_id,
@@ -180,27 +273,37 @@ public function showDetails($id)
     protected function sendOrderNotifications($order)
     {
         $customerEmail = $order->customer_email;
-        $salesEmail = 'sales@healthversation.com';
+        $itemLines = collect($order->items)->map(function ($item) {
+            return "- {$item['product']}" .
+                   ($item['variant'] ? " ({$item['variant']})" : '') .
+                   " (Qty: {$item['quantity']}) @ KES {$item['price']}";
+        })->implode("\n");
 
-        // Customer email
+        $etimsCustomer = $order->etims_requested
+            ? "\n\neTIMS invoice: requested (KRA PIN {$order->etims_kra_pin}). We will email your eTIMS invoice once it has been generated."
+            : '';
+
+        $etimsSales = $order->etims_requested
+            ? "*** eTIMS INVOICE REQUESTED ***\n" .
+              "KRA PIN: {$order->etims_kra_pin}\n" .
+              "Business Name: " . ($order->etims_business_name ?: $order->customer_name) . "\n" .
+              "Generate the invoice on eTIMS and attach it from the admin Orders page.\n\n"
+            : '';
+
         Mail::raw("Thank you for your order #{$order->order_id}.\n\n" .
                    "Order Summary:\n" .
                    "Amount: KES {$order->amount}\n" .
                    "Delivery: " . ($order->delivery_method === 'pickup' ? 'Pickup' : 'Delivery') . "\n" .
-                   "Items:\n" .
-                   collect($order->items)->map(function($item) {
-                       return "- {$item['product']}" .
-                              ($item['variant'] ? " ({$item['variant']})" : '') .
-                              " (Qty: {$item['quantity']}) @ KES {$item['price']}";
-                   })->implode("\n") .
+                   "Items:\n" . $itemLines .
+                   $etimsCustomer .
                    "\n\nWe'll process your order shortly.",
             function ($message) use ($customerEmail, $order) {
                 $message->to($customerEmail)
                         ->subject("Your Healthversation Order #{$order->order_id}");
             });
 
-        // Sales team email
         Mail::raw("New Order Received #{$order->order_id}\n\n" .
+                   $etimsSales .
                    "Customer: {$order->customer_name}\n" .
                    "Email: {$order->customer_email}\n" .
                    "Phone: {$order->customer_phone}\n" .
@@ -210,16 +313,33 @@ public function showDetails($id)
                    "Shipping Address:\n" .
                    "{$order->address}, {$order->location}\n" .
                    "{$order->subcounty}, {$order->county}\n\n" :
-                   "Pickup Location: OM MBOYA STREET, STAR MALL, 1st Floor, Shop A17\n\n") .
-                   "Items:\n" .
-                   collect($order->items)->map(function($item) {
-                       return "- {$item['product']}" .
-                              ($item['variant'] ? " ({$item['variant']})" : '') .
-                              " (Qty: {$item['quantity']}) @ KES {$item['price']}";
-                   })->implode("\n"),
-            function ($message) use ($salesEmail, $order) {
-                $message->to($salesEmail)
-                        ->subject("New Order #{$order->order_id} from {$order->customer_name}");
+                   "Pickup Location: TOM MBOYA STREET, STAR MALL, 1st Floor, Shop A17\n\n") .
+                   "Items:\n" . $itemLines,
+            function ($message) use ($order) {
+                $message->to($this->salesEmail)
+                        ->subject(($order->etims_requested ? '[eTIMS] ' : '') . "New Order #{$order->order_id} from {$order->customer_name}");
+            });
+    }
+
+    /**
+     * Email the attached eTIMS invoice to the customer, copying sales.
+     */
+    protected function sendEtimsInvoice(CartOrder $order)
+    {
+        $filePath = Storage::disk('local')->path($order->etims_invoice_path);
+        $fileName = 'eTIMS-Invoice-' . $order->order_id . '.' . pathinfo($filePath, PATHINFO_EXTENSION);
+
+        Mail::raw("Dear {$order->customer_name},\n\n" .
+                   "Please find attached your eTIMS invoice for order #{$order->order_id}.\n\n" .
+                   ($order->etims_invoice_number ? "Invoice Number: {$order->etims_invoice_number}\n" : '') .
+                   "KRA PIN: {$order->etims_kra_pin}\n" .
+                   "Amount: KES {$order->amount}\n\n" .
+                   "Thank you for shopping with Healthversation.",
+            function ($message) use ($order, $filePath, $fileName) {
+                $message->to($order->customer_email)
+                        ->cc($this->salesEmail)
+                        ->subject("eTIMS Invoice for Order #{$order->order_id}")
+                        ->attach($filePath, ['as' => $fileName]);
             });
     }
 

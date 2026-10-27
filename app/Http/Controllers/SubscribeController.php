@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\subscribe;
+use App\Models\Subscribe;
 use Illuminate\Http\Request;
 
 class SubscribeController extends Controller
@@ -46,7 +46,7 @@ class SubscribeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(subscribe $subscribe)
+    public function show(Subscribe $subscribe)
     {
         //
     }
@@ -54,7 +54,7 @@ class SubscribeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(subscribe $subscribe)
+    public function edit(Subscribe $subscribe)
     {
         //
     }
@@ -62,7 +62,7 @@ class SubscribeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, subscribe $subscribe)
+    public function update(Request $request, Subscribe $subscribe)
     {
         //
     }
@@ -70,7 +70,7 @@ class SubscribeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(subscribe $subscribe)
+    public function destroy(Subscribe $subscribe)
     {
         //
     }

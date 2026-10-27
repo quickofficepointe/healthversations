@@ -27,6 +27,6 @@ class CoachingEnrollment extends Model
 
     public function package()
     {
-        return $this->belongsTo(package::class);
+        return $this->belongsTo(CoachingPackages::class, 'package_id');
     }
 }

@@ -144,7 +144,7 @@
             <!-- Navigation Links -->
             <ul class="space-y-2">
                 <li>
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center px-3 py-3 text-sm rounded-md nav-link active">
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center px-3 py-3 text-sm rounded-md nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                         <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
                     </a>
                 </li>
@@ -198,7 +198,7 @@
                         <i class="fas fa-utensils mr-3"></i> Meal Plans
                     </a>
                 </li>
-
+                
                 <li class="mt-4">
                     <p class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-white text-opacity-70">
                         Services & Products</p>
@@ -209,8 +209,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('admin.cart-orders.index') }}" class="flex items-center px-3 py-3 text-sm rounded-md nav-link">
+                    <a href="{{ route('admin.cart-orders.index') }}" class="flex items-center px-3 py-3 text-sm rounded-md nav-link {{ request()->routeIs('admin.cart-orders.*') ? 'active' : '' }}">
                         <i class="fas fa-shopping-bag mr-3"></i> Product Orders
+                        @php $etimsBadge = \App\Models\CartOrder::etimsPending()->count(); @endphp
+                        @if($etimsBadge > 0)
+                            <span class="ml-auto bg-orange-500 text-white text-xs rounded-full px-2 py-1" title="eTIMS invoices awaiting upload">{{ $etimsBadge }}</span>
+                        @endif
                     </a>
                 </li>
                 <li>
@@ -247,11 +251,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('admin.const-orders.index') }}" class="flex items-center px-3 py-3 text-sm rounded-md nav-link">
+                    <a href="{{ route('admin.const-orders.index') }}" class="flex items-center px-3 py-3 text-sm rounded-md nav-link {{ request()->routeIs('admin.const-orders.*') ? 'active' : '' }}">
                         <i class="fas fa-receipt mr-3"></i> Consultation Orders
-                        <span class="ml-auto bg-yellow-500 text-white text-xs rounded-full px-2 py-1" id="pendingOrdersCount">
-
-                        </span>
+                        @php $consultEtimsBadge = \App\Models\Consultation::etimsPending()->count(); @endphp
+                        @if($consultEtimsBadge > 0)
+                            <span class="ml-auto bg-orange-500 text-white text-xs rounded-full px-2 py-1" title="eTIMS invoices awaiting upload">{{ $consultEtimsBadge }}</span>
+                        @endif
                     </a>
                 </li>
                 <li>

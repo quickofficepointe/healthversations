@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Packagefeatures;
+use App\Models\PackageFeatures;
 use Illuminate\Http\Request;
 
 class PackagefeaturesController extends Controller
@@ -34,7 +34,7 @@ class PackagefeaturesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Packagefeatures $packagefeatures)
+    public function show(PackageFeatures $packagefeatures)
     {
         //
     }
@@ -42,7 +42,7 @@ class PackagefeaturesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Packagefeatures $packagefeatures)
+    public function edit(PackageFeatures $packagefeatures)
     {
         //
     }
@@ -50,7 +50,7 @@ class PackagefeaturesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Packagefeatures $packagefeatures)
+    public function update(Request $request, PackageFeatures $packagefeatures)
     {
         //
     }
@@ -58,7 +58,7 @@ class PackagefeaturesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Packagefeatures $packagefeatures)
+    public function destroy(PackageFeatures $packagefeatures)
     {
         //
     }
