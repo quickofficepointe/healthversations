@@ -21,7 +21,7 @@ class KcbService
         $this->consumerKey = config('services.kcb_buni.consumer_key');
         $this->consumerSecret = config('services.kcb_buni.consumer_secret');
         $this->callbackBaseUrl = config('services.kcb_buni.callback_base_url', config('app.url'));
-        $this->paybillNumber = '8234000';
+        $this->paybillNumber = '8140972';
     }
 
     /**
