@@ -33,7 +33,7 @@
 
         <div class="mt-8">
             <p class="text-gray-600">We've sent a confirmation email to your registered address.</p>
-            <a href="{{ route('orders.show', $order->id) }}" class="mt-4 inline-block px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+            <a href="{{ route('user.orders.show', $order->id) }}" class="mt-4 inline-block px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">
                 View Order Details
             </a>
         </div>

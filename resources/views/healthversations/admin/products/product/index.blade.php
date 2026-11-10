@@ -1463,7 +1463,7 @@ function openEditCategoryModal(categoryId) {
     modal.classList.remove('hidden');
 
     // Fetch category data via AJAX
-    fetch(`/admin/product-categories/${categoryId}/edit`)
+    fetch(`{{ url('admin/productcategories') }}/${categoryId}/edit`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -1474,7 +1474,7 @@ function openEditCategoryModal(categoryId) {
             if (data.success) {
                 // Populate the modal with the edit form
                 modalContent.innerHTML = `
-                    <form action="/admin/product-categories/${categoryId}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ url('productcategories') }}/${categoryId}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="space-y-4">
@@ -1583,7 +1583,7 @@ function manageVariants(productId) {
                                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
-                                        <input type="number" name="variants[${variant.id}][quantity]" value="${variant.quantity}" step="0.01" required
+                                        <input type="number" name="variants[${variant.id}][quantity]" value="${variant.name}" step="0.01" required
                                             class="w-full px-3 py-2 border border-gray-300 rounded-md">
                                     </div>
                                     <div>

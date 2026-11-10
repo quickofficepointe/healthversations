@@ -13,9 +13,8 @@ class ProductcategoryController extends Controller
      */
     public function index()
     {
-        //
-        $productcategory = ProductCategory::all();
-        return view('healthversations.admin.products.productcategory.index', compact('productcategory'));
+        // Categories are managed from the products page; there is no separate categories view
+        return redirect()->route('products.index');
     }
 
     /**

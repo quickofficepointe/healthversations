@@ -105,6 +105,8 @@ Route::get('/', function () {
     // Get consultation testimonials for before/after
     $consultTestimonials = ConsultTestimonial::with('measurements')
         ->public()
+        ->verified()
+        ->imagesApproved()
         ->orderBy('created_at', 'desc')
         ->take(6)
         ->get();
@@ -238,16 +240,25 @@ Route::get('consult/testimonials', [ConsultTestimonialController::class, 'index'
 Route::post('consult/testimonials', [ConsultTestimonialController::class, 'store'])
     ->name('consult.testimonials.store');
 
+// Admin buttons send the numeric id; the model's default route key is the slug used by public pages
+// Load testimonial for the edit modal
+Route::get('consult/testimonials/{consultTestimonial:id}/edit', [ConsultTestimonialController::class, 'edit'])
+    ->name('consult.testimonials.edit');
+
+// Load testimonial for the view modal
+Route::get('consult/testimonials/{consultTestimonial:id}', [ConsultTestimonialController::class, 'show'])
+    ->name('consult.testimonials.show');
+
 // Update testimonial
-Route::put('consult/testimonials/{id}', [ConsultTestimonialController::class, 'update'])
+Route::put('consult/testimonials/{consultTestimonial:id}', [ConsultTestimonialController::class, 'update'])
     ->name('consult.testimonials.update');
 
 // Delete testimonial
-Route::delete('consult/testimonials/{id}', [ConsultTestimonialController::class, 'destroy'])
+Route::delete('consult/testimonials/{consultTestimonial:id}', [ConsultTestimonialController::class, 'destroy'])
     ->name('consult.testimonials.destroy');
 
 // Toggle featured status
-Route::post('consult/testimonials/{consultTestimonial}/toggle-featured', [ConsultTestimonialController::class, 'toggleFeatured'])
+Route::post('consult/testimonials/{consultTestimonial:id}/toggle-featured', [ConsultTestimonialController::class, 'toggleFeatured'])
     ->name('consult.testimonials.toggle-featured');
 
 // Bulk actions
@@ -277,11 +288,8 @@ Route::put('/allproducts/{product}', [ProductController::class, 'update'])->name
     Route::delete('/admin/products/variants/{variant}', [ProductController::class, 'deleteVariant'])->name('variants.destroy');
     Route::delete('/admin/products/images/{image}', [ProductController::class, 'deleteImage'])->name('images.destroy');
 
-    // Product Variants
-    Route::get('/{product}/variant', [ProductController::class, 'viewVariants'])->name('product.variants');
-    Route::post('/{product}/variants', [ProductController::class, 'storeVariant'])->name('products.variants.store');
-    Route::put('/variants/{variant}', [ProductController::class, 'updateVariant'])->name('products.variants.update');
-    Route::delete('/variants/{variant}', [ProductController::class, 'destroyVariant'])->name('products.variants.destroy');
+    // Product Variants (Manage Variants modal)
+    Route::post('/admin/products/{product}/variants', [ProductController::class, 'saveVariants'])->name('products.variants.save');
 
     // Package Categories
     Route::get('packagecategories', [PackagecategoryController::class, 'index'])->name('packagecategories.index');
@@ -501,7 +509,7 @@ Route::prefix('kcb-payment')->group(function () {
 });
 Route::get('/consultations/{consultation}/process-payment', [ConsultationController::class, 'processPayment'])->name('consultations.process-payment');
 // In routes/web.php - Add the full namespace
-Route::get('/testimonials/{slug}', [App\Http\Controllers\ConsultTestimonialController::class, 'show'])
+Route::get('/testimonials/{consultTestimonial}', [App\Http\Controllers\ConsultTestimonialController::class, 'show'])
     ->name('testimonials.show');
 
     // KCB Payment Routes

@@ -57,6 +57,42 @@ public function quickView(Product $product)
 
     return response()->json(['html' => $html]);
 }
+/**
+ * Save the Manage Variants modal: numeric keys update existing variants, "new_*" keys create new ones
+ */
+public function saveVariants(Request $request, Product $product)
+{
+    $validated = $request->validate([
+        'variants' => 'required|array',
+        'variants.*.quantity' => 'required|numeric|min:0',
+        'variants.*.price_kes' => 'required|numeric|min:0',
+        'variants.*.price_usd' => 'required|numeric|min:0',
+        'variants.*.stock' => 'required|integer|min:0',
+    ]);
+
+    foreach ($validated['variants'] as $key => $variantData) {
+        $data = [
+            'name' => $variantData['quantity'],
+            'display_name' => $variantData['quantity'] . $product->measurement_unit,
+            'price_kes' => $variantData['price_kes'],
+            'price_usd' => $variantData['price_usd'],
+            'stock' => $variantData['stock'],
+        ];
+
+        if (is_numeric($key)) {
+            $product->variants()->whereKey($key)->first()?->update($data);
+        } else {
+            $product->variants()->create($data);
+        }
+    }
+
+    if (!$product->has_variations) {
+        $product->update(['has_variations' => true]);
+    }
+
+    return redirect()->back()->with('success', 'Variants saved successfully.');
+}
+
 public function deleteVariant(ProductVariant $variant)
 {
     try {

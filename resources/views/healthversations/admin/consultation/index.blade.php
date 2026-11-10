@@ -316,7 +316,7 @@
                 </div>
 
                 <!-- Status Toggles -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div class="flex items-center">
                         <input type="checkbox" id="featured" name="featured" value="1" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
                         <label for="featured" class="ml-2 block text-sm text-gray-900">Featured Testimonial</label>
@@ -328,6 +328,10 @@
                     <div class="flex items-center">
                         <input type="checkbox" id="is_public" name="is_public" value="1" checked class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
                         <label for="is_public" class="ml-2 block text-sm text-gray-900">Publish Publicly</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="images_approved" name="images_approved" value="1" checked class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                        <label for="images_approved" class="ml-2 block text-sm text-gray-900">Approve Before/After Images</label>
                     </div>
                 </div>
 
@@ -736,7 +740,7 @@ $(document).ready(function() {
             },
             success: function(response) {
                 if (response.success) {
-                    const button = $(`button[data-id="${testimonialId}"]`);
+                    const button = $(`.toggle-featured[data-id="${testimonialId}"]`);
                     button.data('featured', response.featured ? 1 : 0);
 
                     if (response.featured) {
@@ -766,7 +770,8 @@ $(document).ready(function() {
 
         const formData = new FormData(this);
         const url = isEditMode ? `/consult/testimonials/${currentTestimonialId}` : '/consult/testimonials';
-        const method = isEditMode ? 'PUT' : 'POST';
+        // PHP does not parse multipart bodies on PUT, so spoof the method over POST
+        if (isEditMode) formData.append('_method', 'PUT');
 
         // Make image fields optional for edit mode
         if (isEditMode) {
@@ -778,7 +783,7 @@ $(document).ready(function() {
 
         $.ajax({
             url: url,
-            method: method,
+            method: 'POST',
             data: formData,
             processData: false,
             contentType: false,
@@ -919,6 +924,7 @@ $(document).ready(function() {
         $('#featured').prop('checked', data.featured || false);
         $('#is_verified').prop('checked', data.is_verified !== undefined ? data.is_verified : true);
         $('#is_public').prop('checked', data.is_public !== undefined ? data.is_public : true);
+        $('#images_approved').prop('checked', data.images_approved !== undefined ? data.images_approved : true);
 
         // Populate measurements
         $('#measurementsContainer').empty();

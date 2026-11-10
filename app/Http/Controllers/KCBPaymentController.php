@@ -480,4 +480,56 @@ private function createConsultationOrder($data)
         $result = $this->kcbService->testAuth();
         return response()->json($result);
     }
+
+    /**
+     * Page the cart redirects to after M-Pesa confirms the payment
+     */
+    public function showSuccess(Request $request)
+    {
+        [$order, $kcbPayment] = $this->findCartPayment($request->query('order_id'));
+
+        // Only treat it as paid once the KCB callback has confirmed it
+        $paid = $kcbPayment && $kcbPayment->status === 'completed';
+
+        if ($paid) {
+            session()->forget('cart');
+        }
+
+        return view('frontendviews.orders.kcb-result', [
+            'state' => $paid ? 'success' : 'processing',
+            'order' => $order,
+            'kcbPayment' => $kcbPayment,
+        ]);
+    }
+
+    /**
+     * Page shown when an M-Pesa payment fails or is cancelled
+     */
+    public function showFailure(Request $request)
+    {
+        [$order, $kcbPayment] = $this->findCartPayment($request->query('order_id'));
+
+        return view('frontendviews.orders.kcb-result', [
+            'state' => 'failed',
+            'order' => $order,
+            'kcbPayment' => $kcbPayment,
+        ]);
+    }
+
+    /**
+     * Cart order and its latest KCB payment for the given order id
+     */
+    private function findCartPayment($orderId)
+    {
+        $order = $orderId ? CartOrder::find($orderId) : null;
+
+        $kcbPayment = $order
+            ? KcbPayment::where('reference_type', CartOrder::class)
+                ->where('reference_id', $order->id)
+                ->latest()
+                ->first()
+            : null;
+
+        return [$order, $kcbPayment];
+    }
 }

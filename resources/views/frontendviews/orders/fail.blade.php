@@ -29,7 +29,7 @@
 
         <div class="mt-8">
             @if($can_retry)
-                <a href="{{ route('cart.checkout') }}" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                <a href="{{ route('cart.index') }}" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">
                     Try Again
                 </a>
             @endif
